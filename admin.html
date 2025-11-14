@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Admin - Pinheiro Tecnologia</title>
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="admin-body">
+
+    <!-- Barra de Navegação -->
+    <nav class="main-nav">
+        <div class="container nav-container">
+            <a href="index.html" class="nav-logo-link">
+                <img src="Logo Branco - Pinheiro Tecnologia.png" alt="Pinheiro Tecnologia - Logo" class="nav-logo">
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html" target="_blank">Ver Site</a></li>
+                <li><a href="projetos.html" target="_blank">Ver Projetos</a></li>
+                <li><button id="logout-button" class="nav-link-button">Sair</button></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Conteúdo do Admin -->
+    <main class="container">
+        <div class="admin-container">
+            <h1>Dashboard de Gerenciamento</h1>
+            <p>Bem-vindo, <span id="admin-user-email">...</span>. Aqui você pode gerenciar os projetos do site.</p>
+            
+            <!-- Mensagem de Feedback -->
+            <div id="admin-message" class="form-message hidden"></div>
+
+            <!-- Formulário para Adicionar/Editar Projeto -->
+            <form id="project-form" class="form-admin">
+                <h2 id="form-title">Adicionar Novo Projeto</h2>
+                <input type="hidden" id="project-id" value="">
+                
+                <div class="form-group">
+                    <label for="project-title">Título do Projeto (ex: Análise de Vendas)</label>
+                    <input type="text" id="project-title" class="form-input" required>
+                </div>
+
+                <!-- [NOVO] Campo de Categoria -->
+                <div class="form-group">
+                    <label for="project-category">Categoria</label>
+                    <select id="project-category" class="form-select" required>
+                        <option value="data-analysis">Análise de Dados (Power BI)</option>
+                        <option value="apps">Aplicativos (Power Apps)</option>
+                        <option value="automation">Automação (Power Automate)</option>
+                        <option value="other">Outros Projetos</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="project-thumbnail">URL da Miniatura (Thumbnail)</label>
+                    <input type="url" id="project-thumbnail" class="form-input" placeholder="https://..." required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="project-iframe-src">URL do Embed (Power BI, YouTube, etc.)</label>
+                    <input type="url" id="project-iframe-src" class="form-input" placeholder="https://app.powerbi.com/view?r=..." required>
+                </div>
+
+                <div class="form-group">
+                    <label for="project-embed-title">Título do Embed (ex: Dashboard Interativo)</label>
+                    <input type="text" id="project-embed-title" class="form-input" value="Dashboard Interativo" required>
+                </div>
+
+                <hr class="form-divider">
+                <h3 class="form-subtitle">Conteúdo das Abas do Modal</h3>
+                
+                <div class="form-group">
+                    <label for="tab-descricao">Descrição (HTML permitido)</label>
+                    <textarea id="tab-descricao" class="form-textarea" rows="3"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="tab-objetivos">Objetivos (HTML permitido)</label>
+                    <textarea id="tab-objetivos" class="form-textarea" rows="3"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="tab-metricas">Métricas (HTML permitido)</label>
+                    <textarea id="tab-metricas" class="form-textarea" rows="3"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="tab-tecnologias">Tecnologias (ETL) (HTML permitido)</label>
+                    <textarea id="tab-tecnologias" class="form-textarea" rows="3"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="tab-detalhes">Detalhes Técnicos (DAX) (HTML permitido)</label>
+                    <textarea id="tab-detalhes" class="form-textarea" rows="3"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="tab-fontes">Fontes e Links (HTML permitido)</label>
+                    <textarea id="tab-fontes" class="form-textarea" rows="3"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="project-tabs-to-show">Abas para Mostrar (separadas por vírgula, deixe em branco para todas)</label>
+                    <input type="text" id="project-tabs-to-show" class="form-input" placeholder="modal-descricao,modal-objetivos...">
+                    <small>Padrão: modal-descricao, modal-objetivos, modal-metricas, modal-tratamento, modal-dax, modal-fontes</small>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" id="project-submit-btn" class="cta-button">Salvar Projeto</button>
+                    <button type="button" id="project-cancel-btn" class="cta-button secondary-button hidden">Cancelar Edição</button>
+                </div>
+            </form>
+            
+            <hr class="form-divider">
+            
+            <!-- Lista de Projetos Existentes -->
+            <h2>Projetos Publicados</h2>
+            <div id="project-list-loader" class="loader-text">Carregando projetos...</div>
+            <div id="project-list-container">
+                <!-- Projetos do DynamoDB serão listados aqui pelo script.js -->
+            </div>
+            
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

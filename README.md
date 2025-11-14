@@ -1,117 +1,93 @@
-Portfólio Profissional ("Currículo Vivo") - Camilo Oliveira
+Pinheiro Tecnologia - Site Empresarial (Dinâmico)
 
-Este repositório contém o código-fonte do meu portfólio profissional, um "currículo vivo" focado em projetos de Análise de Dados e soluções com a Microsoft Power Platform.
+Este repositório contém o código-fonte do site empresarial da Pinheiro Tecnologia. O projeto é uma aplicação web dinâmica que demonstra serviços e cases de sucesso, com um painel de administração para gerenciamento de conteúdo.
 
-O site é construído com HTML, CSS e JavaScript puros, com foco em performance, acessibilidade (a11y) e Otimização para Buscadores (SEO).
+Visão Geral da Arquitetura
 
-Visão Geral do Projeto
+Este projeto evoluiu de um site estático para uma arquitetura serverless na AWS, permitindo um site dinâmico e gerenciável.
 
-O objetivo deste portal é servir como uma demonstração interativa das minhas habilidades, indo além de um currículo estático. Ele apresenta projetos práticos, estudos de caso e demonstrações que refletem minha jornada e especialização em transformar dados em inteligência de negócio.
+A arquitetura é dividida em duas partes principais:
 
-Tecnologias Utilizadas
+1. Frontend (Este Repositório)
 
-HTML5: Para a estrutura semântica e acessível.
+Tecnologia: HTML5, CSS3, JavaScript (ES6+).
 
-CSS3: Para estilização, usando um design responsivo (mobile-first) e variáveis CSS para fácil manutenção.
+Design: Layout totalmente responsivo com rolagem livre (menu de navegação não-fixo).
 
-JavaScript (ES6+): Para toda a interatividade, incluindo o sistema de modal (pop-up) e o carregamento dinâmico de conteúdo.
+Função: Interface pública do usuário (visitantes) e interface de administração (admin).
 
-Foco em Qualidade e Boas Práticas
+Páginas Públicas:
 
-Acessibilidade (a11y): O site segue as diretrizes do WCAG.
+index.html: Página inicial com serviços e uma listagem "vitrine" dos 6 projetos mais recentes em linha única. Contém um botão "Ver Todos".
 
-Contraste de Cor: A paleta de cores foi validada para garantir legibilidade (Contraste AA/AAA).
+projetos.html: Página que exibe todos os projetos, categorizados por tipo (Análise de Dados, Aplicativos, etc.).
 
-Navegação por Teclado: Todos os elementos interativos são focáveis e possuem estados :focus-visible.
+sobre.html: Página "Sobre Nós".
 
-Semântica (ARIA): O modal utiliza atributos role="dialog", aria-modal, aria-label e gerencia o foco (focus trap) para ser totalmente acessível a leitores de tela.
+contato.html: Formulário de contato que envia dados para a API.
 
-SEO (Otimização para Buscadores):
+Páginas de Admin (Protegidas):
 
-Meta tags (description, keywords) e Open Graph (og:image, og:title) estão implementadas para garantir uma boa indexação no Google e uma aparência profissional ao compartilhar em redes sociais.
+login.html: Página de login que se autentica via AWS Cognito.
 
-Manutenção:
+admin.html: Painel de controle (CMS) para Criar, Ler, Atualizar e Excluir (CRUD) projetos.
 
-O código é extensamente comentado.
+2. Backend (Arquitetura Serverless na AWS)
 
-O CSS utiliza variáveis (:root) para a paleta de cores e fontes, permitindo uma fácil customização da marca.
+O frontend se comunica com um backend seguro e escalável construído com os seguintes serviços da AWS:
 
-Estrutura dos Arquivos
+AWS API Gateway: Fornece os endpoints HTTP (a API) que o frontend chama.
 
-/
-│
-├── index.html          (Página inicial com a galeria de projetos)
-├── sobre.html          (Página "Sobre Mim" com a trajetória profissional)
-├── style.css           (Folha de estilos principal)
-├── script.js           (Lógica de interatividade - modal, abas, fallbacks)
-├── README.md           (Este arquivo)
-├── Logo Branco - Pinheiro Tecnologia.png (Logo usado na barra de navegação)
-│
-└── images/             (Pasta para as miniaturas/thumbnails dos projetos)
-    ├── projeto-vendas.png
-    ├── projeto-temporal.png
-    └── ...
+AWS Lambda: Contém a lógica de negócios (Node.js/Python) que é executada em resposta às chamadas da API.
 
+AWS DynamoDB: O banco de dados NoSQL onde os projetos (agora com um campo category) e os envios do formulário de contato são armazenados.
 
-Como Adicionar Novos Projetos (Manutenção)
+AWS Cognito: Gerencia a autenticação de administradores para proteger o painel de admin.
 
-Para adicionar um novo projeto ao index.html, basta copiar e colar um bloco <div class="project-card">...</div> dentro da div class="project-grid" da categoria desejada.
+(Para um guia detalhado sobre como construir o backend, consulte o arquivo backend-architecture.md.)
 
-O sistema é flexível e permite dois tipos principais de projetos:
+Lógica do Frontend (script.js)
 
-1. Como Adicionar um Projeto Padrão (Ex: Power BI)
+O script.js foi unificado e agora gerencia toda a interatividade do site:
 
-Este é o modelo padrão, que exibe todas as abas de informação.
+Carregamento de Página: Detecta em qual página o usuário está e executa as funções relevantes (ex: initIndexPage() ou initProjetosPage()).
 
-Copie o Bloco: Copie o HTML de um projeto de Power BI existente no index.html.
+Carregamento Dinâmico:
 
-Atualize os Atributos data-* (no div principal):
+Na index.html, busca a lista de projetos da API (GET /projects), limita aos 6 primeiros, e os insere dinamicamente na "vitrine" de linha única.
 
-data-title: O título completo que aparecerá no topo do modal (ex: "Projeto 1: Análise de Vendas").
+Na projetos.html, busca todos os projetos, os filtra por category no lado do cliente (JavaScript) e os insere nos grids de categoria corretos.
 
-data-iframe-src: O link embed do seu dashboard (ex: https://app.powerbi.com/view?...).
+Modal de Projeto: A lógica do modal é global e preenchida com os dados do projeto clicado.
 
-data-thumbnail-src: O caminho para a imagem da miniatura (ex: images/novo-projeto.png).
+Formulário de Contato: Intercepta o envio do formulário em contato.html e envia os dados para a API (POST /contact).
 
-data-embed-title: O subtítulo acima do iframe (ex: "Dashboard Interativo").
+Lógica de Admin:
 
-Atualize o Cartão:
+login.html: Envia os dados de login para o AWS Cognito.
 
-Mude a imagem da miniatura: <img src="images/novo-projeto.png" ...>.
+admin.html:
 
-Mude o título do cartão: <h3>Novo Projeto</h3>.
+Verifica se o usuário está autenticado.
 
-Atualize o aria-label do botão: aria-label="Ver detalhes do Novo Projeto".
+Adiciona um campo <select> para o administrador definir a category de um projeto.
 
-Atualize os Templates:
+Envia as operações de CRUD para a API, incluindo o novo campo category.
 
-Preencha o conteúdo dentro de cada tag <template data-tab-content="...">...</template>. O conteúdo de cada template será injetado na aba correspondente do modal.
+Manutenção (Como Adicionar Projetos)
 
-2. Como Adicionar um Projeto de Vídeo (ou Simplificado)
+A manutenção de projetos não é mais feita editando o index.html.
 
-Este modelo permite ocultar abas desnecessárias (como "DAX" ou "ETL").
+Acesse login.html no seu site.
 
-Siga os passos 1 a 3 do modelo padrão.
+Faça login com suas credenciais de administrador (criadas no AWS Cognito).
 
-Adicione o Atributo data-tabs-to-show:
+Você será redirecionado para admin.html.
 
-No div principal (<div class="project-card" ...>), adicione o atributo data-tabs-to-show.
+Use o formulário "Adicionar Novo Projeto" para preencher todos os detalhes.
 
-Liste as IDs das abas que você quer manter, separadas por vírgula.
+Importante: Selecione a Categoria correta no novo campo dropdown.
 
-Exemplo: data-tabs-to-show="modal-descricao,modal-objetivos,modal-fontes"
+Clique em "Salvar Projeto".
 
-<!-- end list -->
-
-<div class="project-card" 
-     data-title="Demo em Vídeo" 
-     data-iframe-src="[https://www.youtube.com/embed/](https://www.youtube.com/embed/)..."
-     data-thumbnail-src="images/demo-video.png"
-     data-embed-title="Demonstração em Vídeo"
-     data-tabs-to-show="modal-descricao,modal-objetivos,modal-fontes"
->
-    <!-- ... resto do cartão ... -->
-</div>
-
-
-Preencha os Templates: Você só precisa preencher os <template> que correspondem às abas que você listou em data-tabs-to-show.
+O projeto será salvo no DynamoDB e aparecerá automaticamente (entre os 6 mais recentes) na index.html e na página projetos.html, dentro da categoria correta.

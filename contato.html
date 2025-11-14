@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contato - Pinheiro Tecnologia</title>
+    <meta name="description" content="Entre em contato com a Pinheiro Tecnologia para solicitar uma consultoria em Power BI, Power Apps ou automação de processos.">
+    
+    <meta property="og:title" content="Contato - Pinheiro Tecnologia">
+    <meta property="og:description" content="Solicite uma consultoria ou tire suas dúvidas sobre nossas soluções em dados.">
+    <meta property="og:url" content="https://seusite.com/contato.html">
+    
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <nav class="main-nav">
+        <div class="container nav-container">
+            <a href="index.html" class="nav-logo-link" aria-label="Página Inicial - Pinheiro Tecnologia">
+                <img src="Logo Branco - Pinheiro Tecnologia.png" alt="Pinheiro Tecnologia - Logo" class="nav-logo">
+            </a>
+            <ul class="nav-links">
+                <li><a href="index.html">Início</a></li>
+                <!-- [NOVO] Link para Projetos -->
+                <li><a href="projetos.html">Projetos</a></li>
+                <li><a href="sobre.html">Sobre Nós</a></li>
+                <li><a href="contato.html" class="active" aria-current="page">Contato</a></li>
+                <li><a href="login.html" class="nav-link-admin">Admin</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        
+        <section class="contact-page-container" aria-labelledby="contact-title">
+            <h1 id="contact-title" class="section-title">Fale Conosco</h1>
+            <p class="contact-intro">
+                Estamos prontos para entender seu desafio e propor a melhor solução em dados.
+                Preencha o formulário abaixo ou escolha um dos nossos canais de atendimento.
+            </p>
+
+            <div class="contact-form-wrapper">
+                <h2 class="contact-subtitle">Envie sua mensagem</h2>
+                <form id="contact-form" class="form-admin">
+                    
+                    <div id="form-message" class="form-message hidden"></div>
+
+                    <div class="form-group">
+                            <label for="name">Seu Nome</label>
+                            <input type="text" id="name" name="name" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Seu E-mail</label>
+                            <input type="email" id="email" name="email" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="subject">Assunto</label>
+                            <input type="text" id="subject" name="subject" class="form-input" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Mensagem</label>
+                            <textarea id="message" name="message" class="form-textarea" rows="5" required></textarea>
+                        </div>
+                        <button type="submit" id="contact-submit-btn" class="cta-button">
+                        Enviar Mensagem
+                    </button>
+                </form>
+            </div>
+
+            <section class="contact-channels-section" aria-labelledby="channels-title">
+                <h2 class="section-title" id="channels-title">Outros Canais</h2>
+                
+                <div class="contact-card-grid">
+                    
+                    <a href="https://www.linkedin.com/in/camilo-pinheiro/" target="_blank" rel="noopener noreferrer" class="contact-card">
+                        <div class="contact-card-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="currentColor" role="img" aria-hidden="true"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.783-1.75-1.75s.784-1.75 1.75-1.75 1.75.783 1.75 1.75-.784 1.75-1.75 1.75zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"></path></svg>
+                        </div>
+                        <div>
+                            <h3 class="contact-card-title">LinkedIn</h3>
+                            <p class="contact-card-detail">linkedin.com/in/camilo-pinheiro</p>
+                        </div>
+                    </a>
+    
+                    <a href="mailto:camilo-caetano@hotmail.com" class="contact-card">
+                        <div class="contact-card-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="currentColor" role="img" aria-hidden="true"><path d="M0 3v18h24v-18h-24zm21.518 4.211-8.518 6.208-8.518-6.208h17.036zm-19.518 12.789v-11.524l8.239 5.996 1.279 1.135 1.279-1.135 8.239-5.996v11.524h-19.036z"></path></svg>
+                        </div>
+                        <div>
+                            <h3 class="contact-card-title">E-mail</h3>
+                            <p class="contact-card-detail">camilo-caetano@hotmail.com</p>
+                        </div>
+                    </a>
+    
+                    <a href="https://api.whatsapp.com/send?phone=5511986777281" target="_blank" rel="noopener noreferrer" class="contact-card">
+                        <div class="contact-card-icon">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="currentColor" role="img" aria-hidden="true"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 4.315 1.847 6.039l-1.25 4.562 4.65-1.225z"></path></svg>
+                        </div>
+                        <div>
+                            <h3 class="contact-card-title">WhatsApp</h3>
+                            <p class="contact-card-detail">+55 11 98677-7281</p>
+                        </div>
+                    </a>
+                </div>
+            </section>
+
+        </section>
+
+    </main>
+
+    <footer class="main-footer">
+        <p>Pinheiro Tecnologia &copy; <span id="current-year"></span> - Todos os direitos reservados.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

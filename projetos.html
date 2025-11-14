@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projetos - Pinheiro Tecnologia</title>
+    <meta name="description" content="Explore nosso portfólio completo de projetos em Análise de Dados (Power BI), Aplicativos (Power Apps), Automação (Power Automate) e mais.">
+    
+    <!-- Open Graph -->
+    <meta property="og:title" content="Projetos - Pinheiro Tecnologia">
+    <meta property="og:description" content="Explore nosso portfólio completo de projetos em Análise de Dados, Aplicativos e Automação.">
+    <meta property="og:url" content="https://seusite.com/projetos.html">
+    
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <!-- =================================================================
+     BARRA DE NAVEGAÇÃO PRINCIPAL
+    ================================================================== -->
+    <nav class="main-nav">
+        <div class="container nav-container">
+            <!-- Logo -->
+            <a href="index.html" class="nav-logo-link" aria-label="Página Inicial - Pinheiro Tecnologia">
+                <img src="Logo Branco - Pinheiro Tecnologia.png" alt="Pinheiro Tecnologia - Logo" class="nav-logo">
+            </a>
+            
+            <!-- Links do Menu -->
+            <ul class="nav-links">
+                <li><a href="index.html">Início</a></li>
+                <li><a href="projetos.html" class="active" aria-current="page">Projetos</a></li>
+                <li><a href="sobre.html">Sobre Nós</a></li>
+                <li><a href="contato.html">Contato</a></li>
+                <li><a href="login.html" class="nav-link-admin">Admin</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- =================================================================
+     CONTEÚDO PRINCIPAL (MAIN)
+    ================================================================== -->
+    <main class="container">
+
+        <h1 class="section-title" style="margin-top: 3rem;">Nosso Portfólio de Projetos</h1>
+        
+        <!-- Categoria: Análise de Dados -->
+        <section class="project-category-page" aria-labelledby="data-title">
+            <h2 class="category-title" id="data-title">Projetos de Análise de Dados (Power BI)</h2>
+            <div class="project-grid" id="grid-data-analysis">
+                <!-- Projetos de Análise de Dados serão inseridos aqui -->
+            </div>
+            <p id="loader-data-analysis" class="loader-text">Carregando projetos...</p>
+        </section>
+
+        <!-- Categoria: Aplicativos -->
+        <section class="project-category-page" aria-labelledby="apps-title">
+            <h2 class="category-title" id="apps-title">Projetos de Aplicativos (Power Apps)</h2>
+            <div class="project-grid" id="grid-apps">
+                <!-- Projetos de Aplicativos serão inseridos aqui -->
+            </div>
+            <p id="loader-apps" class="loader-text">Carregando projetos...</p>
+        </section>
+
+        <!-- Categoria: Automação -->
+        <section class="project-category-page" aria-labelledby="automation-title">
+            <h2 class="category-title" id="automation-title">Projetos de Automação (Power Automate)</h2>
+            <div class="project-grid" id="grid-automation">
+                <!-- Projetos de Automação serão inseridos aqui -->
+            </div>
+            <p id="loader-automation" class="loader-text">Carregando projetos...</p>
+        </section>
+
+        <!-- Categoria: Outros -->
+        <section class="project-category-page" aria-labelledby="other-title">
+            <h2 class="category-title" id="other-title">Outros Projetos</h2>
+            <div class="project-grid" id="grid-other">
+                <!-- Outros projetos serão inseridos aqui -->
+            </div>
+            <p id="loader-other" class="loader-text">Carregando projetos...</p>
+        </section>
+
+    </main>
+
+    <!-- =================================================================
+     RODAPÉ
+    ================================================================== -->
+    <footer class="main-footer">
+        <p>Pinheiro Tecnologia &copy; <span id="current-year"></span> - Todos os direitos reservados.</p>
+    </footer>
+
+    <!-- =================================================================
+     MODAL (POP-UP)
+    ================================================================== -->
+    <div id="modal-overlay" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+        <div class="modal-content">
+            <header class="modal-header">
+                <h2 id="modal-title">Título do Projeto</h2>
+                <button id="modal-close-button" class="modal-close-button" aria-label="Fechar modal">&times;</button>
+            </header>
+            <div class="modal-body">
+                <section class="modal-dashboard-section" aria-labelledby="modal-embed-title">
+                    <h3 id="modal-embed-title" class="modal-section-title">Dashboard Interativo</h3>
+                    <div class="iframe-container">
+                        <iframe id="modal-iframe" title="Conteúdo do Projeto" frameborder="0" allowFullScreen="true"></iframe>
+                    </div>
+                </section>
+                <section class="modal-info-section">
+                    <nav class="tab-navigation" role="tablist" aria-label="Informações do projeto">
+                        <button class="modal-tab-button active" data-tab="modal-descricao" role="tab" aria-selected="true">Descrição</button>
+                        <button class="modal-tab-button" data-tab="modal-objetivos" role="tab" aria-selected="false">Objetivos</button>
+                        <button class="modal-tab-button" data-tab="modal-metricas" role="tab" aria-selected="false">Métricas</button>
+                        <button class="modal-tab-button" data-tab="modal-tratamento" role="tab" aria-selected="false">Tecnologias</button>
+                        <button class="modal-tab-button" data-tab="modal-dax" role="tab" aria-selected="false">Detalhes Técnicos</button>
+                        <button class="modal-tab-button" data-tab="modal-fontes" role="tab" aria-selected="false">Fontes e Links</button>
+                    </nav>
+                    <div class="tab-content">
+                        <div id="modal-descricao" class="modal-tab-panel" role="tabpanel" tabindex="0"></div>
+                        <div id="modal-objetivos" class="modal-tab-panel hidden" role="tabpanel" tabindex="0"></div>
+                        <div id="modal-metricas" class="modal-tab-panel hidden" role="tabpanel" tabindex="0"></div>
+                        <div id="modal-tratamento" class="modal-tab-panel hidden" role="tabpanel" tabindex="0"></div>
+                        <div id="modal-dax" class="modal-tab-panel hidden" role="tabpanel" tabindex="0"></div>
+                        <div id="modal-fontes" class="modal-tab-panel hidden" role="tabpanel" tabindex="0"></div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html>

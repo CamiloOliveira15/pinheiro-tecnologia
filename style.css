@@ -1,29 +1,26 @@
 /* * =========================================
  * ARQUIVO: style.css
- * DESCRIÇÃO: Folha de estilos principal para o portfólio.
- * AUTOR: Camilo Oliveira (com assistência de IA)
+ * DESCRIÇÃO: Folha de estilos principal para o site Pinheiro Tecnologia.
+ * ARQUITETURA: Site empresarial dinâmico com admin.
  * =========================================
  */
 
 /* * =========================================
  * VARIÁVEIS GLOBAIS (RAIZ)
- * Define a paleta de cores e fontes para fácil manutenção.
  * =========================================
  */
 :root {
     /* Paleta de Cores */
-    /* --primary-color: #2ea1a5; */ /* Cor original da marca (FALHA no contraste 3.48:1) */
-    
-    /* Cor acessível (5.06:1 com branco) usada para interações */
-    --primary-color-accessible: #1A6A6C; 
-    --primary-color-hover: #218c8f; /* Tom mais claro para hover */
-    --primary-color-active: #15585a; /* Tom mais escuro para active/nav */
+    --primary-color-accessible: #1A6A6C; /* Cor principal (Acessível 5.06:1) */
+    --primary-color-hover: #218c8f;      /* Tom mais claro para hover */
+    --primary-color-active: #15585a;     /* Tom mais oscuro para active/nav */
     
     --background-color: #f4f7f6; /* Fundo principal (branco-gelo) */
-    --surface-color: #ffffff; /* Fundo de cartões e modais */
-    --text-color: #333333; /* Cor principal do texto */
-    --text-color-light: #555555; /* Cor de texto secundária */
-    --border-color: #e0e0e0; /* Cor de borda sutil */
+    --surface-color: #ffffff;    /* Fundo de cartões, modais, seções */
+    --text-color: #333333;       /* Cor principal do texto */
+    --text-color-light: #555555;   /* Cor de texto secundária */
+    --text-color-inverse: #ffffff; /* Texto sobre fundos escuros */
+    --border-color: #e0e0e0;     /* Cor de borda sutil */
     
     /* Tipografia */
     --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -48,6 +45,10 @@
 
 html {
     scroll-behavior: smooth; 
+    
+    /* [REMOVIDO] Scroll Snap desativado para rolagem livre */
+    /* scroll-snap-type: y mandatory; */
+    /* scroll-padding-top: 64px; */ 
 }
 
 body {
@@ -60,6 +61,7 @@ body {
 }
 
 .container {
+    width: 100%;
     max-width: 1280px;
     margin: 0 auto;
     padding: 0 2rem;
@@ -72,11 +74,71 @@ body {
 /* Estilo de Foco (Acessibilidade) */
 a:focus-visible,
 button:focus-visible,
-[tabindex="0"]:focus-visible {
+[tabindex="0"]:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
     outline: 3px solid var(--primary-color-accessible);
     outline-offset: 3px;
     border-radius: var(--border-radius-sm);
+    box-shadow: 0 0 0 3px rgba(26, 106, 108, 0.3);
 }
+/* Correção para inputs que já têm borda */
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+    outline: none;
+    border-color: var(--primary-color-accessible);
+}
+
+
+/* Título Padrão de Seção */
+.section-title {
+    font-size: 2.0rem; /* Reduzido */
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 2.5rem;
+    color: #1a202c;
+}
+
+/* Botão de Ação Padrão (CTA) */
+.cta-button {
+    background-color: var(--primary-color-accessible);
+    color: #ffffff;
+    padding: 0.75rem 1.75rem;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+    display: inline-block;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+    font-family: var(--font-primary);
+}
+
+.cta-button:hover {
+    background-color: var(--primary-color-hover);
+    transform: translateY(-2px);
+}
+
+.cta-button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+    transform: none;
+}
+
+/* Botão Secundário (ex: Cancelar, Ver Todos) */
+.cta-button.secondary-button {
+    background-color: var(--surface-color);
+    color: var(--primary-color-accessible);
+    border: 2px solid var(--primary-color-accessible);
+}
+.cta-button.secondary-button:hover {
+    background-color: #f0fafa;
+    transform: translateY(-2px);
+}
+
 
 /* * =========================================
  * BARRA DE NAVEGAÇÃO (NAV)
@@ -85,8 +147,8 @@ button:focus-visible,
 .main-nav {
     background: var(--primary-color-accessible);
     padding: 0.75rem 0;
-    position: sticky;
-    top: 0;
+    /* [MODIFICADO] Removido 'position: sticky' e 'top: 0' */
+    position: relative; 
     z-index: 100;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
@@ -99,6 +161,7 @@ button:focus-visible,
 
 .nav-logo-link {
     display: block;
+    flex-shrink: 0;
 }
 
 .nav-logo {
@@ -113,9 +176,11 @@ button:focus-visible,
     margin: 0;
     padding: 0;
     gap: 0.5rem;
+    align-items: center;
 }
 
-.nav-links a {
+.nav-links a,
+.nav-link-button {
     color: white;
     padding: 0.75rem 1.5rem;
     text-decoration: none;
@@ -123,9 +188,12 @@ button:focus-visible,
     display: block;
     border-radius: var(--border-radius-sm);
     transition: background-color 0.2s ease, color 0.2s ease;
+    cursor: pointer;
+    white-space: nowrap;
 }
 
-.nav-links a:hover {
+.nav-links a:hover,
+.nav-link-button:hover {
     background-color: var(--primary-color-hover);
     color: white;
 }
@@ -137,167 +205,169 @@ button:focus-visible,
     font-weight: 600;
 }
 
-
-/* * =========================================
- * SEÇÃO DE INTRODUÇÃO (INDEX)
- * =========================================
- */
-.intro-section {
-    background: var(--surface-color);
-    border-radius: var(--border-radius-lg);
-    padding: 2.5rem;
-    margin-top: 3rem;
-    margin-bottom: 3rem;
-    text-align: center;
-    box-shadow: var(--shadow-sm);
+/* Botão de Admin/Sair */
+.nav-link-admin,
+.nav-link-button {
+    background: none;
+    border: none;
+    font-family: var(--font-primary);
+    font-size: 1rem;
+    background-color: rgba(0, 0, 0, 0.1);
 }
 
-.intro-section h2 {
-    font-size: 2rem;
+.nav-link-admin:hover,
+.nav-link-button:hover {
+    background-color: rgba(0, 0, 0, 0.2);
+}
+
+.nav-link-admin.active {
+    background-color: var(--primary-color-active);
+}
+
+
+/* * =========================================
+ * SEÇÃO "HERO" (INDEX)
+ * =========================================
+ */
+.hero-section {
+    background: var(--surface-color);
+    padding: 4rem 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.hero-container {
+    display: grid;
+    grid-template-columns: 1fr;
+    align-items: center;
+    gap: 2rem;
+}
+
+.hero-content {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.hero-content h1 {
+    font-size: 2.75rem;
+    font-weight: 700;
     color: #1a202c;
     margin-bottom: 1rem;
+    line-height: 1.2;
 }
 
-.intro-section p {
-    font-size: 1.15rem;
+.hero-subheading {
+    font-size: 1.25rem;
     color: var(--text-color-light);
-    max-width: 800px;
-    margin: 0 auto 1.5rem auto;
+    margin-bottom: 2rem;
+    max-width: 650px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
-.cta-button {
-    background-color: var(--primary-color-accessible);
-    color: #ffffff;
-    padding: 0.75rem 1.5rem;
-    border-radius: 50px;
-    text-decoration: none;
-    font-weight: 600;
-    transition: background-color 0.2s ease, transform 0.2s ease;
-    display: inline-block;
-    border: none;
-    font-size: 1rem;
-    cursor: pointer;
-}
-
-.cta-button:hover {
-    background-color: var(--primary-color-hover);
-    transform: translateY(-2px);
+.hero-cta {
+    padding: 0.85rem 2rem;
+    font-size: 1.1rem;
 }
 
 
 /* * =========================================
- * PÁGINA "SOBRE"
+ * SEÇÃO "SERVIÇOS" (INDEX)
  * =========================================
  */
-.about-container {
-    background: var(--surface-color);
-    border-radius: var(--border-radius-lg);
-    padding: 2.5rem 3rem;
-    max-width: 900px;
-    margin: 3rem auto;
-    box-shadow: var(--shadow-sm);
+.services-section {
+    padding: 4rem 0;
+    background-color: var(--background-color);
 }
 
-.about-container h2 {
-    font-size: 2rem;
-    color: #1a202c;
+.services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 2rem;
+}
+
+.service-card {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-lg);
+    padding: 2rem;
+    text-align: center;
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.service-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-md);
+}
+
+.service-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background-color: var(--primary-color-accessible);
+    color: var(--text-color-inverse);
     margin-bottom: 1.5rem;
 }
 
-.about-container .about-subtitle {
-    font-size: 1.5rem;
-    color: var(--text-color);
-    margin-top: 2rem;
-    margin-bottom: 1rem;
-    border-bottom: 3px solid var(--primary-color-accessible);
-    padding-bottom: 0.5rem;
-    display: inline-block;
+.service-icon svg {
+    width: 32px;
+    height: 32px;
 }
 
-.about-container p {
-    font-size: 1.1rem;
-    color: var(--text-color);
-    margin-bottom: 1rem;
+.service-title {
+    font-size: 1.35rem;
+    font-weight: 600;
+    color: #1a202c;
+    margin-bottom: 0.75rem;
+}
+
+.service-description {
+    font-size: 1rem;
+    color: var(--text-color-light);
     line-height: 1.7;
 }
 
-.about-container .profile-pic {
-    width: 150px;
-    height: 150px;
-    border-radius: 50%;
-    background: #e0e0e0;
-    margin: 0 auto 1.5rem auto;
-    overflow: hidden; 
-    border: 4px solid var(--surface-color);
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}
-
-.about-container .profile-pic img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
-
-.skills-list,
-.about-container ul {
-    margin-left: 1.5rem;
-    margin-bottom: 1.5rem;
-}
-.skills-list li,
-.about-container li {
-    margin-bottom: 0.5rem;
-}
-
-.link-inline {
-    color: var(--primary-color-accessible);
-    text-decoration: none;
-    font-weight: 600;
-    border-bottom: 2px solid transparent;
-    transition: border-bottom-color 0.2s ease;
-}
-.link-inline:hover {
-    border-bottom-color: var(--primary-color-accessible);
-}
-
 
 /* * =========================================
- * SEÇÕES DE PROJETOS
+ * SEÇÃO DE PROJETOS (INDEX)
  * =========================================
  */
 .project-category {
     margin-bottom: 4rem;
+    padding-top: 4rem;
+    background-color: var(--surface-color);
+    padding-bottom: 4rem;
+    border-top: 1px solid var(--border-color);
 }
 
-.category-title {
-    font-size: 1.75rem;
-    font-weight: 600;
-    color: #1a202c;
-    border-bottom: 3px solid var(--primary-color-accessible);
-    padding-bottom: 0.5rem;
-    margin-bottom: 2.5rem;
-    display: inline-block;
-}
-
-.project-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-    gap: 2rem;
-}
-
-.project-card-placeholder {
-    background: var(--surface-color);
-    border: 2px dashed var(--border-color);
-    border-radius: var(--border-radius-lg);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 290px;
-    padding: 2rem;
+.loader-text {
     text-align: center;
-    color: #888;
+    font-size: 1.1rem;
+    color: var(--text-color-light);
+    padding: 2rem;
     font-style: italic;
 }
 
+.project-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2rem;
+}
+
+/* [REMOVIDO] Wrapper do grid da Index. A lógica agora é via JS */
+/* .project-grid-index-wrapper { ... } */
+
+
+/* Estilo para o botão "Ver Todos" */
+.see-all-container {
+    text-align: center;
+    margin-top: 2.5rem;
+}
 
 /* * =========================================
  * CARTÃO DE PROJETO
@@ -312,6 +382,10 @@ button:focus-visible,
     display: flex;
     flex-direction: column;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    width: 100%;
+    max-width: 340px;
+    /* [MODIFICADO] flex-shrink: 1 para permitir quebra de linha */
+    flex-shrink: 1; 
 }
 
 .project-card:hover {
@@ -321,16 +395,15 @@ button:focus-visible,
 
 .project-thumbnail {
     width: 100%;
-    height: 220px;
-    object-fit: cover;
+    height: 200px;
+    object-fit: contain;
     display: block;
-    background-color: #f0f0f0; 
+    background-color: #f0f0f0;
 }
 
-/* Fallback para miniatura quebrada */
 .project-thumbnail-placeholder {
     width: 100%;
-    height: 220px;
+    height: 200px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -352,7 +425,7 @@ button:focus-visible,
 }
 
 .project-card-content h3 {
-    font-size: 1.25rem;
+    font-size: 1.15rem;
     font-weight: 600;
     margin-bottom: 1rem;
     color: #1a202c;
@@ -379,25 +452,193 @@ button:focus-visible,
 
 
 /* * =========================================
- * SEÇÃO DE CONTATO (Layout de Cartões)
+ * SEÇÃO DE CLIENTES (CARROSSEL)
  * =========================================
  */
-.contact-section {
-    background-color: var(--surface-color);
-    padding: 3rem 0;
-    margin-top: 3rem;
+.clients-section {
+    padding: 4rem 0;
+    background-color: var(--background-color);
     border-top: 1px solid var(--border-color);
-    text-align: center;
-    /* Garante que a rolagem da âncora não fique sob o nav fixo */
-    scroll-margin-top: 70px; 
 }
 
-.section-title {
-    font-size: 2.25rem;
+.client-carousel-container {
+    width: 100%;
+    overflow: hidden;
+    -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+    mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+}
+
+.client-carousel-track {
+    display: flex;
+    gap: 2rem;
+    animation: scroll 40s linear infinite;
+}
+
+.client-logo {
+    flex-shrink: 0;
+    width: 150px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.client-logo img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    opacity: 0.7;
+    filter: grayscale(100%);
+    transition: opacity 0.3s ease, filter 0.3s ease;
+}
+
+.client-logo:hover img {
+    opacity: 1;
+    filter: grayscale(0%);
+}
+
+@keyframes scroll {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+
+/* * =========================================
+ * PÁGINA "SOBRE NÓS"
+ * =========================================
+ */
+.about-container {
+    background: var(--surface-color);
+    border-radius: var(--border-radius-lg);
+    padding: 2.5rem 3rem;
+    max-width: 900px;
+    margin: 3rem auto;
+    box-shadow: var(--shadow-sm);
+}
+
+.about-container h1,
+.about-container h2 {
+    font-size: 2rem;
+    color: #1a202c;
+    margin-bottom: 1.5rem;
+}
+
+.about-container .about-subtitle {
+    font-size: 1.5rem;
+    color: var(--text-color);
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    border-bottom: 3px solid var(--primary-color-accessible);
+    padding-bottom: 0.5rem;
+    display: inline-block;
+}
+
+.about-container p {
+    font-size: 1.1rem;
+    color: var(--text-color);
+    margin-bottom: 1rem;
+    line-height: 1.7;
+}
+
+.skills-list,
+.about-container ul {
+    margin-left: 1.5rem;
+    margin-bottom: 1.5rem;
+    padding-left: 1rem;
+}
+.skills-list li,
+.about-container li {
+    margin-bottom: 0.5rem;
+    font-size: 1.05rem;
+}
+
+.link-inline {
+    color: var(--primary-color-accessible);
+    text-decoration: none;
     font-weight: 600;
+    border-bottom: 2px solid transparent;
+    transition: border-bottom-color 0.2s ease;
+}
+.link-inline:hover {
+    border-bottom-color: var(--primary-color-accessible);
+}
+
+/* * =========================================
+ * PÁGINA DE PROJETOS (projetos.html)
+ * =========================================
+ */
+.project-category-page {
+    padding: 2rem 0;
+    margin-bottom: 2rem;
+}
+
+.project-category-page:first-of-type {
+    padding-top: 0;
+}
+
+/* Título da Categoria (ex: "Projetos de Análise de Dados") */
+.category-title {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: #1a202c;
+    border-bottom: 3px solid var(--primary-color-accessible);
+    padding-bottom: 0.5rem;
+    margin-bottom: 2.5rem;
+    display: inline-block;
+}
+
+/* Mensagem de grade vazia */
+.empty-grid-message {
+    font-style: italic;
+    color: var(--text-color-light);
+    text-align: center;
+    padding: 2rem;
+}
+
+
+/* * =========================================
+ * PÁGINA "CONTATO"
+ * =========================================
+ */
+.contact-page-container {
+    padding: 3rem 0;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.contact-intro {
+    font-size: 1.15rem;
+    color: var(--text-color-light);
     text-align: center;
     margin-bottom: 2.5rem;
+    max-width: 700px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.contact-form-wrapper {
+    background: var(--surface-color);
+    padding: 2.5rem;
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 3rem;
+}
+
+.contact-subtitle {
+    font-size: 1.5rem;
+    font-weight: 600;
     color: #1a202c;
+    margin-bottom: 1.5rem;
+    text-align: center;
+}
+
+.contact-channels-section {
+    padding-top: 2rem;
+    border-top: 1px solid var(--border-color);
 }
 
 .contact-card-grid {
@@ -405,19 +646,21 @@ button:focus-visible,
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 1.5rem;
     max-width: 1000px;
-    margin: 1.5rem auto 0 auto;
+    margin: 0 auto;
 }
 
 .contact-card {
-    background: #ffffff;
+    background: var(--surface-color);
     border: 1px solid var(--border-color);
     border-radius: var(--border-radius-lg);
-    padding: 2rem;
-    text-align: center;
+    padding: 1.5rem 2rem;
     text-decoration: none;
     color: var(--text-color);
     box-shadow: var(--shadow-sm);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
 }
 
 .contact-card:hover {
@@ -428,25 +671,29 @@ button:focus-visible,
 
 .contact-card-icon {
     color: var(--primary-color-accessible);
-    margin-bottom: 1rem;
+    flex-shrink: 0;
 }
-/* O SVG inline herda a cor */
+
 .contact-card-icon svg {
     width: 32px;
     height: 32px;
-    display: inline-block;
+    display: block;
 }
 
 .contact-card-title {
-    font-size: 1.25rem;
+    font-size: 1.15rem;
     font-weight: 600;
-    margin-bottom: 0.5rem;
+    margin-bottom: 0.25rem;
+    color: #1a202c;
+}
+.contact-card:hover .contact-card-title {
+    color: var(--primary-color-accessible);
 }
 
 .contact-card-detail {
     color: var(--text-color-light);
-    font-size: 1rem;
-    word-break: break-word; /* Garante que emails longos quebrem a linha */
+    font-size: 0.95rem;
+    word-break: break-word;
 }
 
 
@@ -550,19 +797,15 @@ button:focus-visible,
 }
 
 .iframe-container {
-    position: relative;
-    padding-top: 56.25%; /* Proporção 16:9 */
-    height: 0;
     overflow: hidden;
     border-radius: var(--border-radius-sm);
     box-shadow: var(--shadow-sm);
     background: #f0f0f0;
+    width: 100%;
+    height: 60vh;
 }
 
 .iframe-container iframe {
-    position: absolute;
-    top: 0;
-    left: 0;
     width: 100%;
     height: 100%;
     border: 0;
@@ -574,6 +817,7 @@ button:focus-visible,
     border-radius: var(--border-radius-md);
     box-shadow: var(--shadow-sm);
     overflow: hidden;
+    margin-bottom: 2rem;
 }
 
 .tab-navigation {
@@ -581,6 +825,19 @@ button:focus-visible,
     border-bottom: 1px solid #ddd;
     background-color: #f0f0f0;
     overflow-x: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #ccc #f0f0f0;
+}
+
+.tab-navigation::-webkit-scrollbar {
+    height: 8px;
+}
+.tab-navigation::-webkit-scrollbar-track {
+    background: #f0f0f0;
+}
+.tab-navigation::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+    border-radius: 4px;
 }
 
 .modal-tab-button {
@@ -617,15 +874,16 @@ button:focus-visible,
     color: var(--text-color);
 }
 
-.modal-tab-panel ul {
+.modal-tab-panel ul,
+.modal-tab-panel ol {
     margin-left: 1.5rem;
     margin-bottom: 1rem;
+    padding-left: 1rem;
 }
 .modal-tab-panel li {
     margin-bottom: 0.5rem;
 }
 
-/* Bloco de Código (para DAX) */
 .code-block {
     background-color: #f4f4f4;
     color: #333;
@@ -638,7 +896,6 @@ button:focus-visible,
     white-space: pre;
 }
 
-/* Estilos para a aba "Fontes e Links" */
 .source-container {
     padding-top: 0.5rem;
 }
@@ -665,7 +922,6 @@ button:focus-visible,
 
 /* * =========================================
  * ESTILOS DE ADMIN (Login, etc)
- * Estes estilos são usados apenas por 'login.html' e 'admin.html'
  * =========================================
  */
 .admin-body {
@@ -674,8 +930,8 @@ button:focus-visible,
 
 .login-container {
     max-width: 450px;
-    margin: 5rem auto;
-    padding: 2rem;
+    margin: 3rem auto;
+    padding: 2.5rem;
     background: var(--surface-color);
     border-radius: var(--border-radius-lg);
     box-shadow: var(--shadow-md);
@@ -701,12 +957,18 @@ button:focus-visible,
     margin-bottom: 2rem;
 }
 
-.admin-form h2 {
+.form-admin h2,
+.form-admin .form-subtitle {
     font-size: 1.5rem;
     color: #1a202c;
     margin-bottom: 1.5rem;
     padding-bottom: 0.5rem;
     border-bottom: 2px solid var(--border-color);
+}
+.form-admin .form-subtitle {
+    font-size: 1.25rem;
+    border-bottom: none;
+    margin-top: 1rem;
 }
 
 .form-group {
@@ -733,15 +995,6 @@ button:focus-visible,
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-.form-input:focus-visible,
-.form-textarea:focus-visible,
-.form-select:focus-visible {
-    border-color: var(--primary-color-accessible);
-    background: var(--surface-color);
-    box-shadow: 0 0 0 2px rgba(26, 106, 108, 0.2);
-    outline: none;
-}
-
 .form-textarea {
     min-height: 120px;
     resize: vertical;
@@ -757,7 +1010,13 @@ button:focus-visible,
 .form-divider {
     border: none;
     border-top: 1px solid var(--border-color);
-    margin: 2rem 0;
+    margin: 2.5rem 0;
+}
+
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1.5rem;
 }
 
 .form-message {
@@ -765,14 +1024,185 @@ button:focus-visible,
     border-radius: var(--border-radius-sm);
     margin-bottom: 1rem;
     font-weight: 500;
+    border: 1px solid transparent;
 }
 .form-message.error {
     background: #fbe9e7;
     color: #D93025;
-    border: 1px solid #D93025;
+    border-color: #D93025;
 }
 .form-message.success {
     background: #e6f4ea;
     color: #1E8E3E;
-    border: 1px solid #1E8E3E;
+    border-color: #1E8E3E;
+}
+
+.project-list-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.project-list-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: #f9f9f9;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
+}
+
+.project-list-title {
+    font-weight: 500;
+}
+
+.project-list-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.project-list-button {
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: var(--border-radius-sm);
+    font-weight: 500;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.2s ease;
+}
+
+.project-list-button.edit {
+    background-color: #e0eafc;
+    color: #1a73e8;
+}
+.project-list-button.edit:hover {
+    background-color: #d2e3fc;
+}
+
+.project-list-button.delete {
+    background-color: #fce8e6;
+    color: #d93025;
+}
+.project-list-button.delete:hover {
+    background-color: #fbdcd9;
+}
+
+
+/* * =========================================
+ * RESPONSIVIDADE
+ * =========================================
+ */
+
+/* Telas Médias (Tablets) */
+@media (min-width: 768px) and (max-width: 1023px) {
+    .container {
+        padding: 0 2rem;
+    }
+    .section-title {
+        font-size: 2rem;
+    }
+    .hero-content h1 {
+        font-size: 2.5rem;
+    }
+    .services-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .project-grid {
+        gap: 1.5rem;
+    }
+    /* [REMOVIDO] .project-grid-index-wrapper */
+    
+    .contact-card-grid {
+        grid-template-columns: 1fr;
+    }
+    .login-container {
+        margin-top: 3rem;
+    }
+    .nav-links a,
+    .nav-link-button {
+        padding: 0.75rem 1rem;
+        font-size: 0.95rem;
+    }
+    .nav-logo {
+        max-width: 160px;
+    }
+}
+
+/* Telas Grandes (Desktops) */
+@media (min-width: 1024px) {
+    .services-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+    .contact-card-grid {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    }
+}
+
+/* Telas Pequenas (Móveis) */
+@media (max-width: 767px) {
+    .container {
+        padding: 0 1rem;
+    }
+    .section-title {
+        font-size: 1.75rem;
+        margin-bottom: 1.5rem;
+    }
+    .nav-links {
+        gap: 0.25rem;
+    }
+    .nav-links a,
+    .nav-link-button {
+        padding: 0.5rem 0.5rem;
+        font-size: 0.85rem;
+    }
+    .nav-logo {
+        max-width: 130px;
+    }
+    .hero-content h1 {
+        font-size: 2rem;
+    }
+    .hero-subheading {
+        font-size: 1.1rem;
+    }
+    .services-grid {
+        grid-template-columns: 1fr;
+    }
+    .project-grid {
+        gap: 1.5rem;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    .project-card {
+        max-width: 100%;
+        flex-shrink: 1;
+    }
+    /* [REMOVIDO] .project-grid-index-wrapper */
+
+    .contact-card-grid {
+        grid-template-columns: 1fr;
+    }
+    .contact-card {
+        padding: 1.5rem;
+        gap: 1rem;
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .login-container,
+    .admin-container,
+    .about-container {
+        margin-top: 1rem;
+        margin-bottom: 1rem;
+        padding: 1.5rem;
+    }
+    .modal-body {
+        padding: 1rem;
+    }
+    .modal-tab-button {
+        padding: 0.75rem 1rem;
+        font-size: 0.9rem;
+    }
+    .tab-content {
+        padding: 1rem;
+    }
 }

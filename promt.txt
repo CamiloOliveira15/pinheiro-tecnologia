@@ -1,201 +1,165 @@
-Prompt Detalhado para Criação de Portfólio "Currículo Vivo"
+Atue como um Arquiteto de Software e Desenvolvedor Full-Stack Sênior, especialista em aplicações web "vanilla" (HTML/CSS/JS puros) e arquiteturas serverless.
 
-1. PERSONA E OBJETIVO PRINCIPAL
+Objetivo Principal:
+Criar um website empresarial completo para uma consultoria de tecnologia (ex: "Pinheiro Tecnologia"). O site deve ser dinâmico, responsivo e gerenciável por um painel de administração.
 
-Persona: Atue como um Desenvolvedor Front-End Sênior e Especialista em UI/UX, com profundo conhecimento em SEO e Acessibilidade (a11y).
+CRÍTICO: Simulação de Backend (Stubbing):
+Este projeto é apenas frontend. Você NÃO DEVE construir o backend (AWS, DynamoDB, Cognito). Em vez disso, você deve SIMULAR todo o comportamento do backend dentro do script.js:
 
-Objetivo: Criar um website de portfólio profissional completo, estático (HTML/CSS/JS), que funcione como um "Currículo Vivo". O site terá duas páginas (index.html e sobre.html). O foco principal é demonstrar projetos (especialmente Microsoft Power Platform), mas também servir como uma página profissional completa que detalha a trajetória e habilidades do usuário.
+Dados Fictícios: Crie uma constante global MOCK_PROJECTS (um array de objetos) que contenha 7-8 projetos fictícios. Cada projeto deve ter: id, title, category (ex: 'data-analysis', 'apps', 'automation'), thumbnailSrc, iframeSrc, embedTitle, tabsToShow (string), e um objeto data com o HTML para as 6 abas do modal.
 
-Tom: Profissional, limpo, moderno e técnico.
+Simulação de API: Todas as funções que buscam ou enviam dados (ex: fetchProjects, handleProjectSubmit) devem ser async, mas devem usar os MOCK_PROJECTS no bloco catch (simulando uma falha de API) ou após um setTimeout para popular a página.
 
-2. REQUISITOS TÉCNICOS OBRIGATÓRIOS
+Simulação de Login: O login.html deve ter sucesso com qualquer e-mail e senha. Ele deve apenas guardar um token falso (ex: 'fake-token') no localStorage e redirecionar para admin.html.
 
-Tecnologia: O projeto deve usar HTML5, CSS3 e JavaScript (ES6+) puros. Não utilize frameworks (como React, Vue) ou bibliotecas de componentes (como Bootstrap).
+Simulação de Auth: A admin.html deve ser protegida verificando a existência desse token falso. O botão "Sair" deve limpá-lo.
 
-Estrutura de Arquivos: O projeto deve ser composto pelos seguintes arquivos:
+Pilha de Tecnologia (Obrigatória):
 
-index.html (Página Principal / Galeria de Projetos)
+HTML5 Semântico
 
-sobre.html (Página "Sobre Mim")
+CSS3 Puro: Obrigatoriamente usar Variáveis CSS (:root).
 
-style.css (Folha de estilos única)
+JavaScript (ES6+) Puro: Um único arquivo script.js unificado.
 
-script.js (Arquivo de script único)
+NÃO USAR: Frameworks (React, Vue), bibliotecas (jQuery) ou pré-processadores.
+
+Estrutura de Arquivos (Gerar todos):
+
+index.html (Página Principal / Hero / Serviços / Cases em Destaque)
+
+projetos.html (Nova página - Portfólio Completo por Categoria)
+
+sobre.html (Página "Sobre Nós")
+
+contato.html (Página de Contato com formulário e links)
+
+login.html (Página de Login do Admin)
+
+admin.html (Painel de Gerenciamento de Projetos - CMS)
+
+style.css (Folha de Estilo ÚNICA)
+
+script.js (Script ÚNICO com toda a lógica)
 
 README.md (Documentação do projeto)
 
-Design e Layout:
+backend-architecture.md (Guia explicando a arquitetura AWS real que foi simulada)
 
-Tema: Limpo, profissional, "light-mode" (fundo claro).
+Requisitos Detalhados de style.css:
 
-Responsividade: O site deve ser totalmente responsivo (mobile-first).
+Tema: Limpo, profissional, "light-mode".
 
-Navegação: Criar uma barra de navegação (<nav>) fixa no topo (position: sticky). Ela deve conter o logo do usuário à esquerda e os links de navegação ("Início", "Sobre", "Entre em Contato") à direita.
+Cores (:root):
 
-Rodapé: Um rodapé simples e centralizado.
+--primary-color-accessible: #1A6A6C
 
-SEO (Otimização para Buscadores):
+--background-color: #f4f7f6
 
-Ambas as páginas HTML devem incluir um <head> completo com:
+--surface-color: #ffffff
 
-<title> descritivo.
+--text-color: #333333
 
-<meta name="description">
+Responsividade: Design "Mobile-first".
 
-<meta name="keywords">
+Navegação: Um .main-nav não-fixo (position: relative) que rola com a página. Deve aparecer em TODAS as 6 páginas.
 
-Open Graph Tags (og:title, og:description, og:image, og:url, og:type) para compartilhamento em redes sociais.
+Scroll Snap: NÃO implementar Scroll Snapping. A rolagem da página deve ser livre.
 
-Twitter Card Tags (twitter:card, twitter:title, twitter:description, twitter:image).
+Cartões: Estilo de cartão consistente para serviços (.service-card) e projetos (.project-card).
 
-Acessibilidade (a11y) - CRÍTICO:
+Layout (Flexbox): Usar display: flex e justify-content: center no .project-grid (na página projetos.html) para que os cartões de projeto fiquem centralizados na seção.
 
-Contraste de Cor: A paleta de cores deve ser acessível (mínimo WCAG AA). Use uma cor de destaque escura o suficiente para ter bom contraste com texto branco. (Ex: #1A6A6C).
+Tamanhos: O título da seção (.section-title) deve ter 2.0rem e os cartões de projeto (.project-card) devem ter max-width: 340px.
 
-Navegação por Teclado: Todos os elementos interativos (links, botões) devem ter um estado :focus-visible claro.
+Requisitos Detalhados das Páginas (HTML + script.js):
 
-Semântica: Use HTML semântico (<main>, <nav>, <section>, <article>).
+1. index.html (Página Principal):
 
-ARIA: Adicione atributos aria-label, aria-labelledby, aria-current, role, etc., onde for apropriado (especialmente na navegação e no modal).
+Uma seção "Hero" (.hero-section) com título e CTA.
 
-Manutenção de Código:
+Uma seção "Nossos Serviços" (.services-grid).
 
-CSS: Use variáveis CSS (:root) para a paleta de cores principal, fontes e raios de borda.
+Uma seção "Nossos Cases de Sucesso" (.project-category):
 
-Comentários: O código deve ser extensivamente comentado, explicando o que cada bloco de código faz, como se fosse para outro desenvolvedor manter. Os comentários devem ser técnicos e claros.
+Deve ter um grid vazio (id="project-grid-dynamic") dentro de um div wrapper (.project-grid-index-wrapper).
 
-3. CONTEÚDO E FUNCIONALIDADE - PÁGINA index.html
+O CSS para .project-grid-index-wrapper deve forçar uma linha única horizontal (flex-wrap: nowrap) e ocultar o transbordamento (overflow-x: hidden).
 
-Seção de Introdução ("Hero"): Logo abaixo da navegação, crie uma seção de introdução que explique o propósito do portal como um "currículo vivo" (conforme conteúdo do usuário).
+O script.js (na initIndexPage) deve chamar fetchProjectsForIndex para preencher este grid com no máximo 6 projetos dos MOCK_PROJECTS.
 
-Galeria de Projetos:
+Deve incluir um botão "Ver Todos os Projetos" (<a href="projetos.html">) no final.
 
-A galeria deve ser organizada em seções de categoria (ex: "Projetos de Power BI", "Projetos com Power Apps", "Projetos Diversos").
+Uma seção "Empresas que Confiam em Nós" (.clients-section):
 
-Cada categoria terá um título e um "grid" (.project-grid).
+Deve ser um carrossel de logos infinito, responsivo.
 
-O grid conterá "cartões de projeto" (.project-card).
+O script.js (na initClientCarousel) deve duplicar os logos para garantir o loop da animação CSS.
 
-Cartão de Projeto (.project-card):
+2. projetos.html (Página de Portfólio):
 
-Deve exibir uma imagem de miniatura (.project-thumbnail), um título (<h3>) e um botão ("Ver Projeto").
+Página nova que lista TODOS os projetos.
 
-Fallback de Miniatura: O script.js deve incluir uma função que detecta se uma imagem (.project-thumbnail) falha ao carregar. Se falhar, deve remover a <img> quebrada e substituí-la por um <div> com uma classe (ex: .project-thumbnail-placeholder) contendo o título do projeto (extraído do data-title).
+Deve ter um título principal (ex: "Nosso Portfólio de Projetos").
 
-Armazenamento de Dados: O cartão deve armazenar toda a informação do modal em atributos data-* e tags <template>.
+Deve ter múltiplas seções, uma para cada categoria (ex: "Projetos de Análise de Dados", "Projetos de Aplicativos", "Projetos de Automação").
 
-Sistema de Modal (Pop-up) - via script.js:
+Cada seção de categoria deve ter seu próprio grid (id="grid-data-analysis", id="grid-apps", etc.) e seu próprio loader (id="loader-data-analysis").
 
-Clicar no botão "Ver Projeto" deve abrir um modal grande (.modal-overlay).
+O script.js (na initProjetosPage) deve chamar fetchProjectsForCategorization, que por sua vez chama distributeProjects. Esta função deve filtrar os MOCK_PROJECTS por category e preencher os grids corretos.
 
-O script.js deve preencher dinamicamente o modal com o conteúdo do .project-card clicado.
+3. contato.html (Página de Contato):
 
-Modal - Acessibilidade:
+No topo, deve ter um formulário de contato (id="contact-form") dentro de um wrapper (.contact-form-wrapper).
 
-O modal deve ter role="dialog", aria-modal="true", e aria-labelledby="modal-title".
+Abaixo do formulário, deve ter uma seção "Outros Canais" (.contact-channels-section) com cartões (.contact-card) para LinkedIn, Email e WhatsApp.
 
-O foco deve ser movido para dentro do modal (ex: para o botão "Fechar") quando ele abrir.
+4. login.html (Página de Login):
 
-O foco deve ser retornado ao botão "Ver Projeto" original quando o modal fechar.
+Deve ter um formulário de login (id="login-form") com campos para e-mail e senha.
 
-Implementar um Focus Trap (prender a navegação por "Tab" dentro do modal).
+O script.js (na handleLoginSubmit) deve simular o login, guardar um token falso no localStorage e redirecionar para admin.html.
 
-O modal deve fechar ao clicar no "X", pressionar "Escape", ou clicar no overlay.
+5. admin.html (Painel de Admin):
 
-Modal - Conteúdo:
+O script.js (na checkAdminAuth) deve verificar o token falso no localStorage; se não existir, deve redirecionar para login.html.
 
-Um título (#modal-title).
+Deve ter um botão "Sair" (id="logout-button").
 
-Um botão de fechar (#modal-close-button).
+Deve ter um formulário (id="project-form") para Adicionar/Editar projetos.
 
-Um container de iframe responsivo (16:9) para o embed do projeto (#modal-iframe).
+O formulário DEVE incluir:
 
-Uma seção de "Informações" com um sistema de Abas (Tabs).
+project-id (hidden field).
 
-Sistema de Abas (Tabs) do Modal:
+project-title (text).
 
-O modal deve ter uma navegação por abas (ex: "Descrição", "Objetivos", "Métricas", "Tratamento (ETL)", "Principais DAX", "Fontes e Links").
+project-category (um <select> com as opções: 'data-analysis', 'apps', 'automation', 'other').
 
-O script.js deve controlar a troca de abas.
+project-thumbnail (url).
 
-O conteúdo de cada aba deve ser preenchido dinamicamente a partir das tags <template> no cartão.
+project-iframe-src (url).
 
-Lógica de Abas Condicionais: Implementar uma lógica para que projetos possam ocultar abas. Isso será feito através de um atributo data-tabs-to-show="modal-descricao,modal-objetivos" no .project-card. Se este atributo estiver presente, o script deve esconder todas as abas, exceto as listadas. Se estiver ausente, deve mostrar todas.
+6 campos <textarea> para o conteúdo das 6 abas (ex: id="tab-descricao", id="tab-objetivos").
 
-Seção de Contato:
+Deve ter uma lista (id="project-list-container") para exibir, editar e excluir os projetos carregados dos MOCK_PROJECTS.
 
-Uma seção no final da página (#contact-section) com links para LinkedIn, E-mail e WhatsApp.
+6. script.js (Lógica Global):
 
-O link "Entre em Contato" na navegação deve ser um link de âncora (href="#contact-section") que rola suavemente para esta seção.
+Roteamento de Página: Usar um DOMContentLoaded que verifica window.location.pathname para chamar a função init correta (ex: initIndexPage, initProjetosPage, initAdminPage, etc.).
 
-O CSS deve adicionar scroll-margin-top a esta seção para compensar a altura da nav fixa.
+Modal Global:
 
-Layout do Contato: A seção de contato deve usar um layout de "Cartões" (.contact-card), onde cada cartão contém um ícone, o nome do serviço (ex: "LinkedIn") e o detalhe (ex: "https://www.google.com/search?q=linkedin.com/in/...").
+A lógica do modal (listeners, openModal, closeModal, handleTabClick) deve ser global e reutilizável por index.html e projetos.html.
 
-4. CONTEÚDO E FUNCIONALIDADE - PÁGINA sobre.html
+openModal(project): Deve preencher dinamicamente o título, o iframe.src e o HTML de todas as abas, com base no objeto project clicado.
 
-Uma página simples contendo a trajetória profissional do usuário.
+O modal deve ter height: 95vh e o iframe-container deve ter height: 60vh para garantir que as abas inferiores sejam sempre visíveis.
 
-Deve incluir:
+Deve incluir acessibilidade (Focus Trap e fechar com 'Escape').
 
-Um placeholder para foto de perfil.
+Funções de Renderização:
 
-Um título ("Sobre Mim").
+populateProjectGrid(gridElementId, projects): Função reutilizável que constrói os .project-card e os anexa ao grid.
 
-Texto de introdução.
-
-Subtítulos (ex: "Minha Trajetória Profissional", "Habilidades e Ferramentas").
-
-Listas de habilidades.
-
-A navegação deve ser idêntica à do index.html, mas com o link "Sobre" marcado como active.
-
-5. DADOS DO USUÁRIO PARA PREENCHIMENTO
-
-Nome: Camilo Caetano P. de Oliveira
-
-Logo: Logo Branco - Pinheiro Tecnologia.png
-
-Resumo (para sobre.html): "Especialista em Análise de Dados e desenvolvimento Low-Code, com foco na Microsoft Power Platform e background em Lean Six Sigma. Experiência sólida no desenvolvimento de soluções corporativas de ponta a ponta, integrando Power BI (certificação PL-300), Power Apps e Power Automate..."
-
-Contatos:
-
-LinkedIn: https://www.linkedin.com/in/camilo-pinheiro/ (Texto: linkedin.com/in/camilo-pinheiro)
-
-E-mail: camilo-caetano@hotmail.com (Texto: camilo-caetano@hotmail.com)
-
-WhatsApp: https://api.whatsapp.com/send?phone=5511986777281 (Texto: +55 11 98677-7281)
-
-Projetos (Exemplos):
-
-Projeto 1 (Power BI):
-
-Título: "Projeto 1: Análise de Vendas (Sales Dashboard)"
-
-Iframe: https://app.powerbi.com/view?r=eyJrIjoiOGUwZTEzZjYtODllOC00NDllLWFmMTYtZTA5M2ViN2YxOGFkIiwidCI6IjMyMjEyYTc5LWYzMWEtNGIwYS1hZjE0LTY4YzFjYTUyMGVmNSJ9
-
-Thumbnail: images/projeto-vendas.png
-
-Conteúdo das Abas: (Preencher com placeholders de "Descrição", "Objetivos", "Métricas", "ETL", "DAX", "Fontes").
-
-Projeto 2 (Power BI):
-
-Título: "Projeto 2: Análise Temporal de Vendas"
-
-Iframe: https://app.powerbi.com/view?r=eyJrIjoiYjk2ZWM1YTgtYzU4OC00NDUzLTk3ODAtZTk4MTM2N2IxZDhjIiwidCI6IjMyMjEyYTc5LWYzMWEtNGIwYS1hZjE0LTY4YzFjYTUyMGVmNSJ9&pageName=ReportSection645babf0189088ba3194
-
-Thumbnail: images/projeto-temporal.png
-
-Conteúdo das Abas: (Preencher com placeholders "WIP").
-
-Projeto 3 (Vídeo):
-
-Título: "Projeto 3: Demo de App (Vídeo)"
-
-Iframe (YouTube Embed): https://www.youtube.com/embed/dQw4w9WgXcQ
-
-Thumbnail: images/projeto-powerapps-demo.png
-
-Abas a Mostrar: data-tabs-to-show="modal-descricao,modal-objetivos,modal-fontes"
-
-Conteúdo das Abas: (Preencher placeholders para "Descrição", "Objetivos" e "Fontes").
+distributeProjects(projects): Função (para projetos.html) que filtra os projetos por categoria e chama populateProjectGrid para cada categoria.
