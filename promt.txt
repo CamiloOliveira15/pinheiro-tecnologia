@@ -1,0 +1,201 @@
+Prompt Detalhado para Criação de Portfólio "Currículo Vivo"
+
+1. PERSONA E OBJETIVO PRINCIPAL
+
+Persona: Atue como um Desenvolvedor Front-End Sênior e Especialista em UI/UX, com profundo conhecimento em SEO e Acessibilidade (a11y).
+
+Objetivo: Criar um website de portfólio profissional completo, estático (HTML/CSS/JS), que funcione como um "Currículo Vivo". O site terá duas páginas (index.html e sobre.html). O foco principal é demonstrar projetos (especialmente Microsoft Power Platform), mas também servir como uma página profissional completa que detalha a trajetória e habilidades do usuário.
+
+Tom: Profissional, limpo, moderno e técnico.
+
+2. REQUISITOS TÉCNICOS OBRIGATÓRIOS
+
+Tecnologia: O projeto deve usar HTML5, CSS3 e JavaScript (ES6+) puros. Não utilize frameworks (como React, Vue) ou bibliotecas de componentes (como Bootstrap).
+
+Estrutura de Arquivos: O projeto deve ser composto pelos seguintes arquivos:
+
+index.html (Página Principal / Galeria de Projetos)
+
+sobre.html (Página "Sobre Mim")
+
+style.css (Folha de estilos única)
+
+script.js (Arquivo de script único)
+
+README.md (Documentação do projeto)
+
+Design e Layout:
+
+Tema: Limpo, profissional, "light-mode" (fundo claro).
+
+Responsividade: O site deve ser totalmente responsivo (mobile-first).
+
+Navegação: Criar uma barra de navegação (<nav>) fixa no topo (position: sticky). Ela deve conter o logo do usuário à esquerda e os links de navegação ("Início", "Sobre", "Entre em Contato") à direita.
+
+Rodapé: Um rodapé simples e centralizado.
+
+SEO (Otimização para Buscadores):
+
+Ambas as páginas HTML devem incluir um <head> completo com:
+
+<title> descritivo.
+
+<meta name="description">
+
+<meta name="keywords">
+
+Open Graph Tags (og:title, og:description, og:image, og:url, og:type) para compartilhamento em redes sociais.
+
+Twitter Card Tags (twitter:card, twitter:title, twitter:description, twitter:image).
+
+Acessibilidade (a11y) - CRÍTICO:
+
+Contraste de Cor: A paleta de cores deve ser acessível (mínimo WCAG AA). Use uma cor de destaque escura o suficiente para ter bom contraste com texto branco. (Ex: #1A6A6C).
+
+Navegação por Teclado: Todos os elementos interativos (links, botões) devem ter um estado :focus-visible claro.
+
+Semântica: Use HTML semântico (<main>, <nav>, <section>, <article>).
+
+ARIA: Adicione atributos aria-label, aria-labelledby, aria-current, role, etc., onde for apropriado (especialmente na navegação e no modal).
+
+Manutenção de Código:
+
+CSS: Use variáveis CSS (:root) para a paleta de cores principal, fontes e raios de borda.
+
+Comentários: O código deve ser extensivamente comentado, explicando o que cada bloco de código faz, como se fosse para outro desenvolvedor manter. Os comentários devem ser técnicos e claros.
+
+3. CONTEÚDO E FUNCIONALIDADE - PÁGINA index.html
+
+Seção de Introdução ("Hero"): Logo abaixo da navegação, crie uma seção de introdução que explique o propósito do portal como um "currículo vivo" (conforme conteúdo do usuário).
+
+Galeria de Projetos:
+
+A galeria deve ser organizada em seções de categoria (ex: "Projetos de Power BI", "Projetos com Power Apps", "Projetos Diversos").
+
+Cada categoria terá um título e um "grid" (.project-grid).
+
+O grid conterá "cartões de projeto" (.project-card).
+
+Cartão de Projeto (.project-card):
+
+Deve exibir uma imagem de miniatura (.project-thumbnail), um título (<h3>) e um botão ("Ver Projeto").
+
+Fallback de Miniatura: O script.js deve incluir uma função que detecta se uma imagem (.project-thumbnail) falha ao carregar. Se falhar, deve remover a <img> quebrada e substituí-la por um <div> com uma classe (ex: .project-thumbnail-placeholder) contendo o título do projeto (extraído do data-title).
+
+Armazenamento de Dados: O cartão deve armazenar toda a informação do modal em atributos data-* e tags <template>.
+
+Sistema de Modal (Pop-up) - via script.js:
+
+Clicar no botão "Ver Projeto" deve abrir um modal grande (.modal-overlay).
+
+O script.js deve preencher dinamicamente o modal com o conteúdo do .project-card clicado.
+
+Modal - Acessibilidade:
+
+O modal deve ter role="dialog", aria-modal="true", e aria-labelledby="modal-title".
+
+O foco deve ser movido para dentro do modal (ex: para o botão "Fechar") quando ele abrir.
+
+O foco deve ser retornado ao botão "Ver Projeto" original quando o modal fechar.
+
+Implementar um Focus Trap (prender a navegação por "Tab" dentro do modal).
+
+O modal deve fechar ao clicar no "X", pressionar "Escape", ou clicar no overlay.
+
+Modal - Conteúdo:
+
+Um título (#modal-title).
+
+Um botão de fechar (#modal-close-button).
+
+Um container de iframe responsivo (16:9) para o embed do projeto (#modal-iframe).
+
+Uma seção de "Informações" com um sistema de Abas (Tabs).
+
+Sistema de Abas (Tabs) do Modal:
+
+O modal deve ter uma navegação por abas (ex: "Descrição", "Objetivos", "Métricas", "Tratamento (ETL)", "Principais DAX", "Fontes e Links").
+
+O script.js deve controlar a troca de abas.
+
+O conteúdo de cada aba deve ser preenchido dinamicamente a partir das tags <template> no cartão.
+
+Lógica de Abas Condicionais: Implementar uma lógica para que projetos possam ocultar abas. Isso será feito através de um atributo data-tabs-to-show="modal-descricao,modal-objetivos" no .project-card. Se este atributo estiver presente, o script deve esconder todas as abas, exceto as listadas. Se estiver ausente, deve mostrar todas.
+
+Seção de Contato:
+
+Uma seção no final da página (#contact-section) com links para LinkedIn, E-mail e WhatsApp.
+
+O link "Entre em Contato" na navegação deve ser um link de âncora (href="#contact-section") que rola suavemente para esta seção.
+
+O CSS deve adicionar scroll-margin-top a esta seção para compensar a altura da nav fixa.
+
+Layout do Contato: A seção de contato deve usar um layout de "Cartões" (.contact-card), onde cada cartão contém um ícone, o nome do serviço (ex: "LinkedIn") e o detalhe (ex: "https://www.google.com/search?q=linkedin.com/in/...").
+
+4. CONTEÚDO E FUNCIONALIDADE - PÁGINA sobre.html
+
+Uma página simples contendo a trajetória profissional do usuário.
+
+Deve incluir:
+
+Um placeholder para foto de perfil.
+
+Um título ("Sobre Mim").
+
+Texto de introdução.
+
+Subtítulos (ex: "Minha Trajetória Profissional", "Habilidades e Ferramentas").
+
+Listas de habilidades.
+
+A navegação deve ser idêntica à do index.html, mas com o link "Sobre" marcado como active.
+
+5. DADOS DO USUÁRIO PARA PREENCHIMENTO
+
+Nome: Camilo Caetano P. de Oliveira
+
+Logo: Logo Branco - Pinheiro Tecnologia.png
+
+Resumo (para sobre.html): "Especialista em Análise de Dados e desenvolvimento Low-Code, com foco na Microsoft Power Platform e background em Lean Six Sigma. Experiência sólida no desenvolvimento de soluções corporativas de ponta a ponta, integrando Power BI (certificação PL-300), Power Apps e Power Automate..."
+
+Contatos:
+
+LinkedIn: https://www.linkedin.com/in/camilo-pinheiro/ (Texto: linkedin.com/in/camilo-pinheiro)
+
+E-mail: camilo-caetano@hotmail.com (Texto: camilo-caetano@hotmail.com)
+
+WhatsApp: https://api.whatsapp.com/send?phone=5511986777281 (Texto: +55 11 98677-7281)
+
+Projetos (Exemplos):
+
+Projeto 1 (Power BI):
+
+Título: "Projeto 1: Análise de Vendas (Sales Dashboard)"
+
+Iframe: https://app.powerbi.com/view?r=eyJrIjoiOGUwZTEzZjYtODllOC00NDllLWFmMTYtZTA5M2ViN2YxOGFkIiwidCI6IjMyMjEyYTc5LWYzMWEtNGIwYS1hZjE0LTY4YzFjYTUyMGVmNSJ9
+
+Thumbnail: images/projeto-vendas.png
+
+Conteúdo das Abas: (Preencher com placeholders de "Descrição", "Objetivos", "Métricas", "ETL", "DAX", "Fontes").
+
+Projeto 2 (Power BI):
+
+Título: "Projeto 2: Análise Temporal de Vendas"
+
+Iframe: https://app.powerbi.com/view?r=eyJrIjoiYjk2ZWM1YTgtYzU4OC00NDUzLTk3ODAtZTk4MTM2N2IxZDhjIiwidCI6IjMyMjEyYTc5LWYzMWEtNGIwYS1hZjE0LTY4YzFjYTUyMGVmNSJ9&pageName=ReportSection645babf0189088ba3194
+
+Thumbnail: images/projeto-temporal.png
+
+Conteúdo das Abas: (Preencher com placeholders "WIP").
+
+Projeto 3 (Vídeo):
+
+Título: "Projeto 3: Demo de App (Vídeo)"
+
+Iframe (YouTube Embed): https://www.youtube.com/embed/dQw4w9WgXcQ
+
+Thumbnail: images/projeto-powerapps-demo.png
+
+Abas a Mostrar: data-tabs-to-show="modal-descricao,modal-objetivos,modal-fontes"
+
+Conteúdo das Abas: (Preencher placeholders para "Descrição", "Objetivos" e "Fontes").

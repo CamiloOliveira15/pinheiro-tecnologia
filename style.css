@@ -1,0 +1,778 @@
+/* * =========================================
+ * ARQUIVO: style.css
+ * DESCRIÇÃO: Folha de estilos principal para o portfólio.
+ * AUTOR: Camilo Oliveira (com assistência de IA)
+ * =========================================
+ */
+
+/* * =========================================
+ * VARIÁVEIS GLOBAIS (RAIZ)
+ * Define a paleta de cores e fontes para fácil manutenção.
+ * =========================================
+ */
+:root {
+    /* Paleta de Cores */
+    /* --primary-color: #2ea1a5; */ /* Cor original da marca (FALHA no contraste 3.48:1) */
+    
+    /* Cor acessível (5.06:1 com branco) usada para interações */
+    --primary-color-accessible: #1A6A6C; 
+    --primary-color-hover: #218c8f; /* Tom mais claro para hover */
+    --primary-color-active: #15585a; /* Tom mais escuro para active/nav */
+    
+    --background-color: #f4f7f6; /* Fundo principal (branco-gelo) */
+    --surface-color: #ffffff; /* Fundo de cartões e modais */
+    --text-color: #333333; /* Cor principal do texto */
+    --text-color-light: #555555; /* Cor de texto secundária */
+    --border-color: #e0e0e0; /* Cor de borda sutil */
+    
+    /* Tipografia */
+    --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    
+    /* Outras Propriedades */
+    --border-radius-sm: 8px;
+    --border-radius-md: 12px;
+    --border-radius-lg: 16px;
+    --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.05);
+    --shadow-md: 0 10px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* * =========================================
+ * RESET BÁSICO E PADRÕES GLOBAIS
+ * =========================================
+ */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth; 
+}
+
+body {
+    font-family: var(--font-primary);
+    background-color: var(--background-color);
+    color: var(--text-color);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+.container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 2rem;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* Estilo de Foco (Acessibilidade) */
+a:focus-visible,
+button:focus-visible,
+[tabindex="0"]:focus-visible {
+    outline: 3px solid var(--primary-color-accessible);
+    outline-offset: 3px;
+    border-radius: var(--border-radius-sm);
+}
+
+/* * =========================================
+ * BARRA DE NAVEGAÇÃO (NAV)
+ * =========================================
+ */
+.main-nav {
+    background: var(--primary-color-accessible);
+    padding: 0.75rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.nav-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nav-logo-link {
+    display: block;
+}
+
+.nav-logo {
+    max-width: 180px;
+    height: auto;
+    display: block;
+}
+
+.nav-links {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: 0.5rem;
+}
+
+.nav-links a {
+    color: white;
+    padding: 0.75rem 1.5rem;
+    text-decoration: none;
+    font-weight: 500;
+    display: block;
+    border-radius: var(--border-radius-sm);
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.nav-links a:hover {
+    background-color: var(--primary-color-hover);
+    color: white;
+}
+
+.nav-links a.active,
+.nav-links a[aria-current="page"] {
+    background-color: var(--primary-color-active);
+    color: white;
+    font-weight: 600;
+}
+
+
+/* * =========================================
+ * SEÇÃO DE INTRODUÇÃO (INDEX)
+ * =========================================
+ */
+.intro-section {
+    background: var(--surface-color);
+    border-radius: var(--border-radius-lg);
+    padding: 2.5rem;
+    margin-top: 3rem;
+    margin-bottom: 3rem;
+    text-align: center;
+    box-shadow: var(--shadow-sm);
+}
+
+.intro-section h2 {
+    font-size: 2rem;
+    color: #1a202c;
+    margin-bottom: 1rem;
+}
+
+.intro-section p {
+    font-size: 1.15rem;
+    color: var(--text-color-light);
+    max-width: 800px;
+    margin: 0 auto 1.5rem auto;
+}
+
+.cta-button {
+    background-color: var(--primary-color-accessible);
+    color: #ffffff;
+    padding: 0.75rem 1.5rem;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+    display: inline-block;
+    border: none;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.cta-button:hover {
+    background-color: var(--primary-color-hover);
+    transform: translateY(-2px);
+}
+
+
+/* * =========================================
+ * PÁGINA "SOBRE"
+ * =========================================
+ */
+.about-container {
+    background: var(--surface-color);
+    border-radius: var(--border-radius-lg);
+    padding: 2.5rem 3rem;
+    max-width: 900px;
+    margin: 3rem auto;
+    box-shadow: var(--shadow-sm);
+}
+
+.about-container h2 {
+    font-size: 2rem;
+    color: #1a202c;
+    margin-bottom: 1.5rem;
+}
+
+.about-container .about-subtitle {
+    font-size: 1.5rem;
+    color: var(--text-color);
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    border-bottom: 3px solid var(--primary-color-accessible);
+    padding-bottom: 0.5rem;
+    display: inline-block;
+}
+
+.about-container p {
+    font-size: 1.1rem;
+    color: var(--text-color);
+    margin-bottom: 1rem;
+    line-height: 1.7;
+}
+
+.about-container .profile-pic {
+    width: 150px;
+    height: 150px;
+    border-radius: 50%;
+    background: #e0e0e0;
+    margin: 0 auto 1.5rem auto;
+    overflow: hidden; 
+    border: 4px solid var(--surface-color);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.about-container .profile-pic img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.skills-list,
+.about-container ul {
+    margin-left: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+.skills-list li,
+.about-container li {
+    margin-bottom: 0.5rem;
+}
+
+.link-inline {
+    color: var(--primary-color-accessible);
+    text-decoration: none;
+    font-weight: 600;
+    border-bottom: 2px solid transparent;
+    transition: border-bottom-color 0.2s ease;
+}
+.link-inline:hover {
+    border-bottom-color: var(--primary-color-accessible);
+}
+
+
+/* * =========================================
+ * SEÇÕES DE PROJETOS
+ * =========================================
+ */
+.project-category {
+    margin-bottom: 4rem;
+}
+
+.category-title {
+    font-size: 1.75rem;
+    font-weight: 600;
+    color: #1a202c;
+    border-bottom: 3px solid var(--primary-color-accessible);
+    padding-bottom: 0.5rem;
+    margin-bottom: 2.5rem;
+    display: inline-block;
+}
+
+.project-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+}
+
+.project-card-placeholder {
+    background: var(--surface-color);
+    border: 2px dashed var(--border-color);
+    border-radius: var(--border-radius-lg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 290px;
+    padding: 2rem;
+    text-align: center;
+    color: #888;
+    font-style: italic;
+}
+
+
+/* * =========================================
+ * CARTÃO DE PROJETO
+ * =========================================
+ */
+.project-card {
+    background: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.project-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-md);
+}
+
+.project-thumbnail {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    display: block;
+    background-color: #f0f0f0; 
+}
+
+/* Fallback para miniatura quebrada */
+.project-thumbnail-placeholder {
+    width: 100%;
+    height: 220px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f0f0f0;
+    color: var(--text-color-light);
+    font-style: italic;
+    font-weight: 500;
+    padding: 1rem;
+    text-align: center;
+    line-height: 1.3;
+}
+
+.project-card-content {
+    padding: 1.5rem;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.project-card-content h3 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #1a202c;
+}
+
+.project-card-button {
+    background-color: var(--primary-color-accessible);
+    color: #ffffff;
+    border: none;
+    border-radius: 50px;
+    padding: 0.75rem 1.5rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-align: center;
+    width: 100%;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.project-card-button:hover {
+    background-color: var(--primary-color-hover);
+    transform: scale(1.02);
+}
+
+
+/* * =========================================
+ * SEÇÃO DE CONTATO (Layout de Cartões)
+ * =========================================
+ */
+.contact-section {
+    background-color: var(--surface-color);
+    padding: 3rem 0;
+    margin-top: 3rem;
+    border-top: 1px solid var(--border-color);
+    text-align: center;
+    /* Garante que a rolagem da âncora não fique sob o nav fixo */
+    scroll-margin-top: 70px; 
+}
+
+.section-title {
+    font-size: 2.25rem;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 2.5rem;
+    color: #1a202c;
+}
+
+.contact-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    max-width: 1000px;
+    margin: 1.5rem auto 0 auto;
+}
+
+.contact-card {
+    background: #ffffff;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-lg);
+    padding: 2rem;
+    text-align: center;
+    text-decoration: none;
+    color: var(--text-color);
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.contact-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-md);
+    color: var(--primary-color-accessible);
+}
+
+.contact-card-icon {
+    color: var(--primary-color-accessible);
+    margin-bottom: 1rem;
+}
+/* O SVG inline herda a cor */
+.contact-card-icon svg {
+    width: 32px;
+    height: 32px;
+    display: inline-block;
+}
+
+.contact-card-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.contact-card-detail {
+    color: var(--text-color-light);
+    font-size: 1rem;
+    word-break: break-word; /* Garante que emails longos quebrem a linha */
+}
+
+
+/* * =========================================
+ * RODAPÉ
+ * =========================================
+ */
+.main-footer {
+    text-align: center;
+    padding: 1.5rem 0;
+    margin-top: 2rem;
+    border-top: 1px solid var(--border-color);
+    color: #888;
+    background: var(--surface-color);
+}
+
+/* * =========================================
+ * MODAL (POP-UP)
+ * =========================================
+ */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+    -webkit-backdrop-filter: blur(5px);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.modal-content {
+    background-color: var(--surface-color);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-lg);
+    width: 100%;
+    max-width: 1300px;
+    height: 95vh;
+    box-shadow: var(--shadow-md);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    flex-shrink: 0;
+}
+
+.modal-header h2 {
+    font-size: 1.5rem;
+    color: #1a202c;
+    font-weight: 600;
+}
+
+.modal-close-button {
+    background: none;
+    border: none;
+    font-size: 2.5rem;
+    font-weight: 300;
+    color: #888;
+    cursor: pointer;
+    line-height: 1;
+    transition: color 0.2s ease;
+    padding: 0.5rem;
+    margin: -0.5rem;
+}
+
+.modal-close-button:hover {
+    color: #333;
+}
+
+.modal-body {
+    padding: 1.5rem;
+    overflow-y: auto;
+    flex-grow: 1;
+    background-color: #f9f9f9;
+}
+
+.modal-dashboard-section {
+    margin-bottom: 2rem;
+}
+
+.modal-section-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--primary-color-accessible);
+    margin-bottom: 1rem;
+    border-bottom: 2px solid var(--primary-color-accessible);
+    padding-bottom: 0.5rem;
+    display: inline-block;
+}
+
+.iframe-container {
+    position: relative;
+    padding-top: 56.25%; /* Proporção 16:9 */
+    height: 0;
+    overflow: hidden;
+    border-radius: var(--border-radius-sm);
+    box-shadow: var(--shadow-sm);
+    background: #f0f0f0;
+}
+
+.iframe-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
+}
+
+/* Seção de Abas (Tabs) */
+.modal-info-section {
+    background: var(--surface-color);
+    border-radius: var(--border-radius-md);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+}
+
+.tab-navigation {
+    display: flex;
+    border-bottom: 1px solid #ddd;
+    background-color: #f0f0f0;
+    overflow-x: auto;
+}
+
+.modal-tab-button {
+    background: none;
+    border: none;
+    padding: 1rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--text-color-light);
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: color 0.2s ease, border-color 0.2s ease;
+    white-space: nowrap;
+}
+
+.modal-tab-button:hover {
+    color: #111;
+}
+
+.modal-tab-button.active,
+.modal-tab-button[aria-selected="true"] {
+    color: var(--primary-color-accessible);
+    border-bottom-color: var(--primary-color-accessible);
+    font-weight: 600;
+}
+
+.tab-content {
+    padding: 1.5rem;
+    color: var(--text-color);
+}
+
+.modal-tab-panel p {
+    margin-bottom: 1rem;
+    color: var(--text-color);
+}
+
+.modal-tab-panel ul {
+    margin-left: 1.5rem;
+    margin-bottom: 1rem;
+}
+.modal-tab-panel li {
+    margin-bottom: 0.5rem;
+}
+
+/* Bloco de Código (para DAX) */
+.code-block {
+    background-color: #f4f4f4;
+    color: #333;
+    padding: 1rem;
+    border-radius: var(--border-radius-sm);
+    overflow-x: auto;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 0.9rem;
+    border: 1px solid #ddd;
+    white-space: pre;
+}
+
+/* Estilos para a aba "Fontes e Links" */
+.source-container {
+    padding-top: 0.5rem;
+}
+
+.modal-subtitle {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #1a202c;
+    margin-top: 1.5rem;
+    margin-bottom: 0.75rem;
+}
+.source-container .modal-subtitle:first-child {
+    margin-top: 0;
+}
+
+.link-externo {
+    color: var(--primary-color-accessible);
+    text-decoration: none;
+    font-weight: 500;
+}
+.link-externo:hover {
+    text-decoration: underline;
+}
+
+/* * =========================================
+ * ESTILOS DE ADMIN (Login, etc)
+ * Estes estilos são usados apenas por 'login.html' e 'admin.html'
+ * =========================================
+ */
+.admin-body {
+    background-color: #eef1f1; 
+}
+
+.login-container {
+    max-width: 450px;
+    margin: 5rem auto;
+    padding: 2rem;
+    background: var(--surface-color);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-md);
+}
+
+.admin-container {
+    background: var(--surface-color);
+    border-radius: var(--border-radius-lg);
+    padding: 2.5rem;
+    margin-top: 3rem;
+    margin-bottom: 3rem;
+    box-shadow: var(--shadow-sm);
+}
+
+.admin-container h1 {
+    font-size: 2rem;
+    color: #1a202c;
+    margin-bottom: 0.5rem;
+}
+.admin-container p {
+    font-size: 1.1rem;
+    color: var(--text-color-light);
+    margin-bottom: 2rem;
+}
+
+.admin-form h2 {
+    font-size: 1.5rem;
+    color: #1a202c;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--text-color);
+}
+
+.form-input,
+.form-textarea,
+.form-select {
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1rem;
+    font-family: var(--font-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
+    background: #f9f9f9;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-input:focus-visible,
+.form-textarea:focus-visible,
+.form-select:focus-visible {
+    border-color: var(--primary-color-accessible);
+    background: var(--surface-color);
+    box-shadow: 0 0 0 2px rgba(26, 106, 108, 0.2);
+    outline: none;
+}
+
+.form-textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.form-group small {
+    display: block;
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--text-color-light);
+}
+
+.form-divider {
+    border: none;
+    border-top: 1px solid var(--border-color);
+    margin: 2rem 0;
+}
+
+.form-message {
+    padding: 1rem;
+    border-radius: var(--border-radius-sm);
+    margin-bottom: 1rem;
+    font-weight: 500;
+}
+.form-message.error {
+    background: #fbe9e7;
+    color: #D93025;
+    border: 1px solid #D93025;
+}
+.form-message.success {
+    background: #e6f4ea;
+    color: #1E8E3E;
+    border: 1px solid #1E8E3E;
+}
