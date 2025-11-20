@@ -13,26 +13,50 @@
 const MOCK_PROJECTS = [
     {
       id: "mock-1",
-      title: "Projeto 1: Análise de Vendas (Fictício)",
+      title: "Projeto 1: Controle de vencimento de treinamentos, NRs, exames e documentos diversos (Fictício)",
       category: "data-analysis", // Categoria
-      thumbnailSrc: "images/sales-dashboard.png",
-      iframeSrc: "https://app.powerbi.com/view?r=eyJrIjoiYjk2ZWM1YTgtYzU4OC00NDUzLTk3ODAtZTk4MTM2N2IxZDhjIiwidCI6IjMyMjEyYTc5LWYzMWEtNGIwYS1hZjE0LTY4YzFjYTUyMGVmNSJ9&pageName=ReportSection645babf0189088ba3194",
+      thumbnailSrc: "images/relatorio_vencimentos.png",
+      iframeSrc: "https://app.powerbi.com/view?r=eyJrIjoiMWRjOGIyMTItNTkxMS00MTYxLWFkYmQtOGU0MDdiOGQxNmJlIiwidCI6IjMyMjEyYTc5LWYzMWEtNGIwYS1hZjE0LTY4YzFjYTUyMGVmNSJ9",
       embedTitle: "Dashboard Interativo",
       tabsToShow: "",
       data: {
-        descricao: "<p>Este é um dashboard fictício carregado localmente...</p>",
-        objetivos: "<ul class='list-disc'><li>Monitorar o faturamento...</li></ul>",
-        metricas: "<ul class='list-disc'><li><strong>Faturamento Total (R$)</strong>...</li></ul>",
-        tecnologias: "<p>O processo de ETL foi realizado no Power Query...</p>",
-        detalhes: "<pre class='code-block'><code>Vendas YTD = ...</code></pre>",
-        fontes: "<p>Dados sintéticos de vendas B2B...</p>"
+        descricao: "<p>Este relatório monitora o vencimento de treinamentos, NRs, exames e documentos diversos, ajudando a garantir conformidade e segurança.</p>",
+        objetivos: "<ul class='list-disc'><li>Dar visibilidade do vencimento e alertas para treinamentos, NRs, exames e documentos.</li></ul>",
+        metricas: "<ul class='list-disc'><li><strong>Quantidade de colabores com documentos vencidos, documentos vencidos nos próximos 15 e 60 dias</li></ul>",
+        tecnologias: "<p>O processo de ETL foi realizado no Power Query, medidas criadas em DAX e os relacionamentos direto na interface do Power BI</p>",
+        detalhes: `
+      <p>Aqui está a medida utilizada para criar a tabela virtual de períodos:</p>
+      
+      <pre class="code-block"><code class="language-dax">
+_Periodos = 
+UNION(
+    ADDCOLUMNS(
+        DATESINPERIOD(dCalendario[Date], MAX(dCalendario[Date]), -20, YEAR),
+        "Período", "Todo período (Escolher data)",
+        "Ordem", 1
+    ),
+    ADDCOLUMNS(
+        DATESINPERIOD(dCalendario[Date], DATE(YEAR(TODAY()), MONTH(TODAY()), DAY(TODAY()-1)), -2, YEAR),
+        "Período", "Vencido",
+        "Ordem", 2
+    ),
+    ADDCOLUMNS(
+        DATESINPERIOD(dCalendario[Date], TODAY(), 16, DAY),
+        "Período", "Próximos 15 dias",
+        "Ordem", 3
+    )
+)
+      </code></pre>
+      <p>Esta lógica permite criar os cálculos de forma mais dinâmica e a segmentação de dados da tela principal</p>
+    `,
+    fontes: "<p>Dados fictícios.</p>"
       }
     },
     {
       id: "mock-2",
       title: "Projeto 2: Análise Imobiliária (Fictício)",
       category: "data-analysis", // Categoria
-      thumbnailSrc: "images/relatorio-imobiliaria.png",
+      thumbnailSrc: "https://placehold.co/600x400/1A6A6C/FFFFFF?text=Imobiliária",
       iframeSrc: "",
       embedTitle: "Análise de Portfólio de Obras",
       tabsToShow: "",
@@ -84,7 +108,7 @@ const MOCK_PROJECTS = [
         title: "Projeto 5: Análise de RH (Fictício)",
         category: "data-analysis", // Categoria
         thumbnailSrc: "https://placehold.co/600x400/1A6A6C/FFFFFF?text=Dashboard+RH",
-        iframeSrc: "https://app.powerbi.com/view?r=eyJrIjoiOGUwZTEzZjYtODllOC00NDllLWFmMTYtZTA5M2ViN2YxOGFkIiwidCI6IjMyMjEyYTc5LWYzMWEtNGIwYS1hZjE0LTY4YzFjYTUyMGVmNSJ9",
+        iframeSrc: "",
         embedTitle: "Dashboard Interativo",
         tabsToShow: "",
         data: {
@@ -101,7 +125,7 @@ const MOCK_PROJECTS = [
         title: "Projeto 6: App de Inspeção (Fictício)",
         category: "apps", // Categoria
         thumbnailSrc: "https://placehold.co/600x400/1A6A6C/FFFFFF?text=App+Inspeção",
-        iframeSrc: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        iframeSrc: "https://www.youtube.com/embed/",
         embedTitle: "Demonstração em Vídeo",
         tabsToShow: "modal-descricao,modal-objetivos",
         data: {
@@ -118,7 +142,7 @@ const MOCK_PROJECTS = [
         title: "Projeto 7: Outro Projeto (Fictício)",
         category: "other", // Categoria
         thumbnailSrc: "https://placehold.co/600x400/1A6A6C/FFFFFF?text=Outro+Projeto",
-        iframeSrc: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+        iframeSrc: "https://www.youtube.com/embed/",
         embedTitle: "Demonstração",
         tabsToShow: "modal-descricao",
         data: {
