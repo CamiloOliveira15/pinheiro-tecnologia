@@ -15,7 +15,7 @@ const MOCK_PROJECTS = [
       id: "mock-1",
       title: "Projeto 1: Análise de Vendas (Fictício)",
       category: "data-analysis", // Categoria
-      thumbnailSrc: "img/sales-dashboard.png",
+      thumbnailSrc: "images/sales-dashboard.png",
       iframeSrc: "https://app.powerbi.com/view?r=eyJrIjoiYjk2ZWM1YTgtYzU4OC00NDUzLTk3ODAtZTk4MTM2N2IxZDhjIiwidCI6IjMyMjEyYTc5LWYzMWEtNGIwYS1hZjE0LTY4YzFjYTUyMGVmNSJ9&pageName=ReportSection645babf0189088ba3194",
       embedTitle: "Dashboard Interativo",
       tabsToShow: "",
@@ -32,8 +32,8 @@ const MOCK_PROJECTS = [
       id: "mock-2",
       title: "Projeto 2: Análise Imobiliária (Fictício)",
       category: "data-analysis", // Categoria
-      thumbnailSrc: "img/relatorio-imobiliaria.png",
-      iframeSrc: "https://app.powerbi.com/view?r=eyJrIjoiYjk2ZWM1YTgtYzU4OC00NDUzLTk3ODAtZTk4MTM2N2IxZDhjIiwidCI6IjMyMjEyYTc5LWYzMWEtNGIwYS1hZjE0LTY4YzFjYTUyMGVmNSJ9&pageName=ReportSection645babf0189088ba3194",
+      thumbnailSrc: "images/relatorio-imobiliaria.png",
+      iframeSrc: "",
       embedTitle: "Análise de Portfólio de Obras",
       tabsToShow: "",
       data: {
@@ -50,7 +50,7 @@ const MOCK_PROJECTS = [
       title: "Projeto 3: Demo de App (Vídeo Fictício)",
       category: "apps", // Categoria
       thumbnailSrc: "https://placehold.co/600x400/1A6A6C/FFFFFF?text=Demo+App",
-      iframeSrc: "https://www.youtube.com/embed/dQw4w9WgXcQ",
+      iframeSrc: "https://www.youtube.com/embed/",
       embedTitle: "Demonstração em Vídeo",
       tabsToShow: "modal-descricao,modal-objetivos,modal-fontes",
       data: {
@@ -67,7 +67,7 @@ const MOCK_PROJECTS = [
         title: "Projeto 4: Automação de Faturas (Fictício)",
         category: "automation", // Categoria
         thumbnailSrc: "https://placehold.co/600x400/1A6A6C/FFFFFF?text=Automação",
-        iframeSrc: "https://www.youtube.com/embed/dQw4w9WgXcQ", // Usando vídeo placeholder
+        iframeSrc: "https://www.youtube.com/embed/", // Usando vídeo placeholder
         embedTitle: "Demo de Automação",
         tabsToShow: "modal-descricao,modal-objetivos",
         data: {

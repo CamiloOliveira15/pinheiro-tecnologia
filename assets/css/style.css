@@ -33,6 +33,11 @@
     --shadow-md: 0 10px 15px rgba(0, 0, 0, 0.1);
 }
 
+/* Esconder seção de clientes (carrossel) */
+.clients-section {
+    display: none;
+}
+
 /* * =========================================
  * RESET BÁSICO E PADRÕES GLOBAIS
  * =========================================
