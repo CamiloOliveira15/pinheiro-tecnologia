@@ -16,7 +16,7 @@ const MOCK_PROJECTS = [
       title: "Projeto 1: Análise de Vendas (Fictício)",
       category: "data-analysis", // Categoria
       thumbnailSrc: "img/sales-dashboard.png",
-      iframeSrc: "https://app.powerbi.com/view?r=eyJrIjoiOGUwZTEzZjYtODllOC00NDllLWFmMTYtZTA5M2ViN2YxOGFkIiwidCI6IjMyMjEyYTc5LWYzMWEtNGIwYS1hZjE0LTY4YzFjYTUyMGVmNSJ9",
+      iframeSrc: "https://app.powerbi.com/view?r=eyJrIjoiYjk2ZWM1YTgtYzU4OC00NDUzLTk3ODAtZTk4MTM2N2IxZDhjIiwidCI6IjMyMjEyYTc5LWYzMWEtNGIwYS1hZjE0LTY4YzFjYTUyMGVmNSJ9&pageName=ReportSection645babf0189088ba3194",
       embedTitle: "Dashboard Interativo",
       tabsToShow: "",
       data: {
