@@ -364,6 +364,30 @@ select:focus-visible {
     gap: 2rem;
 }
 
+.form-message {
+    padding: 1rem;
+    border-radius: var(--border-radius-sm);
+    margin-bottom: 1rem;
+    font-weight: 500;
+    border: 1px solid transparent;
+}
+.form-message.error {
+    background: #fbe9e7;
+    color: #D93025;
+    border-color: #D93025;
+}
+.form-message.success {
+    background: #e6f4ea;
+    color: #1E8E3E;
+    border-color: #1E8E3E;
+}
+/* [NOVO] Estilo para avisos (Rate Limit) */
+.form-message.warning {
+    background: #fff8e1; /* Fundo amarelo claro */
+    color: #f57f17;       /* Texto laranja escuro/âmbar */
+    border-color: #ffb300; /* Borda amarela */
+}
+
 /* [REMOVIDO] Wrapper do grid da Index. A lógica agora é via JS */
 /* .project-grid-index-wrapper { ... } */
 

@@ -1,17 +1,16 @@
 /**
- * Lógica do Site - script.js (Versão Híbrida - Fictícia/API)
+ * Lógica do Site - script.js (Versão Final Consolidada)
  *
- * Este script agora inclui dados fictícios (MOCK_PROJECTS)
- * para desenvolvimento e fallback quando a API não está disponível.
- * [MODIFICADO] Adicionada lógica de categorização de projetos.
- * [MODIFICADO] Limita os projetos na index.html para 6.
- * [MODIFICADO] Refatoração para Embed automático de YouTube (Simplificado).
- * [MODIFICADO] Adicionado suporte para ocultar projetos via propriedade 'hidden: true'.
- * [MODIFICADO] Formulário de contato agora envia JSON para a API com LOGS e FEEDBACK VISUAL.
+ * Este script gerencia:
+ * 1. Carregamento dinâmico de projetos (da API AWS ou Mock local).
+ * 2. Filtragem de projetos por categoria.
+ * 3. Envio de formulário de contato com tratamento de erros e Rate Limit.
+ * 4. Feedback visual para o usuário (mensagens de sucesso, erro e aviso).
+ * 5. Modais interativos para detalhes do projeto e embeds de vídeo.
  */
 
 // =================================================================
-// DADOS FICTÍCIOS (PARA DESENVOLVIMENTO)
+// DADOS FICTÍCIOS (PARA DESENVOLVIMENTO / FALLBACK)
 // =================================================================
 const MOCK_PROJECTS = [
     {
@@ -35,8 +34,8 @@ const MOCK_PROJECTS = [
       id: "mock-2",
       title: "Projeto 2: Hub de testes de desenvolvimento de projetos",
       category: "apps", 
-      thumbnailSrc: "https://placehold.co/600x400/1A6A6C/FFFFFF?text=Test Hub",
-      // URL limpa
+      thumbnailSrc: "images/Test Hub.png",
+      // URL limpa para o helper getEmbedUrl processar
       iframeSrc: "https://www.youtube.com/embed/o8CvaeNNycs",
       embedTitle: "Gestão de Testes e Qualidade",
       tabsToShow: "modal-descricao,modal-objetivos",
@@ -67,7 +66,7 @@ const MOCK_PROJECTS = [
       id: "mock-3",
       title: "Projeto 3: Demo de App",
       category: "apps",
-      hidden: true, 
+      hidden: true, // Este projeto está oculto, serve para testar o filtro
       thumbnailSrc: "https://placehold.co/600x400/1A6A6C/FFFFFF?text=Demo+App",
       iframeSrc: "https://www.youtube.com/embed/LXb3EKWsInQ", 
       embedTitle: "Demonstração em Vídeo",
@@ -135,25 +134,25 @@ const MOCK_PROJECTS = [
   ];
 
 // =================================================================
-// CONSTANTES DA API
+// CONSTANTES DA API (AWS)
 // =================================================================
-// [ATUALIZADO] URL do seu API Gateway
+// URL do API Gateway (sem barra no final)
 const BASE_API_URL = "https://jwqiah2rvj.execute-api.us-west-2.amazonaws.com"; 
 
 const API_URL_GET_PROJECTS = `${BASE_API_URL}/projects`;
 const API_URL_POST_PROJECT = `${BASE_API_URL}/projects`;
 const API_URL_PUT_PROJECT = `${BASE_API_URL}/projects`;
 const API_URL_DELETE_PROJECT = `${BASE_API_URL}/projects`;
-const API_URL_CONTACT = `${BASE_API_URL}/contact`; // Nova rota
+const API_URL_CONTACT = `${BASE_API_URL}/contact`; 
 
 // =================================================================
 // INICIALIZAÇÃO GLOBAL
 // =================================================================
 
 document.addEventListener('DOMContentLoaded', () => {
-    
     const page = document.body.id || window.location.pathname;
 
+    // Roteamento simples baseado na URL/ID da página
     if (page.includes('index.html') || page === '/' || page.endsWith('/')) {
         initIndexPage();
     } else if (page.includes('projetos.html')) {
@@ -172,14 +171,12 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function updateFooterYear() {
+    const year = new Date().getFullYear();
     const yearSpan = document.getElementById('current-year');
-    if (yearSpan) {
-        yearSpan.textContent = new Date().getFullYear();
-    }
+    if (yearSpan) yearSpan.textContent = year;
+    
     const yearSpanFooter = document.getElementById('current-year-footer');
-    if (yearSpanFooter) {
-        yearSpanFooter.textContent = new Date().getFullYear();
-    }
+    if (yearSpanFooter) yearSpanFooter.textContent = year;
 }
 
 // =================================================================
@@ -197,12 +194,16 @@ function initClientCarousel() {
     if (!track) return;
     const logos = track.querySelectorAll('.client-logo');
     if (logos.length === 0) return;
+    
+    // Duplica os logos para criar o efeito de loop infinito
     logos.forEach(logo => {
         const clone = logo.cloneNode(true);
         clone.setAttribute('aria-hidden', 'true');
         track.appendChild(clone);
     });
-    const totalWidth = (logos.length * 2) * (150 + 32);
+    
+    // Ajusta a largura do track
+    const totalWidth = (logos.length * 2) * (150 + 32); // Largura estimada + gap
     track.style.width = `${totalWidth}px`;
 }
 
@@ -215,15 +216,15 @@ async function fetchProjectsForIndex() {
         const response = await fetch(API_URL_GET_PROJECTS);
         if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
         const projects = await response.json();
-        // [MODIFICADO] Filtra projetos ocultos na API real
+        
+        // Filtra ocultos e limita a 6 para a vitrine da home
         const visibleProjects = projects.filter(p => !p.hidden);
         populateProjectGrid(gridId, visibleProjects.slice(0, 6)); 
         loader.classList.add('hidden');
     } catch (error) {
-        console.warn("MODO FICTÍCIO (Index): Carregando MOCK_PROJECTS.", error.message);
+        console.warn("MODO FICTÍCIO (Index): Falha na API, usando MOCK.", error.message);
         loader.textContent = "Carregando projetos fictícios...";
         setTimeout(() => {
-            // [MODIFICADO] Aplica o filtro 'hidden'
             const visibleMocks = MOCK_PROJECTS.filter(p => !p.hidden);
             populateProjectGrid(gridId, visibleMocks.slice(0, 6)); 
             loader.classList.add('hidden');
@@ -252,15 +253,15 @@ async function fetchProjectsForCategorization() {
         const response = await fetch(API_URL_GET_PROJECTS);
         if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
         const projects = await response.json();
-        // [MODIFICADO] Filtra projetos ocultos
+        
+        // Filtra projetos ocultos antes de distribuir
         distributeProjects(projects.filter(p => !p.hidden));
     } catch (error) {
-        console.warn("MODO FICTÍCIO (Projetos): Carregando MOCK_PROJECTS.", error.message);
+        console.warn("MODO FICTÍCIO (Projetos): Falha na API, usando MOCK.", error.message);
         Object.values(loaders).forEach(loader => {
             if(loader) loader.textContent = "Carregando projetos fictícios...";
         });
         setTimeout(() => {
-            // [MODIFICADO] Aplica o filtro 'hidden'
             distributeProjects(MOCK_PROJECTS.filter(p => !p.hidden));
         }, 500);
     } finally {
@@ -293,18 +294,17 @@ function populateProjectGrid(gridElementId, projects) {
     
     grid.innerHTML = ''; 
     
-    // Encontra a seção pai
+    // Encontra a seção pai para ocultar se estiver vazia
     const section = grid.closest('section');
 
     if (!projects || projects.length === 0) {
-        // Se não houver projetos, oculta a seção inteira
         if (section) {
             section.style.display = 'none';
         }
         return;
     }
 
-    // Se houver projetos, garante que a seção esteja visível
+    // Garante que a seção esteja visível se houver projetos
     if (section) {
         section.style.display = 'block';
     }
@@ -312,6 +312,7 @@ function populateProjectGrid(gridElementId, projects) {
     projects.forEach(project => {
         const card = document.createElement('div');
         card.className = 'project-card';
+        // Guarda os dados no dataset para o modal recuperar depois
         card.dataset.projectData = JSON.stringify(project);
 
         card.innerHTML = `
@@ -343,10 +344,12 @@ function handleImageError(img, title) {
 // PÁGINA SOBRE
 // =================================================================
 
-function initSobrePage() {}
+function initSobrePage() {
+    // Nenhuma lógica específica necessária por enquanto
+}
 
 // =================================================================
-// PÁGINA DE CONTATO
+// PÁGINA DE CONTATO (Lógica Principal do Formulário)
 // =================================================================
 
 function initContatoPage() {
@@ -361,55 +364,77 @@ async function handleContactSubmit(event) {
     const btn = document.getElementById('contact-submit-btn');
     const msgElement = document.getElementById('form-message');
     
-    // [MODIFICADO] Feedback Visual Imediato
-    const originalBtnText = btn.textContent;
+    // Salva o texto original para restaurar depois
+    const originalBtnText = btn.innerText; 
+    
+    // Feedback Visual Imediato: Desabilita e muda texto
     btn.disabled = true;
-    btn.textContent = 'Enviando...';
+    btn.innerText = 'Enviando...';
     
     // Limpa mensagem anterior
     if(msgElement) msgElement.classList.add('hidden');
 
-    // 1. Extrai os dados do formulário
     const formData = new FormData(event.target);
     const data = Object.fromEntries(formData.entries());
 
-    console.log("Tentando enviar contato:", data); // LOG PARA DEBUG
+    console.log("Tentando enviar contato:", data);
 
     try {
-        // 2. Envia como JSON para a API
+        // Envia como JSON para a API AWS
         const response = await fetch(API_URL_CONTACT, { 
             method: 'POST', 
             headers: {
                 'Content-Type': 'application/json',
-                'Accept': 'application/json'
+                'Accept': 'application/json' 
             },
             body: JSON.stringify(data) 
         });
 
-        console.log("Status da Resposta:", response.status); // LOG PARA DEBUG
+        console.log("Status da Resposta:", response.status);
 
         if (!response.ok) {
-            const errorText = await response.text();
-            console.error("Erro na API:", errorText); // LOG DE ERRO
+            // Tenta ler o JSON de erro se existir
+            const errorData = await response.json().catch(() => null);
+            const errorText = errorData ? JSON.stringify(errorData) : await response.text();
+            
+            // Tratamento Específico para Rate Limit (429)
+            if (response.status === 429) {
+                let message = "Você já enviou mensagens suficientes por hoje. Recebemos seu contato e retornaremos em breve!";
+                if (errorData && errorData.message) {
+                    message = errorData.message; // Usa a mensagem amigável da Lambda
+                }
+                // Lança erro com prefixo especial
+                throw new Error(`RATE_LIMIT:${message}`);
+            }
+
             throw new Error(`Falha no envio: ${response.status} - ${errorText}`);
         }
         
         const result = await response.json();
-        console.log("Sucesso:", result); // LOG DE SUCESSO
+        console.log("Sucesso:", result);
 
-        // [MODIFICADO] Mensagem de Sucesso Clara
         showFormMessage('Sua mensagem foi enviada com sucesso! Entraremos em contato em breve.', 'success');
         event.target.reset();
 
     } catch (error) {
-        console.error("Erro Capturado no Catch:", error);
+        console.error("Erro Capturado:", error);
         
-        // [MODIFICADO] Mensagem de Erro Clara
-        showFormMessage(`Não foi possível enviar sua mensagem. Por favor, tente novamente mais tarde ou use outro canal de contato. (Erro: ${error.message})`, "error");
+        // Lógica para exibir mensagem amigável
+        if (error.message.startsWith("RATE_LIMIT:")) {
+            const friendlyMessage = error.message.replace("RATE_LIMIT:", "");
+            // Usa o tipo 'warning' (amarelo) em vez de erro
+            showFormMessage(friendlyMessage, "warning"); 
+        } else if (error.message.includes("Failed to fetch")) {
+            showFormMessage("Erro de conexão com o servidor. Verifique sua internet e tente novamente.", "error");
+        } else {
+            showFormMessage("Não foi possível enviar sua mensagem. Por favor, tente novamente mais tarde.", "error");
+        }
     } finally {
-        // [MODIFICADO] Restaura o botão
-        btn.disabled = false;
-        btn.textContent = originalBtnText;
+        // Restaura o botão após um breve delay
+        setTimeout(() => {
+            btn.disabled = false;
+            btn.innerText = originalBtnText;
+        }, 500);
     }
 }
 
@@ -417,20 +442,22 @@ function showFormMessage(message, type) {
     const msgElement = document.getElementById('form-message');
     if (msgElement) {
         msgElement.textContent = message;
-        // Garante que as classes de cor (success/error) sejam aplicadas corretamente
-        msgElement.className = `form-message ${type}`; 
+        // Remove todas as classes antigas para evitar conflito
+        msgElement.classList.remove('success', 'error', 'warning');
+        // Adiciona a classe base e a nova classe de tipo
+        msgElement.classList.add('form-message', type); 
         msgElement.classList.remove('hidden');
         
-        // Scroll para a mensagem se estiver fora da tela
+        // Scroll suave até a mensagem
         msgElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
     } else {
-        console.warn("Elemento #form-message não encontrado para exibir:", message);
-        alert(message); // Fallback se o elemento não existir
+        console.warn("Elemento #form-message não encontrado. Alert:", message);
+        alert(message); 
     }
 }
 
 // =================================================================
-// PÁGINA DE LOGIN e ADMIN (Sem alterações significativas)
+// PÁGINA DE LOGIN e ADMIN (Gestão Básica)
 // =================================================================
 
 function initLoginPage() {
@@ -438,6 +465,7 @@ function initLoginPage() {
     if (loginForm) {
         loginForm.addEventListener('submit', handleLoginSubmit);
     }
+    // Se já estiver logado, redireciona
     if (localStorage.getItem('authToken')) {
         window.location.href = 'admin.html';
     }
@@ -450,14 +478,15 @@ async function handleLoginSubmit(event) {
     btn.disabled = true;
     btn.textContent = 'Entrando...';
     
-    console.warn("MODO FICTÍCIO: Bypass do Cognito ativado.");
+    console.warn("MODO FICTÍCIO: Bypass do Cognito ativado para testes.");
     if (!username) {
         showLoginMessage("Por favor, insira um e-mail.", "error");
         btn.disabled = false;
         btn.textContent = 'Entrar';
         return;
     }
-    showLoginMessage("Login fictício realizado!", "success");
+    showLoginMessage("Login realizado com sucesso!", "success");
+    // Simula token de autenticação
     localStorage.setItem('authToken', 'fake-dev-token');
     localStorage.setItem('userEmail', username);
     setTimeout(() => {
@@ -520,7 +549,7 @@ async function fetchProjectsForAdmin() {
         const projects = await response.json();
         populateAdminList(projects);
     } catch (error) {
-        console.warn("MODO FICTÍCIO (Admin): Carregando projetos fictícios.");
+        console.warn("MODO FICTÍCIO (Admin): Falha na API, carregando MOCK.", error.message);
         loader.textContent = "Carregando projetos fictícios...";
         setTimeout(() => {
             populateAdminList(MOCK_PROJECTS);
@@ -603,6 +632,7 @@ async function handleProjectSubmit(event) {
         console.warn("MODO FICTÍCIO (Admin Submit):", error.message);
         showAdminMessage("MODO FICTÍCIO: Simulação de projeto salvo!", "success");
         
+        // Atualiza Mock para teste local
         if (projectId) {
             const index = MOCK_PROJECTS.findIndex(p => p.id === projectId);
             if (index !== -1) {
@@ -723,9 +753,7 @@ function initModalListeners() {
 }
 
 /**
- * [SIMPLIFICADO] Helper para transformar links do YouTube em Embed Padrão
- * Remove parâmetros complexos como 'enablejsapi' e 'origin' que podem causar
- * Erro 153 em ambientes locais ou não homologados.
+ * [HELPER] Transforma links do YouTube em Embed Padrão
  */
 function getEmbedUrl(url) {
     if (!url) return "";
@@ -735,7 +763,6 @@ function getEmbedUrl(url) {
     const match = url.match(youtubeRegex);
     
     if (match && match[1]) {
-        // Retorna o embed simples, que funciona com a permissão "Allow Embedding" ativada no YouTube
         return `https://www.youtube.com/embed/${match[1]}`;
     }
     
@@ -748,11 +775,11 @@ function openModal(project) {
     modalTitle.textContent = project.title || 'Título do Projeto';
     modalEmbedTitle.textContent = project.embedTitle || 'Conteúdo Interativo';
     
-    // [MODIFICADO] Permissões padrão para iframe
+    // Configura permissões do iframe para vídeo e Power BI
     modalIframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share');
     modalIframe.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
 
-    // [MODIFICADO] Usa a função helper simplificada
+    // Usa helper para formatar URL
     modalIframe.src = getEmbedUrl(project.iframeSrc) || '';
 
     const data = project.data || {};
@@ -791,7 +818,6 @@ function closeModal() {
     if (!modalOverlay) return;
     modalOverlay.classList.add('hidden');
     modalIframe.src = '';
-    // Limpa atributos para não afetar outros iframes se necessário
     modalIframe.removeAttribute('allow');
     modalIframe.removeAttribute('referrerpolicy');
     document.body.style.overflow = 'auto';
