@@ -1,12 +1,12 @@
 /**
- * Lógica do Site - script.js (Versão Final Consolidada)
+ * Lógica do Site - script.js (Versão Final Consolidada - Acessibilidade Otimizada)
  *
  * Este script gerencia:
  * 1. Carregamento dinâmico de projetos (da API AWS ou Mock local).
  * 2. Filtragem de projetos por categoria.
- * 3. Envio de formulário de contato com tratamento de erros e Rate Limit.
- * 4. Feedback visual para o usuário (mensagens de sucesso, erro e aviso).
- * 5. Modais interativos para detalhes do projeto e embeds de vídeo.
+ * 3. Envio de formulário de contato com tratamento de erros, Rate Limit e Feedback Visual.
+ * 4. Modais interativos para detalhes do projeto e embeds de vídeo.
+ * 5. Acessibilidade: Nomes de botões, foco e feedback.
  */
 
 // =================================================================
@@ -17,7 +17,7 @@ const MOCK_PROJECTS = [
       id: "mock-1",
       title: "Projeto 1: Controle de vencimento",
       category: "data-analysis",
-      thumbnailSrc: "images/relatorio_vencimentos.webp",
+      thumbnailSrc: "images/relatorio_vencimentos.png",
       iframeSrc: "https://app.powerbi.com/view?r=eyJrIjoiMWRjOGIyMTItNTkxMS00MTYxLWFkYmQtOGU0MDdiOGQxNmJlIiwidCI6IjMyMjEyYTc5LWYzMWEtNGIwYS1hZjE0LTY4YzFjYTUyMGVmNSJ9",
       embedTitle: "Dashboard Interativo",
       tabsToShow: "",
@@ -139,7 +139,7 @@ const MOCK_PROJECTS = [
 // =================================================================
 // CONSTANTES DA API (AWS)
 // =================================================================
-// URL do API Gateway
+// URL do API Gateway (sem barra no final)
 const BASE_API_URL = "https://jwqiah2rvj.execute-api.us-west-2.amazonaws.com"; 
 
 const API_URL_GET_PROJECTS = `${BASE_API_URL}/projects`;
@@ -318,11 +318,13 @@ function populateProjectGrid(gridElementId, projects) {
         // Guarda os dados no dataset para o modal recuperar depois
         card.dataset.projectData = JSON.stringify(project);
 
+        // [CORREÇÃO ACESSIBILIDADE] 
+        // O aria-label agora inicia com "Ver Projeto" para coincidir com o texto visível
         card.innerHTML = `
             <img src="${project.thumbnailSrc}" alt="Miniatura do ${project.title}" class="project-thumbnail" onerror="handleImageError(this, '${project.title}')">
             <div class="project-card-content">
                 <h3>${project.title}</h3>
-                <button class="project-card-button" aria-label="Ver detalhes do ${project.title}">Ver Projeto</button>
+                <button class="project-card-button" aria-label="Ver Projeto: ${project.title}">Ver Projeto</button>
             </div>
         `;
         
