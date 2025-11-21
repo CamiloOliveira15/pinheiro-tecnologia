@@ -50,10 +50,6 @@
 
 html {
     scroll-behavior: smooth; 
-    
-    /* [REMOVIDO] Scroll Snap desativado para rolagem livre */
-    /* scroll-snap-type: y mandatory; */
-    /* scroll-padding-top: 64px; */ 
 }
 
 body {
@@ -152,7 +148,6 @@ select:focus-visible {
 .main-nav {
     background: var(--primary-color-accessible);
     padding: 0.75rem 0;
-    /* [MODIFICADO] Removido 'position: sticky' e 'top: 0' */
     position: relative; 
     z-index: 100;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -217,16 +212,20 @@ select:focus-visible {
     border: none;
     font-family: var(--font-primary);
     font-size: 1rem;
+    /* Melhoria de contraste para o botão admin */
+    color: rgba(255, 255, 255, 0.9);
     background-color: rgba(0, 0, 0, 0.1);
 }
 
 .nav-link-admin:hover,
 .nav-link-button:hover {
     background-color: rgba(0, 0, 0, 0.2);
+    color: #ffffff;
 }
 
 .nav-link-admin.active {
     background-color: var(--primary-color-active);
+    color: #ffffff;
 }
 
 
@@ -360,36 +359,9 @@ select:focus-visible {
 .project-grid {
     display: flex;
     flex-wrap: wrap;
-    justify-content: flex-start;
+    justify-content: flex-start; 
     gap: 2rem;
 }
-
-.form-message {
-    padding: 1rem;
-    border-radius: var(--border-radius-sm);
-    margin-bottom: 1rem;
-    font-weight: 500;
-    border: 1px solid transparent;
-}
-.form-message.error {
-    background: #fbe9e7;
-    color: #D93025;
-    border-color: #D93025;
-}
-.form-message.success {
-    background: #e6f4ea;
-    color: #1E8E3E;
-    border-color: #1E8E3E;
-}
-/* [NOVO] Estilo para avisos (Rate Limit) */
-.form-message.warning {
-    background: #fff8e1; /* Fundo amarelo claro */
-    color: #f57f17;       /* Texto laranja escuro/âmbar */
-    border-color: #ffb300; /* Borda amarela */
-}
-
-/* [REMOVIDO] Wrapper do grid da Index. A lógica agora é via JS */
-/* .project-grid-index-wrapper { ... } */
 
 
 /* Estilo para o botão "Ver Todos" */
@@ -413,7 +385,6 @@ select:focus-visible {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     width: 100%;
     max-width: 340px;
-    /* [MODIFICADO] flex-shrink: 1 para permitir quebra de linha */
     flex-shrink: 1; 
 }
 
@@ -735,7 +706,8 @@ select:focus-visible {
     padding: 1.5rem 0;
     margin-top: 2rem;
     border-top: 1px solid var(--border-color);
-    color: #888;
+    /* [MODIFICADO] Aumentado contraste para acessibilidade (era #888) */
+    color: #454545;
     background: var(--surface-color);
 }
 
@@ -1065,6 +1037,12 @@ select:focus-visible {
     color: #1E8E3E;
     border-color: #1E8E3E;
 }
+/* [NOVO] Estilo para avisos (Rate Limit) */
+.form-message.warning {
+    background: #fff8e1; /* Fundo amarelo claro */
+    color: #f57f17;       /* Texto laranja escuro/âmbar */
+    border-color: #ffb300; /* Borda amarela */
+}
 
 .project-list-container {
     display: flex;
@@ -1140,7 +1118,6 @@ select:focus-visible {
     .project-grid {
         gap: 1.5rem;
     }
-    /* [REMOVIDO] .project-grid-index-wrapper */
     
     .contact-card-grid {
         grid-template-columns: 1fr;
@@ -1206,7 +1183,6 @@ select:focus-visible {
         max-width: 100%;
         flex-shrink: 1;
     }
-    /* [REMOVIDO] .project-grid-index-wrapper */
 
     .contact-card-grid {
         grid-template-columns: 1fr;

@@ -17,7 +17,7 @@ const MOCK_PROJECTS = [
       id: "mock-1",
       title: "Projeto 1: Controle de vencimento",
       category: "data-analysis",
-      thumbnailSrc: "images/relatorio_vencimentos.png",
+      thumbnailSrc: "images/relatorio_vencimentos.webp",
       iframeSrc: "https://app.powerbi.com/view?r=eyJrIjoiMWRjOGIyMTItNTkxMS00MTYxLWFkYmQtOGU0MDdiOGQxNmJlIiwidCI6IjMyMjEyYTc5LWYzMWEtNGIwYS1hZjE0LTY4YzFjYTUyMGVmNSJ9",
       embedTitle: "Dashboard Interativo",
       tabsToShow: "",
@@ -34,7 +34,7 @@ const MOCK_PROJECTS = [
       id: "mock-2",
       title: "Projeto 2: Hub de testes de desenvolvimento de projetos",
       category: "apps", 
-      thumbnailSrc: "images/Test Hub.png",
+      thumbnailSrc: "images/Test-Hub.webp",
       // URL limpa para o helper getEmbedUrl processar
       iframeSrc: "https://www.youtube.com/embed/o8CvaeNNycs",
       embedTitle: "Gestão de Testes e Qualidade",
@@ -84,6 +84,7 @@ const MOCK_PROJECTS = [
         id: "mock-4",
         title: "Projeto 4: Automação de Faturas",
         category: "automation",
+        hidden: true,
         thumbnailSrc: "https://placehold.co/600x400/1A6A6C/FFFFFF?text=Automação",
         iframeSrc: "", 
         embedTitle: "Demo de Automação",
@@ -101,6 +102,7 @@ const MOCK_PROJECTS = [
         id: "mock-5",
         title: "Projeto 5: Análise de RH",
         category: "data-analysis",
+        hidden: true,
         thumbnailSrc: "https://placehold.co/600x400/1A6A6C/FFFFFF?text=Dashboard+RH",
         iframeSrc: "",
         embedTitle: "Dashboard Interativo",
@@ -118,6 +120,7 @@ const MOCK_PROJECTS = [
         id: "mock-6",
         title: "Projeto 6: App de Inspeção",
         category: "apps",
+        hidden: true,
         thumbnailSrc: "https://placehold.co/600x400/1A6A6C/FFFFFF?text=App+Inspeção",
         iframeSrc: "",
         embedTitle: "Demonstração em Vídeo",
@@ -136,7 +139,7 @@ const MOCK_PROJECTS = [
 // =================================================================
 // CONSTANTES DA API (AWS)
 // =================================================================
-// URL do API Gateway (sem barra no final)
+// URL do API Gateway
 const BASE_API_URL = "https://jwqiah2rvj.execute-api.us-west-2.amazonaws.com"; 
 
 const API_URL_GET_PROJECTS = `${BASE_API_URL}/projects`;
