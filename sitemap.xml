@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+   <!-- Página Inicial: A mais importante -->
+   <url>
+      <loc>https://pinheirotecnologia.com/</loc>
+      <lastmod>2025-11-21</lastmod>
+      <changefreq>weekly</changefreq>
+      <priority>1.0</priority>
+   </url>
+
+   <!-- Página de Projetos: Atualizada com frequência -->
+   <url>
+      <loc>https://pinheirotecnologia.com/projetos</loc>
+      <lastmod>2025-11-21</lastmod>
+      <changefreq>weekly</changefreq>
+      <priority>0.9</priority>
+   </url>
+
+   <!-- Página Sobre: Estática, muda pouco -->
+   <url>
+      <loc>https://pinheirotecnologia.com/sobre</loc>
+      <lastmod>2025-11-21</lastmod>
+      <changefreq>monthly</changefreq>
+      <priority>0.7</priority>
+   </url>
+
+   <!-- Página de Contato: Estática -->
+   <url>
+      <loc>https://pinheirotecnologia.com/contato</loc>
+      <lastmod>2025-11-21</lastmod>
+      <changefreq>monthly</changefreq>
+      <priority>0.7</priority>
+   </url>
+
+</urlset>

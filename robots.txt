@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+# Bloquear acesso a ficheiros ou pastas sensíveis (se existirem no futuro)
+Disallow: /admin/
+Disallow: /private/
+
+# Indicar a localização do Sitemap
+Sitemap: https://pinheirotecnologia.com/sitemap.xml
