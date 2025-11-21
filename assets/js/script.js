@@ -1,71 +1,72 @@
 /**
- * Lógica do Site - script.js (Versão Estática - Gestão via Código)
+ * Lógica do Site - script.js (Versão Final Consolidada - Acessibilidade Otimizada v2)
  *
  * Este script gerencia:
- * 1. Lista de Projetos (PROJECTS_DATA): Edite esta lista para adicionar/remover projetos.
- * 2. Exibição dinâmica na Home e Página de Projetos.
- * 3. Filtragem por categoria.
- * 4. Formulário de contato (envio para API AWS).
- * 5. Modais e interatividade.
+ * 1. Carregamento dinâmico de projetos (da API AWS ou Mock local).
+ * 2. Filtragem de projetos por categoria.
+ * 3. Envio de formulário de contato com tratamento de erros, Rate Limit e Feedback Visual.
+ * 4. Modais interativos para detalhes do projeto e embeds de vídeo.
+ * 5. Acessibilidade: Correção de aria-labels para WCAG 2.5.3.
+ * 6. UX: Contador de caracteres no formulário de contato.
  */
 
 // =================================================================
-// 1. LISTA DE PROJETOS (Sua "Base de Dados")
+// DADOS FICTÍCIOS (PARA DESENVOLVIMENTO / FALLBACK)
 // =================================================================
-// Para adicionar um novo projeto, copie um bloco {...}, cole e edite os dados.
-const PROJECTS_DATA = [
+const MOCK_PROJECTS = [
     {
-      id: "proj-1",
+      id: "mock-1",
       title: "Projeto 1: Controle de vencimento",
-      category: "data-analysis", // Opções: 'data-analysis', 'apps', 'automation', 'other'
-      thumbnailSrc: "images/relatorio_vencimentos.webp", // Caminho da imagem
+      category: "data-analysis",
+      thumbnailSrc: "images/relatorio_vencimentos.webp",
       iframeSrc: "https://app.powerbi.com/view?r=eyJrIjoiMWRjOGIyMTItNTkxMS00MTYxLWFkYmQtOGU0MDdiOGQxNmJlIiwidCI6IjMyMjEyYTc5LWYzMWEtNGIwYS1hZjE0LTY4YzFjYTUyMGVmNSJ9",
       embedTitle: "Dashboard Interativo",
-      tabsToShow: "", // Deixe vazio para mostrar todas as abas padrão
+      tabsToShow: "",
       data: {
         descricao: "<p>Este relatório monitora o vencimento de treinamentos, NRs, exames e documentos diversos.</p>",
         objetivos: "<ul class='list-disc'><li>Dar visibilidade do vencimento e alertas.</li></ul>",
         metricas: "<ul class='list-disc'><li><strong>Quantidade de documentos vencidos.</strong></li></ul>",
         tecnologias: "<p>Power Query, DAX e Power BI.</p>",
         detalhes: "<p>Medidas DAX avançadas para cálculo temporal.</p>",
-        fontes: "<p>Dados internos.</p>"
+        fontes: "<p>Dados fictícios.</p>"
       }
     },
     {
-      id: "proj-2",
-      title: "Projeto 2: Hub de testes de desenvolvimento",
+      id: "mock-2",
+      title: "Projeto 2: Hub de testes de desenvolvimento de projetos",
       category: "apps", 
       thumbnailSrc: "images/Test-Hub.webp",
-      iframeSrc: "https://www.youtube.com/embed/o8CvaeNNycs", // Use link de embed
+      iframeSrc: "https://www.youtube.com/embed/o8CvaeNNycs",
       embedTitle: "Gestão de Testes e Qualidade",
       tabsToShow: "modal-descricao,modal-objetivos",
       data: {
         descricao: `
       <p class="mb-4">
-        O <strong>Test Hub</strong> é uma solução robusta desenvolvida na <strong>Microsoft Power Platform</strong> para modernizar e centralizar o processo de Garantia de Qualidade (QA).
+        O <strong>Test Hub</strong> é uma solução robusta desenvolvida na <strong>Microsoft Power Platform</strong> para modernizar e centralizar o processo de Garantia de Qualidade (QA) em projetos de software.
       </p>
       <p class="mb-4">
-        Substitui planilhas descentralizadas, oferecendo fluxo completo de testes, bugs e validação.
+        Criado para substituir o gerenciamento descentralizado em planilhas, o aplicativo oferece um fluxo de trabalho completo: do planejamento de casos de teste à execução, reporte de bugs e validação de correções. Ele atua como um "mini-Jira" personalizado, focado na agilidade e na rastreabilidade das entregas.
       </p>
     `,
         objetivos: `
       <ul class="list-disc pl-5 space-y-2">
-        <li><strong>Centralizar a Gestão:</strong> Fonte única da verdade para testes.</li>
-        <li><strong>Padronizar Processos:</strong> Passos e pré-condições definidos.</li>
-        <li><strong>Rastreabilidade:</strong> Vínculo automático de bugs.</li>
+        <li><strong>Centralizar a Gestão:</strong> Consolidar planos de teste, execuções e bugs em uma única fonte da verdade.</li>
+        <li><strong>Padronizar Processos:</strong> Garantir que todos os testes sigam um padrão rigoroso com passos, pré-condições e massas de dados definidas.</li>
+        <li><strong>Aumentar a Rastreabilidade:</strong> Vincular automaticamente bugs aos casos de teste de origem e às evidências (prints/vídeos).</li>
+        <li><strong>Melhorar a Colaboração:</strong> Facilitar a comunicação entre QA e Desenvolvedores através de comentários e status claros no quadro Kanban.</li>
       </ul>
     `,
         metricas: "",
         tecnologias: "",
-        detalhes: "<p>Desenvolvido em Power Apps Canvas.</p>",
-        fontes: ""
+        detalhes: "<p>(WIP) Detalhes...</p>",
+        fontes: "<p>(WIP) Fontes...</p>"
       }
     },
     {
-      id: "proj-3",
+      id: "mock-3",
       title: "Projeto 3: Demo de App",
       category: "apps",
-      hidden: true, // Use hidden: true para rascunhos (não aparece no site)
+      hidden: true, 
       thumbnailSrc: "https://placehold.co/600x400/1A6A6C/FFFFFF?text=Demo+App",
       iframeSrc: "https://www.youtube.com/embed/LXb3EKWsInQ", 
       embedTitle: "Demonstração em Vídeo",
@@ -80,7 +81,7 @@ const PROJECTS_DATA = [
       }
     },
     {
-        id: "proj-4",
+        id: "mock-4",
         title: "Projeto 4: Automação de Faturas",
         category: "automation",
         hidden: true,
@@ -98,7 +99,7 @@ const PROJECTS_DATA = [
         }
     },
     {
-        id: "proj-5",
+        id: "mock-5",
         title: "Projeto 5: Análise de RH",
         category: "data-analysis",
         hidden: true,
@@ -116,7 +117,7 @@ const PROJECTS_DATA = [
         }
       },
       {
-        id: "proj-6",
+        id: "mock-6",
         title: "Projeto 6: App de Inspeção",
         category: "apps",
         hidden: true,
@@ -136,15 +137,22 @@ const PROJECTS_DATA = [
   ];
 
 // =================================================================
-// CONSTANTES DA API (Apenas para Contato)
+// CONSTANTES DA API (AWS)
 // =================================================================
-const API_URL_CONTACT = "https://jwqiah2rvj.execute-api.us-west-2.amazonaws.com/contact"; 
+const BASE_API_URL = "https://jwqiah2rvj.execute-api.us-west-2.amazonaws.com"; 
+
+const API_URL_GET_PROJECTS = `${BASE_API_URL}/projects`;
+const API_URL_POST_PROJECT = `${BASE_API_URL}/projects`;
+const API_URL_PUT_PROJECT = `${BASE_API_URL}/projects`;
+const API_URL_DELETE_PROJECT = `${BASE_API_URL}/projects`;
+const API_URL_CONTACT = `${BASE_API_URL}/contact`; 
 
 // =================================================================
 // INICIALIZAÇÃO GLOBAL
 // =================================================================
 
 document.addEventListener('DOMContentLoaded', () => {
+    
     const page = document.body.id || window.location.pathname;
 
     if (page.includes('index.html') || page === '/' || page.endsWith('/')) {
@@ -155,19 +163,24 @@ document.addEventListener('DOMContentLoaded', () => {
         initSobrePage();
     } else if (page.includes('contato.html')) {
         initContatoPage();
+    } else if (page.includes('login.html')) {
+        initLoginPage();
+    } else if (page.includes('admin.html')) {
+        initAdminPage();
     }
-    // Páginas de login/admin removidas da lógica
 
     updateFooterYear();
 });
 
 function updateFooterYear() {
-    const year = new Date().getFullYear();
     const yearSpan = document.getElementById('current-year');
-    if (yearSpan) yearSpan.textContent = year;
-    
+    if (yearSpan) {
+        yearSpan.textContent = new Date().getFullYear();
+    }
     const yearSpanFooter = document.getElementById('current-year-footer');
-    if (yearSpanFooter) yearSpanFooter.textContent = year;
+    if (yearSpanFooter) {
+        yearSpanFooter.textContent = new Date().getFullYear();
+    }
 }
 
 // =================================================================
@@ -175,7 +188,7 @@ function updateFooterYear() {
 // =================================================================
 
 function initIndexPage() {
-    loadProjectsForIndex(); // Agora carrega direto do array local
+    fetchProjectsForIndex();
     initModalListeners(); 
     initClientCarousel();
 }
@@ -185,27 +198,37 @@ function initClientCarousel() {
     if (!track) return;
     const logos = track.querySelectorAll('.client-logo');
     if (logos.length === 0) return;
-    
     logos.forEach(logo => {
         const clone = logo.cloneNode(true);
         clone.setAttribute('aria-hidden', 'true');
         track.appendChild(clone);
     });
-    
-    const totalWidth = (logos.length * 2) * (150 + 32);
+    const totalWidth = (logos.length * 2) * (150 + 32); 
     track.style.width = `${totalWidth}px`;
 }
 
-function loadProjectsForIndex() {
+async function fetchProjectsForIndex() {
     const gridId = 'project-grid-dynamic';
     const loader = document.getElementById('project-loader');
-    if (!document.getElementById(gridId)) return;
+    if (!document.getElementById(gridId) || !loader) return;
 
-    if (loader) loader.classList.add('hidden'); // Esconde loader pois é instantâneo
-
-    // Filtra ocultos e pega os 6 primeiros da lista local
-    const visibleProjects = PROJECTS_DATA.filter(p => !p.hidden).slice(0, 6);
-    populateProjectGrid(gridId, visibleProjects); 
+    try {
+        const response = await fetch(API_URL_GET_PROJECTS);
+        if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
+        const projects = await response.json();
+        
+        const visibleProjects = projects.filter(p => !p.hidden);
+        populateProjectGrid(gridId, visibleProjects.slice(0, 6)); 
+        loader.classList.add('hidden');
+    } catch (error) {
+        console.warn("MODO FICTÍCIO (Index): Falha na API, usando MOCK.", error.message);
+        loader.textContent = "Carregando projetos fictícios...";
+        setTimeout(() => {
+            const visibleMocks = MOCK_PROJECTS.filter(p => !p.hidden);
+            populateProjectGrid(gridId, visibleMocks.slice(0, 6)); 
+            loader.classList.add('hidden');
+        }, 500);
+    }
 }
 
 // =================================================================
@@ -213,16 +236,37 @@ function loadProjectsForIndex() {
 // =================================================================
 
 function initProjetosPage() {
-    loadProjectsForCategorization();
+    fetchProjectsForCategorization();
     initModalListeners();
 }
 
-function loadProjectsForCategorization() {
-    const loaders = document.querySelectorAll('.loader-text');
-    loaders.forEach(l => l.classList.add('hidden'));
+async function fetchProjectsForCategorization() {
+    const loaders = {
+        data: document.getElementById('loader-data-analysis'),
+        apps: document.getElementById('loader-apps'),
+        automation: document.getElementById('loader-automation'),
+        other: document.getElementById('loader-other')
+    };
 
-    // Filtra ocultos e distribui
-    distributeProjects(PROJECTS_DATA.filter(p => !p.hidden));
+    try {
+        const response = await fetch(API_URL_GET_PROJECTS);
+        if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
+        const projects = await response.json();
+        
+        distributeProjects(projects.filter(p => !p.hidden));
+    } catch (error) {
+        console.warn("MODO FICTÍCIO (Projetos): Carregando MOCK_PROJECTS.", error.message);
+        Object.values(loaders).forEach(loader => {
+            if(loader) loader.textContent = "Carregando projetos fictícios...";
+        });
+        setTimeout(() => {
+            distributeProjects(MOCK_PROJECTS.filter(p => !p.hidden));
+        }, 500);
+    } finally {
+        Object.values(loaders).forEach(loader => {
+            if(loader) loader.classList.add('hidden');
+        });
+    }
 }
 
 function distributeProjects(projects) {
@@ -237,6 +281,7 @@ function distributeProjects(projects) {
     populateProjectGrid('grid-other', otherProjects);
 }
 
+
 // =================================================================
 // FUNÇÃO REUTILIZÁVEL DE POPULAR O GRID
 // =================================================================
@@ -250,11 +295,15 @@ function populateProjectGrid(gridElementId, projects) {
     const section = grid.closest('section');
 
     if (!projects || projects.length === 0) {
-        if (section) section.style.display = 'none';
+        if (section) {
+            section.style.display = 'none';
+        }
         return;
     }
 
-    if (section) section.style.display = 'block';
+    if (section) {
+        section.style.display = 'block';
+    }
 
     projects.forEach(project => {
         const card = document.createElement('div');
@@ -301,6 +350,34 @@ function initContatoPage() {
     if (contactForm) {
         contactForm.addEventListener('submit', handleContactSubmit);
     }
+    // [NOVO] Inicializa o contador de caracteres
+    initContactFormCounter();
+}
+
+// [NOVO] Função para contador de caracteres
+function initContactFormCounter() {
+    const textArea = document.getElementById('message');
+    const counterDisplay = document.getElementById('char-count');
+    const maxLength = 2000;
+
+    if (textArea && counterDisplay) {
+        textArea.addEventListener('input', function() {
+            const currentLength = this.value.length;
+            counterDisplay.textContent = `${currentLength} / ${maxLength}`;
+
+            // Muda a cor conforme se aproxima do limite
+            if (currentLength >= maxLength) {
+                counterDisplay.style.color = 'red';
+                counterDisplay.style.fontWeight = 'bold';
+            } else if (currentLength >= maxLength * 0.9) {
+                counterDisplay.style.color = '#f57f17'; // Laranja/Amarelo escuro
+                counterDisplay.style.fontWeight = 'normal';
+            } else {
+                counterDisplay.style.color = '#666';
+                counterDisplay.style.fontWeight = 'normal';
+            }
+        });
+    }
 }
 
 async function handleContactSubmit(event) {
@@ -324,7 +401,7 @@ async function handleContactSubmit(event) {
             method: 'POST', 
             headers: {
                 'Content-Type': 'application/json',
-                'Accept': 'application/json' 
+                'Accept': 'application/json'
             },
             body: JSON.stringify(data) 
         });
@@ -338,7 +415,7 @@ async function handleContactSubmit(event) {
             if (response.status === 429) {
                 let message = "Você já enviou mensagens suficientes por hoje. Recebemos seu contato e retornaremos em breve!";
                 if (errorData && errorData.message) {
-                    message = errorData.message;
+                    message = errorData.message; 
                 }
                 throw new Error(`RATE_LIMIT:${message}`);
             }
@@ -346,8 +423,17 @@ async function handleContactSubmit(event) {
             throw new Error(`Falha no envio: ${response.status} - ${errorText}`);
         }
         
+        const result = await response.json();
+        console.log("Sucesso:", result);
+
         showFormMessage('Sua mensagem foi enviada com sucesso! Entraremos em contato em breve.', 'success');
         event.target.reset();
+        // [NOVO] Reseta o contador também
+        const counterDisplay = document.getElementById('char-count');
+        if(counterDisplay) {
+            counterDisplay.textContent = `0 / 2000`;
+            counterDisplay.style.color = '#666';
+        }
 
     } catch (error) {
         console.error("Erro Capturado:", error);
@@ -372,14 +458,268 @@ function showFormMessage(message, type) {
     const msgElement = document.getElementById('form-message');
     if (msgElement) {
         msgElement.textContent = message;
-        msgElement.classList.remove('success', 'error', 'warning');
-        msgElement.classList.add('form-message', type); 
+        msgElement.className = `form-message ${type}`; 
         msgElement.classList.remove('hidden');
         msgElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
     } else {
-        alert(message); 
+        alert(message);
     }
 }
+
+// =================================================================
+// PÁGINA DE LOGIN e ADMIN (Sem alterações significativas)
+// =================================================================
+
+function initLoginPage() {
+    const loginForm = document.getElementById('login-form');
+    if (loginForm) {
+        loginForm.addEventListener('submit', handleLoginSubmit);
+    }
+    if (localStorage.getItem('authToken')) {
+        window.location.href = 'admin.html';
+    }
+}
+
+async function handleLoginSubmit(event) {
+    event.preventDefault();
+    const btn = document.getElementById('login-submit-btn');
+    const username = document.getElementById('username').value;
+    btn.disabled = true;
+    btn.textContent = 'Entrando...';
+    
+    console.warn("MODO FICTÍCIO: Bypass do Cognito ativado.");
+    if (!username) {
+        showLoginMessage("Por favor, insira um e-mail.", "error");
+        btn.disabled = false;
+        btn.textContent = 'Entrar';
+        return;
+    }
+    showLoginMessage("Login fictício realizado!", "success");
+    localStorage.setItem('authToken', 'fake-dev-token');
+    localStorage.setItem('userEmail', username);
+    setTimeout(() => {
+        window.location.href = 'admin.html';
+    }, 1000);
+}
+
+function showLoginMessage(message, type) {
+    const msgElement = document.getElementById('login-message');
+    if (msgElement) {
+        msgElement.textContent = message;
+        msgElement.className = `form-message ${type}`;
+        msgElement.classList.remove('hidden');
+    }
+}
+
+function initAdminPage() {
+    checkAdminAuth();
+    const logoutBtn = document.getElementById('logout-button');
+    if (logoutBtn) {
+        logoutBtn.addEventListener('click', handleLogout);
+    }
+    const projectForm = document.getElementById('project-form');
+    if (projectForm) {
+        projectForm.addEventListener('submit', handleProjectSubmit);
+    }
+    const cancelBtn = document.getElementById('project-cancel-btn');
+    if (cancelBtn) {
+        cancelBtn.addEventListener('click', resetProjectForm);
+    }
+    fetchProjectsForAdmin();
+}
+
+function checkAdminAuth() {
+    const token = localStorage.getItem('authToken');
+    if (!token) {
+        window.location.href = 'login.html';
+        return;
+    }
+    const userEmail = localStorage.getItem('userEmail');
+    const emailSpan = document.getElementById('admin-user-email');
+    if (emailSpan && userEmail) {
+        emailSpan.textContent = userEmail;
+    }
+}
+
+function handleLogout() {
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('userEmail');
+    window.location.href = 'login.html';
+}
+
+async function fetchProjectsForAdmin() {
+    const listContainer = document.getElementById('project-list-container');
+    const loader = document.getElementById('project-list-loader');
+    if (!listContainer || !loader) return;
+    try {
+        const response = await fetch(API_URL_GET_PROJECTS);
+        if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
+        const projects = await response.json();
+        populateAdminList(projects);
+    } catch (error) {
+        console.warn("MODO FICTÍCIO (Admin): Carregando projetos fictícios.");
+        loader.textContent = "Carregando projetos fictícios...";
+        setTimeout(() => {
+            populateAdminList(MOCK_PROJECTS);
+            loader.classList.add('hidden');
+        }, 500);
+    }
+}
+
+function populateAdminList(projects) {
+    const listContainer = document.getElementById('project-list-container');
+    listContainer.innerHTML = '';
+    if (!projects || projects.length === 0) {
+        listContainer.innerHTML = '<p>Nenhum projeto publicado.</p>';
+        return;
+    }
+    projects.forEach(project => {
+        const listItem = document.createElement('div');
+        listItem.className = 'project-list-item';
+        listItem.dataset.projectId = project.id;
+        
+        const hiddenBadge = project.hidden ? ' <span style="color:red; font-size:0.8em;">(Oculto)</span>' : '';
+
+        listItem.innerHTML = `
+            <span class="project-list-title">${project.title} <b>(${project.category || 'N/A'})</b>${hiddenBadge}</span>
+            <div class="project-list-actions">
+                <button class="project-list-button edit" data-id="${project.id}">Editar</button>
+                <button class="project-list-button delete" data-id="${project.id}">Excluir</button>
+            </div>
+        `;
+        
+        const editBtn = listItem.querySelector('.edit');
+        editBtn.onclick = () => handleEditProject(project);
+
+        const deleteBtn = listItem.querySelector('.delete');
+        deleteBtn.onclick = () => handleDeleteProject(project.id, project.title);
+
+        listContainer.appendChild(listItem);
+    });
+}
+
+async function handleProjectSubmit(event) {
+    event.preventDefault();
+    const btn = document.getElementById('project-submit-btn');
+    btn.disabled = true;
+
+    const projectId = document.getElementById('project-id').value;
+    const project = {
+        title: document.getElementById('project-title').value,
+        category: document.getElementById('project-category').value, 
+        thumbnailSrc: document.getElementById('project-thumbnail').value,
+        iframeSrc: document.getElementById('project-iframe-src').value,
+        embedTitle: document.getElementById('project-embed-title').value,
+        tabsToShow: document.getElementById('project-tabs-to-show').value,
+        data: {
+            descricao: document.getElementById('tab-descricao').value,
+            objetivos: document.getElementById('tab-objetivos').value,
+            metricas: document.getElementById('tab-metricas').value,
+            tecnologias: document.getElementById('tab-tecnologias').value,
+            detalhes: document.getElementById('tab-detalhes').value,
+            fontes: document.getElementById('tab-fontes').value
+        }
+    };
+    
+    const method = projectId ? 'PUT' : 'POST';
+    const url = projectId ? `${API_URL_PUT_PROJECT}/${projectId}` : API_URL_POST_PROJECT;
+    const token = localStorage.getItem('authToken');
+
+    try {
+        const response = await fetch(url, {
+            method: method,
+            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+            body: JSON.stringify(project)
+        });
+        if (!response.ok) throw new Error('Falha ao salvar.');
+        showAdminMessage('Projeto salvo com sucesso!', 'success');
+        resetProjectForm();
+        fetchProjectsForAdmin(); 
+
+    } catch (error) {
+        console.warn("MODO FICTÍCIO (Admin Submit):", error.message);
+        showAdminMessage("MODO FICTÍCIO: Simulação de projeto salvo!", "success");
+        
+        if (projectId) {
+            const index = MOCK_PROJECTS.findIndex(p => p.id === projectId);
+            if (index !== -1) {
+                MOCK_PROJECTS[index] = { ...MOCK_PROJECTS[index], ...project, id: projectId };
+            }
+        } else {
+            MOCK_PROJECTS.push({ ...project, id: `mock-${Date.now()}` });
+        }
+        populateAdminList(MOCK_PROJECTS); 
+        resetProjectForm();
+    } finally {
+        btn.disabled = false;
+        btn.textContent = 'Salvar Projeto';
+    }
+}
+
+function handleEditProject(project) {
+    document.getElementById('project-id').value = project.id;
+    document.getElementById('project-title').value = project.title;
+    document.getElementById('project-category').value = project.category || 'other'; 
+    document.getElementById('project-thumbnail').value = project.thumbnailSrc;
+    document.getElementById('project-iframe-src').value = project.iframeSrc;
+    document.getElementById('project-embed-title').value = project.embedTitle;
+    document.getElementById('project-tabs-to-show').value = project.tabsToShow || '';
+
+    const data = project.data || {};
+    document.getElementById('tab-descricao').value = data.descricao || '';
+    document.getElementById('tab-objetivos').value = data.objetivos || '';
+    document.getElementById('tab-metricas').value = data.metricas || '';
+    document.getElementById('tab-tecnologias').value = data.tecnologias || '';
+    document.getElementById('tab-detalhes').value = data.detalhes || '';
+    document.getElementById('tab-fontes').value = data.fontes || '';
+
+    document.getElementById('form-title').textContent = 'Editar Projeto';
+    document.getElementById('project-cancel-btn').classList.remove('hidden');
+    window.scrollTo(0, document.getElementById('project-form').offsetTop);
+}
+
+function resetProjectForm() {
+    document.getElementById('project-form').reset();
+    document.getElementById('project-id').value = '';
+    document.getElementById('form-title').textContent = 'Adicionar Novo Projeto';
+    document.getElementById('project-cancel-btn').classList.add('hidden');
+}
+
+async function handleDeleteProject(id, title) {
+    if (!confirm(`Tem certeza que deseja excluir o projeto "${title}"?`)) {
+        return;
+    }
+    const url = `${API_URL_DELETE_PROJECT}/${id}`;
+    const token = localStorage.getItem('authToken');
+    try {
+        const response = await fetch(url, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` } });
+        if (!response.ok) throw new Error('Falha ao excluir.');
+        showAdminMessage('Projeto excluído com sucesso!', 'success');
+        fetchProjectsForAdmin(); 
+    } catch (error) {
+        console.warn("MODO FICTÍCIO (Admin Delete):", error.message);
+        showAdminMessage("MODO FICTÍCIO: Simulação de projeto excluído!", 'error');
+        
+        const index = MOCK_PROJECTS.findIndex(p => p.id === id);
+        if (index !== -1) {
+            MOCK_PROJECTS.splice(index, 1);
+        }
+        populateAdminList(MOCK_PROJECTS); 
+    }
+}
+
+function showAdminMessage(message, type) {
+    const msgElement = document.getElementById('admin-message');
+    if (msgElement) {
+        msgElement.textContent = message;
+        msgElement.className = `form-message ${type}`;
+        msgElement.classList.remove('hidden');
+        setTimeout(() => {
+            msgElement.classList.add('hidden');
+        }, 5000);
+    }
+}
+
 
 // =================================================================
 // MODAL DE PROJETO (Lógica Global)
@@ -419,13 +759,22 @@ function initModalListeners() {
     });
 }
 
+/**
+ * [CORREÇÃO] Helper para transformar links do YouTube em Embed
+ * Usa youtube-nocookie.com para evitar o erro 153 e melhorar a privacidade.
+ */
 function getEmbedUrl(url) {
     if (!url) return "";
+    
+    // Regex para capturar ID do YouTube (formatos variados)
     const youtubeRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i;
     const match = url.match(youtubeRegex);
+    
     if (match && match[1]) {
-        return `https://www.youtube.com/embed/${match[1]}`;
+        // [FIX] Usa o domínio 'youtube-nocookie.com' que é mais permissivo com embeds em localhost e iframes
+        return `https://www.youtube-nocookie.com/embed/${match[1]}`;
     }
+    
     return url;
 }
 
@@ -435,8 +784,12 @@ function openModal(project) {
     modalTitle.textContent = project.title || 'Título do Projeto';
     modalEmbedTitle.textContent = project.embedTitle || 'Conteúdo Interativo';
     
+    // [FIX] Permissões robustas para garantir que o vídeo toque
     modalIframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share');
     modalIframe.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
+    modalIframe.setAttribute('loading', 'lazy'); // Boa prática de performance
+
+    // [FIX] Usa a função helper corrigida
     modalIframe.src = getEmbedUrl(project.iframeSrc) || '';
 
     const data = project.data || {};
@@ -475,6 +828,7 @@ function closeModal() {
     if (!modalOverlay) return;
     modalOverlay.classList.add('hidden');
     modalIframe.src = '';
+    // Limpa atributos para evitar problemas ao reabrir
     modalIframe.removeAttribute('allow');
     modalIframe.removeAttribute('referrerpolicy');
     document.body.style.overflow = 'auto';
