@@ -7,7 +7,7 @@
  * 3. Envio de formulário de contato com tratamento de erros, Rate Limit e Feedback Visual.
  * 4. Modais interativos para detalhes do projeto e embeds de vídeo.
  * 5. Acessibilidade: Correção de aria-labels para WCAG 2.5.3.
- * 6. UX: Contador de caracteres no formulário de contato.
+ * 6. UX: Contador de caracteres e Máscara de Telefone.
  */
 
 // =================================================================
@@ -18,7 +18,8 @@ const MOCK_PROJECTS = [
       id: "mock-1",
       title: "Projeto 1: Controle de vencimento",
       category: "data-analysis",
-      thumbnailSrc: "images/relatorio_vencimentos.webp",
+      hidden: false, 
+      thumbnailSrc: "images/relatorio_vencimentos.webo",
       iframeSrc: "https://app.powerbi.com/view?r=eyJrIjoiMWRjOGIyMTItNTkxMS00MTYxLWFkYmQtOGU0MDdiOGQxNmJlIiwidCI6IjMyMjEyYTc5LWYzMWEtNGIwYS1hZjE0LTY4YzFjYTUyMGVmNSJ9",
       embedTitle: "Dashboard Interativo",
       tabsToShow: "",
@@ -35,6 +36,7 @@ const MOCK_PROJECTS = [
       id: "mock-2",
       title: "Projeto 2: Hub de testes de desenvolvimento de projetos",
       category: "apps", 
+      hidden: false, 
       thumbnailSrc: "images/Test-Hub.webp",
       iframeSrc: "https://www.youtube.com/embed/o8CvaeNNycs",
       embedTitle: "Gestão de Testes e Qualidade",
@@ -84,7 +86,7 @@ const MOCK_PROJECTS = [
         id: "mock-4",
         title: "Projeto 4: Automação de Faturas",
         category: "automation",
-        hidden: true,
+        hidden: true, 
         thumbnailSrc: "https://placehold.co/600x400/1A6A6C/FFFFFF?text=Automação",
         iframeSrc: "", 
         embedTitle: "Demo de Automação",
@@ -102,7 +104,7 @@ const MOCK_PROJECTS = [
         id: "mock-5",
         title: "Projeto 5: Análise de RH",
         category: "data-analysis",
-        hidden: true,
+        hidden: true, 
         thumbnailSrc: "https://placehold.co/600x400/1A6A6C/FFFFFF?text=Dashboard+RH",
         iframeSrc: "",
         embedTitle: "Dashboard Interativo",
@@ -120,7 +122,7 @@ const MOCK_PROJECTS = [
         id: "mock-6",
         title: "Projeto 6: App de Inspeção",
         category: "apps",
-        hidden: true,
+        hidden: true, 
         thumbnailSrc: "https://placehold.co/600x400/1A6A6C/FFFFFF?text=App+Inspeção",
         iframeSrc: "",
         embedTitle: "Demonstração em Vídeo",
@@ -350,15 +352,18 @@ function initContatoPage() {
     if (contactForm) {
         contactForm.addEventListener('submit', handleContactSubmit);
     }
-    // [NOVO] Inicializa o contador de caracteres
+    
+    // Inicializa contador de caracteres da mensagem
     initContactFormCounter();
+    
+    // [NOVO] Inicializa máscara de telefone
+    initPhoneMask();
 }
 
-// [NOVO] Função para contador de caracteres
 function initContactFormCounter() {
     const textArea = document.getElementById('message');
     const counterDisplay = document.getElementById('char-count');
-    const maxLength = 2000;
+    const maxLength = 280;
 
     if (textArea && counterDisplay) {
         textArea.addEventListener('input', function() {
@@ -378,6 +383,21 @@ function initContactFormCounter() {
             }
         });
     }
+}
+
+// [NOVO] Função para aplicar máscara de telefone (celular e fixo)
+function initPhoneMask() {
+    const phoneInput = document.getElementById('phone');
+    if (!phoneInput) return;
+
+    phoneInput.addEventListener('input', function (e) {
+        let x = e.target.value.replace(/\D/g, '').match(/(\d{0,2})(\d{0,5})(\d{0,4})/);
+        if (!x[2]) {
+            e.target.value = !x[1] ? '' : '(' + x[1];
+        } else {
+            e.target.value = !x[3] ? '(' + x[1] + ') ' + x[2] : '(' + x[1] + ') ' + x[2] + '-' + x[3];
+        }
+    });
 }
 
 async function handleContactSubmit(event) {
@@ -428,10 +448,11 @@ async function handleContactSubmit(event) {
 
         showFormMessage('Sua mensagem foi enviada com sucesso! Entraremos em contato em breve.', 'success');
         event.target.reset();
-        // [NOVO] Reseta o contador também
+        
+        // Reseta o contador também
         const counterDisplay = document.getElementById('char-count');
         if(counterDisplay) {
-            counterDisplay.textContent = `0 / 2000`;
+            counterDisplay.textContent = `0 / 280`;
             counterDisplay.style.color = '#666';
         }
 
