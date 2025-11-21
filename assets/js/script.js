@@ -18,7 +18,7 @@ const MOCK_PROJECTS = [
       id: "mock-1",
       title: "Projeto 1: Controle de vencimento",
       category: "data-analysis",
-      hidden: false, 
+      hidden: false,
       thumbnailSrc: "images/relatorio_vencimentos.webp",
       iframeSrc: "https://app.powerbi.com/view?r=eyJrIjoiMWRjOGIyMTItNTkxMS00MTYxLWFkYmQtOGU0MDdiOGQxNmJlIiwidCI6IjMyMjEyYTc5LWYzMWEtNGIwYS1hZjE0LTY4YzFjYTUyMGVmNSJ9",
       embedTitle: "Dashboard Interativo",
@@ -36,7 +36,7 @@ const MOCK_PROJECTS = [
       id: "mock-2",
       title: "Projeto 2: Hub de testes de desenvolvimento de projetos",
       category: "apps", 
-      hidden: false, 
+      hidden: false,
       thumbnailSrc: "images/Test-Hub.webp",
       iframeSrc: "https://www.youtube.com/embed/o8CvaeNNycs",
       embedTitle: "Gestão de Testes e Qualidade",
@@ -86,7 +86,7 @@ const MOCK_PROJECTS = [
         id: "mock-4",
         title: "Projeto 4: Automação de Faturas",
         category: "automation",
-        hidden: true, 
+        hidden: true,
         thumbnailSrc: "https://placehold.co/600x400/1A6A6C/FFFFFF?text=Automação",
         iframeSrc: "", 
         embedTitle: "Demo de Automação",
@@ -104,7 +104,7 @@ const MOCK_PROJECTS = [
         id: "mock-5",
         title: "Projeto 5: Análise de RH",
         category: "data-analysis",
-        hidden: true, 
+        hidden: true,
         thumbnailSrc: "https://placehold.co/600x400/1A6A6C/FFFFFF?text=Dashboard+RH",
         iframeSrc: "",
         embedTitle: "Dashboard Interativo",
@@ -122,7 +122,7 @@ const MOCK_PROJECTS = [
         id: "mock-6",
         title: "Projeto 6: App de Inspeção",
         category: "apps",
-        hidden: true, 
+        hidden: true,
         thumbnailSrc: "https://placehold.co/600x400/1A6A6C/FFFFFF?text=App+Inspeção",
         iframeSrc: "",
         embedTitle: "Demonstração em Vídeo",
@@ -218,14 +218,15 @@ async function fetchProjectsForIndex() {
         const response = await fetch(API_URL_GET_PROJECTS);
         if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
         const projects = await response.json();
-        
+        // [MODIFICADO] Filtra projetos ocultos na API real
         const visibleProjects = projects.filter(p => !p.hidden);
         populateProjectGrid(gridId, visibleProjects.slice(0, 6)); 
         loader.classList.add('hidden');
     } catch (error) {
-        console.warn("MODO FICTÍCIO (Index): Falha na API, usando MOCK.", error.message);
+        console.warn("MODO FICTÍCIO (Index): Carregando MOCK_PROJECTS.", error.message);
         loader.textContent = "Carregando projetos fictícios...";
         setTimeout(() => {
+            // [MODIFICADO] Aplica o filtro 'hidden'
             const visibleMocks = MOCK_PROJECTS.filter(p => !p.hidden);
             populateProjectGrid(gridId, visibleMocks.slice(0, 6)); 
             loader.classList.add('hidden');
@@ -254,7 +255,7 @@ async function fetchProjectsForCategorization() {
         const response = await fetch(API_URL_GET_PROJECTS);
         if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
         const projects = await response.json();
-        
+        // [MODIFICADO] Filtra projetos ocultos
         distributeProjects(projects.filter(p => !p.hidden));
     } catch (error) {
         console.warn("MODO FICTÍCIO (Projetos): Carregando MOCK_PROJECTS.", error.message);
@@ -262,6 +263,7 @@ async function fetchProjectsForCategorization() {
             if(loader) loader.textContent = "Carregando projetos fictícios...";
         });
         setTimeout(() => {
+            // [MODIFICADO] Aplica o filtro 'hidden'
             distributeProjects(MOCK_PROJECTS.filter(p => !p.hidden));
         }, 500);
     } finally {
@@ -294,15 +296,18 @@ function populateProjectGrid(gridElementId, projects) {
     
     grid.innerHTML = ''; 
     
+    // Encontra a seção pai
     const section = grid.closest('section');
 
     if (!projects || projects.length === 0) {
+        // Se não houver projetos, oculta a seção inteira
         if (section) {
             section.style.display = 'none';
         }
         return;
     }
 
+    // Se houver projetos, garante que a seção esteja visível
     if (section) {
         section.style.display = 'block';
     }
@@ -312,11 +317,14 @@ function populateProjectGrid(gridElementId, projects) {
         card.className = 'project-card';
         card.dataset.projectData = JSON.stringify(project);
 
+        // [CORREÇÃO ACESSIBILIDADE] 
+        // Adicionado 'aria-label' redundante e descritivo no botão
+        // Adicionado 'alt' descritivo na imagem
         card.innerHTML = `
-            <img src="${project.thumbnailSrc}" alt="Miniatura do ${project.title}" class="project-thumbnail" onerror="handleImageError(this, '${project.title}')">
+            <img src="${project.thumbnailSrc}" alt="Imagem de capa do projeto: ${project.title}" class="project-thumbnail" onerror="handleImageError(this, '${project.title}')">
             <div class="project-card-content">
                 <h3>${project.title}</h3>
-                <button class="project-card-button" aria-label="Ver Projeto: ${project.title}">Ver Projeto</button>
+                <button class="project-card-button" aria-label="Ver detalhes sobre o projeto ${project.title}">Ver Projeto</button>
             </div>
         `;
         
@@ -363,7 +371,7 @@ function initContatoPage() {
 function initContactFormCounter() {
     const textArea = document.getElementById('message');
     const counterDisplay = document.getElementById('char-count');
-    const maxLength = 280;
+    const maxLength = 2000;
 
     if (textArea && counterDisplay) {
         textArea.addEventListener('input', function() {
@@ -452,7 +460,7 @@ async function handleContactSubmit(event) {
         // Reseta o contador também
         const counterDisplay = document.getElementById('char-count');
         if(counterDisplay) {
-            counterDisplay.textContent = `0 / 280`;
+            counterDisplay.textContent = `0 / 2000`;
             counterDisplay.style.color = '#666';
         }
 
