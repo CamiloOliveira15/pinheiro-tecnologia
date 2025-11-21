@@ -7,6 +7,7 @@
  * [MODIFICADO] Limita os projetos na index.html para 6.
  * [MODIFICADO] Refatoração para Embed automático de YouTube (Simplificado).
  * [MODIFICADO] Adicionado suporte para ocultar projetos via propriedade 'hidden: true'.
+ * [MODIFICADO] Formulário de contato agora envia JSON para a API com LOGS e FEEDBACK VISUAL.
  */
 
 // =================================================================
@@ -34,7 +35,7 @@ const MOCK_PROJECTS = [
       id: "mock-2",
       title: "Projeto 2: Hub de testes de desenvolvimento de projetos",
       category: "apps", 
-      thumbnailSrc: "images/Test Hub.png",
+      thumbnailSrc: "https://placehold.co/600x400/1A6A6C/FFFFFF?text=Test Hub",
       // URL limpa
       iframeSrc: "https://www.youtube.com/embed/o8CvaeNNycs",
       embedTitle: "Gestão de Testes e Qualidade",
@@ -66,7 +67,7 @@ const MOCK_PROJECTS = [
       id: "mock-3",
       title: "Projeto 3: Demo de App",
       category: "apps",
-      hidden: true, // [NOVO] Este projeto agora está oculto no site, mas existe no código.
+      hidden: true, 
       thumbnailSrc: "https://placehold.co/600x400/1A6A6C/FFFFFF?text=Demo+App",
       iframeSrc: "https://www.youtube.com/embed/LXb3EKWsInQ", 
       embedTitle: "Demonstração em Vídeo",
@@ -84,7 +85,6 @@ const MOCK_PROJECTS = [
         id: "mock-4",
         title: "Projeto 4: Automação de Faturas",
         category: "automation",
-        hidden: true,
         thumbnailSrc: "https://placehold.co/600x400/1A6A6C/FFFFFF?text=Automação",
         iframeSrc: "", 
         embedTitle: "Demo de Automação",
@@ -102,7 +102,6 @@ const MOCK_PROJECTS = [
         id: "mock-5",
         title: "Projeto 5: Análise de RH",
         category: "data-analysis",
-        hidden: true,
         thumbnailSrc: "https://placehold.co/600x400/1A6A6C/FFFFFF?text=Dashboard+RH",
         iframeSrc: "",
         embedTitle: "Dashboard Interativo",
@@ -120,7 +119,6 @@ const MOCK_PROJECTS = [
         id: "mock-6",
         title: "Projeto 6: App de Inspeção",
         category: "apps",
-        hidden: true,
         thumbnailSrc: "https://placehold.co/600x400/1A6A6C/FFFFFF?text=App+Inspeção",
         iframeSrc: "",
         embedTitle: "Demonstração em Vídeo",
@@ -139,12 +137,14 @@ const MOCK_PROJECTS = [
 // =================================================================
 // CONSTANTES DA API
 // =================================================================
+// [ATUALIZADO] URL do seu API Gateway
 const BASE_API_URL = "https://jwqiah2rvj.execute-api.us-west-2.amazonaws.com"; 
+
 const API_URL_GET_PROJECTS = `${BASE_API_URL}/projects`;
 const API_URL_POST_PROJECT = `${BASE_API_URL}/projects`;
 const API_URL_PUT_PROJECT = `${BASE_API_URL}/projects`;
 const API_URL_DELETE_PROJECT = `${BASE_API_URL}/projects`;
-const API_URL_CONTACT = `${BASE_API_URL}/contact`; 
+const API_URL_CONTACT = `${BASE_API_URL}/contact`; // Nova rota
 
 // =================================================================
 // INICIALIZAÇÃO GLOBAL
@@ -215,7 +215,7 @@ async function fetchProjectsForIndex() {
         const response = await fetch(API_URL_GET_PROJECTS);
         if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
         const projects = await response.json();
-        // [MODIFICADO] Filtra projetos ocultos na API real também (se implementado no backend) ou aqui
+        // [MODIFICADO] Filtra projetos ocultos na API real
         const visibleProjects = projects.filter(p => !p.hidden);
         populateProjectGrid(gridId, visibleProjects.slice(0, 6)); 
         loader.classList.add('hidden');
@@ -223,7 +223,7 @@ async function fetchProjectsForIndex() {
         console.warn("MODO FICTÍCIO (Index): Carregando MOCK_PROJECTS.", error.message);
         loader.textContent = "Carregando projetos fictícios...";
         setTimeout(() => {
-            // [MODIFICADO] Aplica o filtro 'hidden' aqui
+            // [MODIFICADO] Aplica o filtro 'hidden'
             const visibleMocks = MOCK_PROJECTS.filter(p => !p.hidden);
             populateProjectGrid(gridId, visibleMocks.slice(0, 6)); 
             loader.classList.add('hidden');
@@ -260,7 +260,7 @@ async function fetchProjectsForCategorization() {
             if(loader) loader.textContent = "Carregando projetos fictícios...";
         });
         setTimeout(() => {
-            // [MODIFICADO] Aplica o filtro 'hidden' aqui
+            // [MODIFICADO] Aplica o filtro 'hidden'
             distributeProjects(MOCK_PROJECTS.filter(p => !p.hidden));
         }, 500);
     } finally {
@@ -293,18 +293,18 @@ function populateProjectGrid(gridElementId, projects) {
     
     grid.innerHTML = ''; 
     
-    // [NOVO] Encontra a seção pai (ex: section.project-category-page)
+    // Encontra a seção pai
     const section = grid.closest('section');
 
     if (!projects || projects.length === 0) {
-        // [MODIFICADO] Se não houver projetos, oculta a seção inteira (título + grid)
+        // Se não houver projetos, oculta a seção inteira
         if (section) {
             section.style.display = 'none';
         }
         return;
     }
 
-    // [NOVO] Se houver projetos, garante que a seção esteja visível
+    // Se houver projetos, garante que a seção esteja visível
     if (section) {
         section.style.display = 'block';
     }
@@ -312,7 +312,6 @@ function populateProjectGrid(gridElementId, projects) {
     projects.forEach(project => {
         const card = document.createElement('div');
         card.className = 'project-card';
-        // Salva os dados no dataset para o modal recuperar
         card.dataset.projectData = JSON.stringify(project);
 
         card.innerHTML = `
@@ -360,20 +359,57 @@ function initContatoPage() {
 async function handleContactSubmit(event) {
     event.preventDefault();
     const btn = document.getElementById('contact-submit-btn');
+    const msgElement = document.getElementById('form-message');
+    
+    // [MODIFICADO] Feedback Visual Imediato
+    const originalBtnText = btn.textContent;
     btn.disabled = true;
     btn.textContent = 'Enviando...';
+    
+    // Limpa mensagem anterior
+    if(msgElement) msgElement.classList.add('hidden');
+
+    // 1. Extrai os dados do formulário
+    const formData = new FormData(event.target);
+    const data = Object.fromEntries(formData.entries());
+
+    console.log("Tentando enviar contato:", data); // LOG PARA DEBUG
+
     try {
-        const response = await fetch(API_URL_CONTACT, { method: 'POST', body: new FormData(event.target) });
-        if (!response.ok) throw new Error('Falha no envio.');
-        showFormMessage('Mensagem enviada com sucesso!', 'success');
+        // 2. Envia como JSON para a API
+        const response = await fetch(API_URL_CONTACT, { 
+            method: 'POST', 
+            headers: {
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(data) 
+        });
+
+        console.log("Status da Resposta:", response.status); // LOG PARA DEBUG
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error("Erro na API:", errorText); // LOG DE ERRO
+            throw new Error(`Falha no envio: ${response.status} - ${errorText}`);
+        }
+        
+        const result = await response.json();
+        console.log("Sucesso:", result); // LOG DE SUCESSO
+
+        // [MODIFICADO] Mensagem de Sucesso Clara
+        showFormMessage('Sua mensagem foi enviada com sucesso! Entraremos em contato em breve.', 'success');
         event.target.reset();
+
     } catch (error) {
-        console.warn("MODO FICTÍCIO (Contato):", error.message);
-        showFormMessage("MODO FICTÍCIO: Simulação de envio com sucesso!", "success");
-        event.target.reset();
+        console.error("Erro Capturado no Catch:", error);
+        
+        // [MODIFICADO] Mensagem de Erro Clara
+        showFormMessage(`Não foi possível enviar sua mensagem. Por favor, tente novamente mais tarde ou use outro canal de contato. (Erro: ${error.message})`, "error");
     } finally {
+        // [MODIFICADO] Restaura o botão
         btn.disabled = false;
-        btn.textContent = 'Enviar Mensagem';
+        btn.textContent = originalBtnText;
     }
 }
 
@@ -381,13 +417,20 @@ function showFormMessage(message, type) {
     const msgElement = document.getElementById('form-message');
     if (msgElement) {
         msgElement.textContent = message;
-        msgElement.className = `form-message ${type}`;
+        // Garante que as classes de cor (success/error) sejam aplicadas corretamente
+        msgElement.className = `form-message ${type}`; 
         msgElement.classList.remove('hidden');
+        
+        // Scroll para a mensagem se estiver fora da tela
+        msgElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else {
+        console.warn("Elemento #form-message não encontrado para exibir:", message);
+        alert(message); // Fallback se o elemento não existir
     }
 }
 
 // =================================================================
-// PÁGINA DE LOGIN
+// PÁGINA DE LOGIN e ADMIN (Sem alterações significativas)
 // =================================================================
 
 function initLoginPage() {
@@ -430,11 +473,6 @@ function showLoginMessage(message, type) {
         msgElement.classList.remove('hidden');
     }
 }
-
-
-// =================================================================
-// PÁGINA ADMIN
-// =================================================================
 
 function initAdminPage() {
     checkAdminAuth();
@@ -480,7 +518,6 @@ async function fetchProjectsForAdmin() {
         const response = await fetch(API_URL_GET_PROJECTS);
         if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
         const projects = await response.json();
-        // [NOTA] Admin geralmente vê todos, inclusive ocultos, então não filtro aqui.
         populateAdminList(projects);
     } catch (error) {
         console.warn("MODO FICTÍCIO (Admin): Carregando projetos fictícios.");
@@ -504,7 +541,6 @@ function populateAdminList(projects) {
         listItem.className = 'project-list-item';
         listItem.dataset.projectId = project.id;
         
-        // [MODIFICADO] Indica visualmente se está oculto no painel de admin
         const hiddenBadge = project.hidden ? ' <span style="color:red; font-size:0.8em;">(Oculto)</span>' : '';
 
         listItem.innerHTML = `
@@ -515,11 +551,9 @@ function populateAdminList(projects) {
             </div>
         `;
         
-        // Attach event listener manual para editar
         const editBtn = listItem.querySelector('.edit');
         editBtn.onclick = () => handleEditProject(project);
 
-        // Attach event listener manual para deletar
         const deleteBtn = listItem.querySelector('.delete');
         deleteBtn.onclick = () => handleDeleteProject(project.id, project.title);
 
