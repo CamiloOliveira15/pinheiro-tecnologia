@@ -1,7 +1,7 @@
 /* * =========================================
  * ARQUIVO: style.css
  * DESCRIÇÃO: Folha de estilos principal para o site Pinheiro Tecnologia.
- * ARQUITETURA: Site empresarial dinâmico com admin.
+ * ARQUITETURA: Site empresarial (Versão Estática - Sem Admin).
  * =========================================
  */
 
@@ -11,16 +11,16 @@
  */
 :root {
     /* Paleta de Cores */
-    --primary-color-accessible: #1A6A6C; /* Cor principal (Acessível 5.06:1) */
-    --primary-color-hover: #218c8f;      /* Tom mais claro para hover */
-    --primary-color-active: #15585a;     /* Tom mais oscuro para active/nav */
+    --primary-color-accessible: #1A6A6C; 
+    --primary-color-hover: #218c8f;      
+    --primary-color-active: #15585a;     
     
-    --background-color: #f4f7f6; /* Fundo principal (branco-gelo) */
-    --surface-color: #ffffff;    /* Fundo de cartões, modais, seções */
-    --text-color: #333333;       /* Cor principal do texto */
-    --text-color-light: #555555;   /* Cor de texto secundária */
-    --text-color-inverse: #ffffff; /* Texto sobre fundos escuros */
-    --border-color: #e0e0e0;     /* Cor de borda sutil */
+    --background-color: #f4f7f6; 
+    --surface-color: #ffffff;    
+    --text-color: #333333;       
+    --text-color-light: #555555;   
+    --text-color-inverse: #ffffff; 
+    --border-color: #e0e0e0;     
     
     /* Tipografia */
     --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -33,9 +33,9 @@
     --shadow-md: 0 10px 15px rgba(0, 0, 0, 0.1);
 }
 
-/* Esconder seção de clientes (carrossel) */
+/* Esconder seção de clientes (carrossel) se não usada */
 .clients-section {
-    display: none;
+    display: none; /* Remova se quiser reativar */
 }
 
 /* * =========================================
@@ -84,7 +84,6 @@ select:focus-visible {
     border-radius: var(--border-radius-sm);
     box-shadow: 0 0 0 3px rgba(26, 106, 108, 0.3);
 }
-/* Correção para inputs que já têm borda */
 input:focus-visible,
 textarea:focus-visible,
 select:focus-visible {
@@ -92,10 +91,9 @@ select:focus-visible {
     border-color: var(--primary-color-accessible);
 }
 
-
 /* Título Padrão de Seção */
 .section-title {
-    font-size: 2.0rem; /* Reduzido */
+    font-size: 2.0rem; 
     font-weight: 600;
     text-align: center;
     margin-bottom: 2.5rem;
@@ -129,7 +127,7 @@ select:focus-visible {
     transform: none;
 }
 
-/* Botão Secundário (ex: Cancelar, Ver Todos) */
+/* Botão Secundário (ex: Ver Todos) */
 .cta-button.secondary-button {
     background-color: var(--surface-color);
     color: var(--primary-color-accessible);
@@ -179,8 +177,7 @@ select:focus-visible {
     align-items: center;
 }
 
-.nav-links a,
-.nav-link-button {
+.nav-links a {
     color: white;
     padding: 0.75rem 1.5rem;
     text-decoration: none;
@@ -192,8 +189,7 @@ select:focus-visible {
     white-space: nowrap;
 }
 
-.nav-links a:hover,
-.nav-link-button:hover {
+.nav-links a:hover {
     background-color: var(--primary-color-hover);
     color: white;
 }
@@ -203,29 +199,6 @@ select:focus-visible {
     background-color: var(--primary-color-active);
     color: white;
     font-weight: 600;
-}
-
-/* Botão de Admin/Sair */
-.nav-link-admin,
-.nav-link-button {
-    background: none;
-    border: none;
-    font-family: var(--font-primary);
-    font-size: 1rem;
-    /* Melhoria de contraste para o botão admin */
-    color: rgba(255, 255, 255, 0.9);
-    background-color: rgba(0, 0, 0, 0.1);
-}
-
-.nav-link-admin:hover,
-.nav-link-button:hover {
-    background-color: rgba(0, 0, 0, 0.2);
-    color: #ffffff;
-}
-
-.nav-link-admin.active {
-    background-color: var(--primary-color-active);
-    color: #ffffff;
 }
 
 
@@ -363,8 +336,7 @@ select:focus-visible {
     gap: 2rem;
 }
 
-
-/* Estilo para o botão "Ver Todos" */
+/* Botão "Ver Todos" */
 .see-all-container {
     text-align: center;
     margin-top: 2.5rem;
@@ -498,12 +470,8 @@ select:focus-visible {
 }
 
 @keyframes scroll {
-    0% {
-        transform: translateX(0);
-    }
-    100% {
-        transform: translateX(-50%);
-    }
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
 }
 
 
@@ -580,7 +548,7 @@ select:focus-visible {
     padding-top: 0;
 }
 
-/* Título da Categoria (ex: "Projetos de Análise de Dados") */
+/* Título da Categoria */
 .category-title {
     font-size: 1.75rem;
     font-weight: 600;
@@ -634,6 +602,58 @@ select:focus-visible {
     color: #1a202c;
     margin-bottom: 1.5rem;
     text-align: center;
+}
+
+/* Formulário (Estilos Limpos) */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--text-color);
+}
+
+.form-input,
+.form-textarea {
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1rem;
+    font-family: var(--font-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-sm);
+    background: #f9f9f9;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.form-message {
+    padding: 1rem;
+    border-radius: var(--border-radius-sm);
+    margin-bottom: 1rem;
+    font-weight: 500;
+    border: 1px solid transparent;
+}
+.form-message.error {
+    background: #fbe9e7;
+    color: #D93025;
+    border-color: #D93025;
+}
+.form-message.success {
+    background: #e6f4ea;
+    color: #1E8E3E;
+    border-color: #1E8E3E;
+}
+.form-message.warning {
+    background: #fff8e1; 
+    color: #f57f17;       
+    border-color: #ffb300;
 }
 
 .contact-channels-section {
@@ -706,7 +726,6 @@ select:focus-visible {
     padding: 1.5rem 0;
     margin-top: 2rem;
     border-top: 1px solid var(--border-color);
-    /* [MODIFICADO] Aumentado contraste para acessibilidade (era #888) */
     color: #454545;
     background: var(--surface-color);
 }
@@ -922,181 +941,6 @@ select:focus-visible {
 }
 
 /* * =========================================
- * ESTILOS DE ADMIN (Login, etc)
- * =========================================
- */
-.admin-body {
-    background-color: #eef1f1; 
-}
-
-.login-container {
-    max-width: 450px;
-    margin: 3rem auto;
-    padding: 2.5rem;
-    background: var(--surface-color);
-    border-radius: var(--border-radius-lg);
-    box-shadow: var(--shadow-md);
-}
-
-.admin-container {
-    background: var(--surface-color);
-    border-radius: var(--border-radius-lg);
-    padding: 2.5rem;
-    margin-top: 3rem;
-    margin-bottom: 3rem;
-    box-shadow: var(--shadow-sm);
-}
-
-.admin-container h1 {
-    font-size: 2rem;
-    color: #1a202c;
-    margin-bottom: 0.5rem;
-}
-.admin-container p {
-    font-size: 1.1rem;
-    color: var(--text-color-light);
-    margin-bottom: 2rem;
-}
-
-.form-admin h2,
-.form-admin .form-subtitle {
-    font-size: 1.5rem;
-    color: #1a202c;
-    margin-bottom: 1.5rem;
-    padding-bottom: 0.5rem;
-    border-bottom: 2px solid var(--border-color);
-}
-.form-admin .form-subtitle {
-    font-size: 1.25rem;
-    border-bottom: none;
-    margin-top: 1rem;
-}
-
-.form-group {
-    margin-bottom: 1.5rem;
-}
-
-.form-group label {
-    display: block;
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-    color: var(--text-color);
-}
-
-.form-input,
-.form-textarea,
-.form-select {
-    width: 100%;
-    padding: 0.75rem;
-    font-size: 1rem;
-    font-family: var(--font-primary);
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius-sm);
-    background: #f9f9f9;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-
-.form-textarea {
-    min-height: 120px;
-    resize: vertical;
-}
-
-.form-group small {
-    display: block;
-    margin-top: 0.5rem;
-    font-size: 0.9rem;
-    color: var(--text-color-light);
-}
-
-.form-divider {
-    border: none;
-    border-top: 1px solid var(--border-color);
-    margin: 2.5rem 0;
-}
-
-.form-actions {
-    display: flex;
-    gap: 1rem;
-    margin-top: 1.5rem;
-}
-
-.form-message {
-    padding: 1rem;
-    border-radius: var(--border-radius-sm);
-    margin-bottom: 1rem;
-    font-weight: 500;
-    border: 1px solid transparent;
-}
-.form-message.error {
-    background: #fbe9e7;
-    color: #D93025;
-    border-color: #D93025;
-}
-.form-message.success {
-    background: #e6f4ea;
-    color: #1E8E3E;
-    border-color: #1E8E3E;
-}
-/* [NOVO] Estilo para avisos (Rate Limit) */
-.form-message.warning {
-    background: #fff8e1; /* Fundo amarelo claro */
-    color: #f57f17;       /* Texto laranja escuro/âmbar */
-    border-color: #ffb300; /* Borda amarela */
-}
-
-.project-list-container {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
-}
-
-.project-list-item {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem;
-    background: #f9f9f9;
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius-sm);
-}
-
-.project-list-title {
-    font-weight: 500;
-}
-
-.project-list-actions {
-    display: flex;
-    gap: 0.5rem;
-}
-
-.project-list-button {
-    border: none;
-    padding: 0.5rem 1rem;
-    border-radius: var(--border-radius-sm);
-    font-weight: 500;
-    cursor: pointer;
-    font-size: 0.9rem;
-    transition: background-color 0.2s ease;
-}
-
-.project-list-button.edit {
-    background-color: #e0eafc;
-    color: #1a73e8;
-}
-.project-list-button.edit:hover {
-    background-color: #d2e3fc;
-}
-
-.project-list-button.delete {
-    background-color: #fce8e6;
-    color: #d93025;
-}
-.project-list-button.delete:hover {
-    background-color: #fbdcd9;
-}
-
-
-/* * =========================================
  * RESPONSIVIDADE
  * =========================================
  */
@@ -1122,11 +966,7 @@ select:focus-visible {
     .contact-card-grid {
         grid-template-columns: 1fr;
     }
-    .login-container {
-        margin-top: 3rem;
-    }
-    .nav-links a,
-    .nav-link-button {
+    .nav-links a {
         padding: 0.75rem 1rem;
         font-size: 0.95rem;
     }
@@ -1157,8 +997,7 @@ select:focus-visible {
     .nav-links {
         gap: 0.25rem;
     }
-    .nav-links a,
-    .nav-link-button {
+    .nav-links a {
         padding: 0.5rem 0.5rem;
         font-size: 0.85rem;
     }
@@ -1193,8 +1032,6 @@ select:focus-visible {
         flex-direction: column;
         align-items: flex-start;
     }
-    .login-container,
-    .admin-container,
     .about-container {
         margin-top: 1rem;
         margin-bottom: 1rem;
