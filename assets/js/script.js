@@ -139,11 +139,12 @@ const MOCK_PROJECTS = [
 // =================================================================
 // CONSTANTES DA API
 // =================================================================
-const API_URL_GET_PROJECTS = "URL_DA_SUA_API_AQUI/projects";
-const API_URL_POST_PROJECT = "URL_DA_SUA_API_AQUI/projects";
-const API_URL_PUT_PROJECT = "URL_DA_SUA_API_AQUI/projects";
-const API_URL_DELETE_PROJECT = "URL_DA_SUA_API_AQUI/projects";
-const API_URL_CONTACT = "URL_DA_SUA_API_AQUI/contact";
+const BASE_API_URL = "https://jwqiah2rvj.execute-api.us-west-2.amazonaws.com"; 
+const API_URL_GET_PROJECTS = `${BASE_API_URL}/projects`;
+const API_URL_POST_PROJECT = `${BASE_API_URL}/projects`;
+const API_URL_PUT_PROJECT = `${BASE_API_URL}/projects`;
+const API_URL_DELETE_PROJECT = `${BASE_API_URL}/projects`;
+const API_URL_CONTACT = `${BASE_API_URL}/contact`; 
 
 // =================================================================
 // INICIALIZAÇÃO GLOBAL
