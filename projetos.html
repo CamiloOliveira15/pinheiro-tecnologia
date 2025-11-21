@@ -1,22 +1,25 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Projetos - Pinheiro Tecnologia</title>
-    <meta name="description" content="Explore nosso portfólio completo de projetos em Análise de Dados (Power BI), Aplicativos (Power Apps), Automação (Power Automate) e mais.">
-    
+    <meta name="description"
+        content="Explore nosso portfólio completo de projetos em Análise de Dados (Power BI), Aplicativos (Power Apps), Automação (Power Automate) e mais.">
+
     <!-- Open Graph -->
     <meta property="og:title" content="Projetos - Pinheiro Tecnologia">
-    <meta property="og:description" content="Explore nosso portfólio completo de projetos em Análise de Dados, Aplicativos e Automação.">
+    <meta property="og:description"
+        content="Explore nosso portfólio completo de projetos em Análise de Dados, Aplicativos e Automação.">
     <meta property="og:url" content="https://pinheirotecnologia.com/projetos.html">
 
     <!-- Segurança Básica -->
-<meta http-equiv="X-Content-Type-Options" content="nosniff">
-<meta name="referrer" content="strict-origin-when-cross-origin">
+    <meta http-equiv="X-Content-Type-Options" content="nosniff">
+    <meta name="referrer" content="strict-origin-when-cross-origin">
 
-<!-- Content Security Policy (CSP) - Permite Google Fonts, Analytics e sua API -->
-<meta http-equiv="Content-Security-Policy" content="
+    <!-- Content Security Policy (CSP) - Permite Google Fonts, Analytics e sua API -->
+    <meta http-equiv="Content-Security-Policy" content="
     default-src 'self';
     script-src 'self' 'unsafe-inline' https://www.googletagmanager.com;
     style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
@@ -25,21 +28,27 @@
     connect-src 'self' https://jwqiah2rvj.execute-api.us-west-2.amazonaws.com https://www.google-analytics.com;
     frame-src 'self' https://app.powerbi.com https://www.youtube.com;
 ">
-    
+
     <link rel="stylesheet" href="assets/css/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Ícone Favicon -->
+    <link rel="icon" type="image/png" href="images/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="images/favicon.svg" />
+    <link rel="shortcut icon" href="images/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png" />
+    <link rel="manifest" href="assets/manifest/site.webmanifest" />
 </head>
 
 <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-8VSYDM66L6"></script>
 <script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
 
-  gtag('config', 'G-8VSYDM66L6');
+    gtag('config', 'G-8VSYDM66L6');
 </script>
 
 <body>
@@ -51,16 +60,17 @@
         <div class="container nav-container">
             <!-- Logo -->
             <a href="index.html" class="nav-logo-link" aria-label="Página Inicial - Pinheiro Tecnologia">
-                <img src="images/Logo Branco - Pinheiro Tecnologia.png" alt="Pinheiro Tecnologia - Logo" class="nav-logo">
+                <img src="images/Logo Branco - Pinheiro Tecnologia.png" alt="Pinheiro Tecnologia - Logo"
+                    class="nav-logo">
             </a>
-            
+
             <!-- Links do Menu -->
             <ul class="nav-links">
                 <li><a href="index.html">Início</a></li>
                 <li><a href="projetos.html" class="active" aria-current="page">Projetos</a></li>
                 <li><a href="sobre.html">Sobre Nós</a></li>
                 <li><a href="contato.html">Contato</a></li>
-                
+
             </ul>
         </div>
     </nav>
@@ -71,7 +81,7 @@
     <main class="container">
 
         <h1 class="section-title" style="margin-top: 3rem;">Nosso Portfólio de Projetos</h1>
-        
+
         <!-- Categoria: Análise de Dados -->
         <section class="project-category-page" aria-labelledby="data-title">
             <h2 class="category-title" id="data-title">Projetos de Análise de Dados (Power BI)</h2>
@@ -130,17 +140,24 @@
                 <section class="modal-dashboard-section" aria-labelledby="modal-embed-title">
                     <h3 id="modal-embed-title" class="modal-section-title">Dashboard Interativo</h3>
                     <div class="iframe-container">
-                        <iframe id="modal-iframe" title="Conteúdo do Projeto" frameborder="0" allowFullScreen="true"></iframe>
+                        <iframe id="modal-iframe" title="Conteúdo do Projeto" frameborder="0"
+                            allowFullScreen="true"></iframe>
                     </div>
                 </section>
                 <section class="modal-info-section">
                     <nav class="tab-navigation" role="tablist" aria-label="Informações do projeto">
-                        <button class="modal-tab-button active" data-tab="modal-descricao" role="tab" aria-selected="true">Descrição</button>
-                        <button class="modal-tab-button" data-tab="modal-objetivos" role="tab" aria-selected="false">Objetivos</button>
-                        <button class="modal-tab-button" data-tab="modal-metricas" role="tab" aria-selected="false">Métricas</button>
-                        <button class="modal-tab-button" data-tab="modal-tratamento" role="tab" aria-selected="false">Tecnologias</button>
-                        <button class="modal-tab-button" data-tab="modal-dax" role="tab" aria-selected="false">Detalhes Técnicos</button>
-                        <button class="modal-tab-button" data-tab="modal-fontes" role="tab" aria-selected="false">Fontes e Links</button>
+                        <button class="modal-tab-button active" data-tab="modal-descricao" role="tab"
+                            aria-selected="true">Descrição</button>
+                        <button class="modal-tab-button" data-tab="modal-objetivos" role="tab"
+                            aria-selected="false">Objetivos</button>
+                        <button class="modal-tab-button" data-tab="modal-metricas" role="tab"
+                            aria-selected="false">Métricas</button>
+                        <button class="modal-tab-button" data-tab="modal-tratamento" role="tab"
+                            aria-selected="false">Tecnologias</button>
+                        <button class="modal-tab-button" data-tab="modal-dax" role="tab" aria-selected="false">Detalhes
+                            Técnicos</button>
+                        <button class="modal-tab-button" data-tab="modal-fontes" role="tab" aria-selected="false">Fontes
+                            e Links</button>
                     </nav>
                     <div class="tab-content">
                         <div id="modal-descricao" class="modal-tab-panel" role="tabpanel" tabindex="0"></div>
@@ -158,4 +175,5 @@
     <!-- JavaScript -->
     <script src="assets/js/script.js"></script>
 </body>
+
 </html>

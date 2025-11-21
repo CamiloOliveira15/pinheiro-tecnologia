@@ -19,7 +19,7 @@ const MOCK_PROJECTS = [
       title: "Projeto 1: Controle de vencimento",
       category: "data-analysis",
       hidden: false, 
-      thumbnailSrc: "images/relatorio_vencimentos.webo",
+      thumbnailSrc: "images/relatorio_vencimentos.webp",
       iframeSrc: "https://app.powerbi.com/view?r=eyJrIjoiMWRjOGIyMTItNTkxMS00MTYxLWFkYmQtOGU0MDdiOGQxNmJlIiwidCI6IjMyMjEyYTc5LWYzMWEtNGIwYS1hZjE0LTY4YzFjYTUyMGVmNSJ9",
       embedTitle: "Dashboard Interativo",
       tabsToShow: "",
