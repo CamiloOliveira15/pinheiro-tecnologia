@@ -5,6 +5,8 @@
  * para desenvolvimento e fallback quando a API não está disponível.
  * [MODIFICADO] Adicionada lógica de categorização de projetos.
  * [MODIFICADO] Limita os projetos na index.html para 6.
+ * [MODIFICADO] Refatoração para Embed automático de YouTube (Simplificado).
+ * [MODIFICADO] Adicionado suporte para ocultar projetos via propriedade 'hidden: true'.
  */
 
 // =================================================================
@@ -13,74 +15,29 @@
 const MOCK_PROJECTS = [
     {
       id: "mock-1",
-      title: "Projeto 1: Controle de vencimento de treinamentos, NRs, exames e documentos diversos (Fictício)",
-      category: "data-analysis", // Categoria
+      title: "Projeto 1: Controle de vencimento",
+      category: "data-analysis",
       thumbnailSrc: "images/relatorio_vencimentos.png",
       iframeSrc: "https://app.powerbi.com/view?r=eyJrIjoiMWRjOGIyMTItNTkxMS00MTYxLWFkYmQtOGU0MDdiOGQxNmJlIiwidCI6IjMyMjEyYTc5LWYzMWEtNGIwYS1hZjE0LTY4YzFjYTUyMGVmNSJ9",
       embedTitle: "Dashboard Interativo",
       tabsToShow: "",
       data: {
-        descricao: "<p>Este relatório monitora o vencimento de treinamentos, NRs, exames e documentos diversos, ajudando a garantir conformidade e segurança.</p>",
-        objetivos: "<ul class='list-disc'><li>Dar visibilidade do vencimento e alertas para treinamentos, NRs, exames e documentos.</li></ul>",
-        metricas: "<ul class='list-disc'><li><strong>Quantidade de colabores com documentos vencidos, documentos vencidos nos próximos 15 e 60 dias</li></ul>",
-        tecnologias: "<p>O processo de ETL foi realizado no Power Query, medidas criadas em DAX e os relacionamentos direto na interface do Power BI</p>",
-        detalhes: `
-      <p>Aqui está a medida utilizada para criar a tabela virtual de períodos:</p>
-      
-      <pre class="code-block"><code class="language-dax">
-_Periodos =
-UNION (
-    ADDCOLUMNS (
-        DATESINPERIOD ( dCalendario[Date], MAX ( dCalendario[Date] ), -20, YEAR ),
-        "Período", "Todo período (Escolher data)",
-        "Ordem", 1
-    ),
-    ADDCOLUMNS (
-        DATESINPERIOD (
-            dCalendario[Date],
-            DATE ( YEAR ( TODAY () ), MONTH ( TODAY () ), DAY ( TODAY () - 1 ) ),
-            -2,
-            YEAR
-        ),
-        "Período", "Vencido",
-        "Ordem", 2
-    ),
-    ADDCOLUMNS (
-        DATESINPERIOD ( dCalendario[Date], TODAY (), 16, DAY ),
-        "Período", "Próximos 15 dias",
-        "Ordem", 3
-    ),
-    ADDCOLUMNS (
-        DATESINPERIOD ( dCalendario[Date], TODAY () + 1, 1, MONTH ),
-        "Período", "Próximos 30 dias",
-        "Ordem", 4
-    ),
-    ADDCOLUMNS (
-        DATESINPERIOD ( dCalendario[Date], TODAY () + 1, 2, MONTH ),
-        "Período", "Próximos 60 dias",
-        "Ordem", 5
-    ),
-    SELECTCOLUMNS (
-        FILTER ( dCalendario, dCalendario[Date] > TODAY () + 60 ),
-        "Date", dCalendario[Date],
-        "Período", "Acima de 60 dias",
-        "Ordem", 6
-    )
-)
-
-      </code></pre>
-      <p>Esta lógica permite criar os cálculos de forma mais dinâmica e a segmentação de dados da tela principal</p>
-    `,
-    fontes: "<p>Dados fictícios.</p>"
+        descricao: "<p>Este relatório monitora o vencimento de treinamentos, NRs, exames e documentos diversos.</p>",
+        objetivos: "<ul class='list-disc'><li>Dar visibilidade do vencimento e alertas.</li></ul>",
+        metricas: "<ul class='list-disc'><li><strong>Quantidade de documentos vencidos.</strong></li></ul>",
+        tecnologias: "<p>Power Query, DAX e Power BI.</p>",
+        detalhes: "<p>Medidas DAX avançadas para cálculo temporal.</p>",
+        fontes: "<p>Dados fictícios.</p>"
       }
     },
     {
       id: "mock-2",
       title: "Projeto 2: Hub de testes de desenvolvimento de projetos",
-      category: "apps", // Categoria
-      thumbnailSrc: "https://placehold.co/600x400/1A6A6C/FFFFFF?text=Test Hub",
-      iframeSrc: '<iframe width="560" height="315" src="https://www.youtube.com/embed/o8CvaeNNycs?si=PjEw1u3gEg3X6Iz-" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>',
-      embedTitle: "Análise de Portfólio de Obras",
+      category: "apps", 
+      thumbnailSrc: "images/Test Hub.png",
+      // URL limpa
+      iframeSrc: "https://www.youtube.com/embed/o8CvaeNNycs",
+      embedTitle: "Gestão de Testes e Qualidade",
       tabsToShow: "modal-descricao,modal-objetivos",
       data: {
         descricao: `
@@ -107,32 +64,34 @@ UNION (
     },
     {
       id: "mock-3",
-      title: "Projeto 3: Demo de App (Vídeo Fictício)",
-      category: "apps", // Categoria
+      title: "Projeto 3: Demo de App",
+      category: "apps",
+      hidden: true, // [NOVO] Este projeto agora está oculto no site, mas existe no código.
       thumbnailSrc: "https://placehold.co/600x400/1A6A6C/FFFFFF?text=Demo+App",
-      iframeSrc: "https://www.youtube.com/embed/",
+      iframeSrc: "https://www.youtube.com/embed/LXb3EKWsInQ", 
       embedTitle: "Demonstração em Vídeo",
       tabsToShow: "modal-descricao,modal-objetivos,modal-fontes",
       data: {
-        descricao: "<p>Este é um vídeo demonstrativo de um aplicativo...</p>",
-        objetivos: "<ul class='list-disc'><li>Digitalizar processo manual...</li></ul>",
+        descricao: "<p>Este é um vídeo demonstrativo de um aplicativo.</p>",
+        objetivos: "<ul class='list-disc'><li>Digitalizar processo manual.</li></ul>",
         metricas: "",
         tecnologias: "",
         detalhes: "",
-        fontes: "<p>Construído com Power Apps e Power Automate.</p>"
+        fontes: "<p>Construído com Power Apps.</p>"
       }
     },
     {
         id: "mock-4",
-        title: "Projeto 4: Automação de Faturas (Fictício)",
-        category: "automation", // Categoria
+        title: "Projeto 4: Automação de Faturas",
+        category: "automation",
+        hidden: true,
         thumbnailSrc: "https://placehold.co/600x400/1A6A6C/FFFFFF?text=Automação",
-        iframeSrc: "https://www.youtube.com/embed/", // Usando vídeo placeholder
+        iframeSrc: "", 
         embedTitle: "Demo de Automação",
         tabsToShow: "modal-descricao,modal-objetivos",
         data: {
-          descricao: "<p>Demonstração de um fluxo do Power Automate que lê e-mails, extrai anexos (faturas) e os lança num sistema ERP.</p>",
-          objetivos: "<ul class='list-disc'><li>Eliminar entrada manual de dados.</li><li>Reduzir erros e tempo de processamento.</li></ul>",
+          descricao: "<p>Fluxo do Power Automate que lê e-mails e extrai anexos.</p>",
+          objetivos: "<ul class='list-disc'><li>Eliminar entrada manual.</li></ul>",
           metricas: "",
           tecnologias: "",
           detalhes: "",
@@ -141,8 +100,9 @@ UNION (
     },
     {
         id: "mock-5",
-        title: "Projeto 5: Análise de RH (Fictício)",
-        category: "data-analysis", // Categoria
+        title: "Projeto 5: Análise de RH",
+        category: "data-analysis",
+        hidden: true,
         thumbnailSrc: "https://placehold.co/600x400/1A6A6C/FFFFFF?text=Dashboard+RH",
         iframeSrc: "",
         embedTitle: "Dashboard Interativo",
@@ -158,32 +118,16 @@ UNION (
       },
       {
         id: "mock-6",
-        title: "Projeto 6: App de Inspeção (Fictício)",
-        category: "apps", // Categoria
+        title: "Projeto 6: App de Inspeção",
+        category: "apps",
+        hidden: true,
         thumbnailSrc: "https://placehold.co/600x400/1A6A6C/FFFFFF?text=App+Inspeção",
-        iframeSrc: "https://www.youtube.com/embed/",
+        iframeSrc: "",
         embedTitle: "Demonstração em Vídeo",
         tabsToShow: "modal-descricao,modal-objetivos",
         data: {
-          descricao: "<p>Aplicativo de inspeção de campo para técnicos.</p>",
+          descricao: "<p>Aplicativo de inspeção de campo.</p>",
           objetivos: "<ul class='list-disc'><li>Registrar inspeções offline.</li></ul>",
-          metricas: "",
-          tecnologias: "",
-          detalhes: "",
-          fontes: ""
-        }
-      },
-      {
-        id: "mock-7",
-        title: "Projeto 7: Outro Projeto (Fictício)",
-        category: "other", // Categoria
-        thumbnailSrc: "https://placehold.co/600x400/1A6A6C/FFFFFF?text=Outro+Projeto",
-        iframeSrc: "https://www.youtube.com/embed/",
-        embedTitle: "Demonstração",
-        tabsToShow: "modal-descricao",
-        data: {
-          descricao: "<p>Este é um projeto de outra categoria.</p>",
-          objetivos: "",
           metricas: "",
           tecnologias: "",
           detalhes: "",
@@ -193,16 +137,13 @@ UNION (
   ];
 
 // =================================================================
-// CONSTANTES DA API (Deixe como está para o futuro)
+// CONSTANTES DA API
 // =================================================================
-// ... (Nenhuma mudança aqui)
 const API_URL_GET_PROJECTS = "URL_DA_SUA_API_AQUI/projects";
 const API_URL_POST_PROJECT = "URL_DA_SUA_API_AQUI/projects";
 const API_URL_PUT_PROJECT = "URL_DA_SUA_API_AQUI/projects";
 const API_URL_DELETE_PROJECT = "URL_DA_SUA_API_AQUI/projects";
 const API_URL_CONTACT = "URL_DA_SUA_API_AQUI/contact";
-const COGNITO_USER_POOL_ID = "SEU_USER_POOL_ID";
-const COGNITO_CLIENT_ID = "SEU_CLIENT_ID";
 
 // =================================================================
 // INICIALIZAÇÃO GLOBAL
@@ -214,7 +155,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     if (page.includes('index.html') || page === '/' || page.endsWith('/')) {
         initIndexPage();
-    } else if (page.includes('projetos.html')) { // Rota para página de projetos
+    } else if (page.includes('projetos.html')) {
         initProjetosPage();
     } else if (page.includes('sobre.html')) {
         initSobrePage();
@@ -230,7 +171,6 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function updateFooterYear() {
-    // ... (Nenhuma mudança aqui)
     const yearSpan = document.getElementById('current-year');
     if (yearSpan) {
         yearSpan.textContent = new Date().getFullYear();
@@ -247,12 +187,11 @@ function updateFooterYear() {
 
 function initIndexPage() {
     fetchProjectsForIndex();
-    initModalListeners(); // Listeners globais do modal
+    initModalListeners(); 
     initClientCarousel();
 }
 
 function initClientCarousel() {
-    // ... (Nenhuma mudança aqui)
     const track = document.getElementById('client-carousel-track');
     if (!track) return;
     const logos = track.querySelectorAll('.client-logo');
@@ -266,11 +205,6 @@ function initClientCarousel() {
     track.style.width = `${totalWidth}px`;
 }
 
-
-/**
- * Busca os projetos da API e popula o grid da Index.
- * [MODIFICADO] Limita os projetos a 6.
- */
 async function fetchProjectsForIndex() {
     const gridId = 'project-grid-dynamic';
     const loader = document.getElementById('project-loader');
@@ -278,22 +212,19 @@ async function fetchProjectsForIndex() {
 
     try {
         const response = await fetch(API_URL_GET_PROJECTS);
-        if (!response.ok) {
-            throw new Error(`Erro HTTP: ${response.status}`);
-        }
+        if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
         const projects = await response.json();
-        
-        // [MODIFICADO] Limita a 6 projetos na página inicial
-        populateProjectGrid(gridId, projects.slice(0, 6)); 
+        // [MODIFICADO] Filtra projetos ocultos na API real também (se implementado no backend) ou aqui
+        const visibleProjects = projects.filter(p => !p.hidden);
+        populateProjectGrid(gridId, visibleProjects.slice(0, 6)); 
         loader.classList.add('hidden');
-
     } catch (error) {
-        console.warn("MODO FICTÍCIO (Index): Falha ao buscar API. Carregando MOCK_PROJECTS.", error.message);
+        console.warn("MODO FICTÍCIO (Index): Carregando MOCK_PROJECTS.", error.message);
         loader.textContent = "Carregando projetos fictícios...";
-        
         setTimeout(() => {
-            // [MODIFICADO] Limita a 6 projetos na página inicial
-            populateProjectGrid(gridId, MOCK_PROJECTS.slice(0, 6)); 
+            // [MODIFICADO] Aplica o filtro 'hidden' aqui
+            const visibleMocks = MOCK_PROJECTS.filter(p => !p.hidden);
+            populateProjectGrid(gridId, visibleMocks.slice(0, 6)); 
             loader.classList.add('hidden');
         }, 500);
     }
@@ -305,12 +236,9 @@ async function fetchProjectsForIndex() {
 
 function initProjetosPage() {
     fetchProjectsForCategorization();
-    initModalListeners(); // Listeners globais do modal
+    initModalListeners();
 }
 
-/**
- * Busca todos os projetos e os distribui nas grades de categoria.
- */
 async function fetchProjectsForCategorization() {
     const loaders = {
         data: document.getElementById('loader-data-analysis'),
@@ -321,34 +249,26 @@ async function fetchProjectsForCategorization() {
 
     try {
         const response = await fetch(API_URL_GET_PROJECTS);
-        if (!response.ok) {
-            throw new Error(`Erro HTTP: ${response.status}`);
-        }
+        if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
         const projects = await response.json();
-        
-        // Distribui os projetos
-        distributeProjects(projects);
-
+        // [MODIFICADO] Filtra projetos ocultos
+        distributeProjects(projects.filter(p => !p.hidden));
     } catch (error) {
-        console.warn("MODO FICTÍCIO (Projetos): Falha ao buscar API. Carregando MOCK_PROJECTS.", error.message);
+        console.warn("MODO FICTÍCIO (Projetos): Carregando MOCK_PROJECTS.", error.message);
         Object.values(loaders).forEach(loader => {
             if(loader) loader.textContent = "Carregando projetos fictícios...";
         });
-
         setTimeout(() => {
-            distributeProjects(MOCK_PROJECTS);
+            // [MODIFICADO] Aplica o filtro 'hidden' aqui
+            distributeProjects(MOCK_PROJECTS.filter(p => !p.hidden));
         }, 500);
     } finally {
-        // Esconde todos os loaders
         Object.values(loaders).forEach(loader => {
             if(loader) loader.classList.add('hidden');
         });
     }
 }
 
-/**
- * Filtra e popula os projetos nas grades corretas.
- */
 function distributeProjects(projects) {
     const dataProjects = projects.filter(p => p.category === 'data-analysis');
     const appProjects = projects.filter(p => p.category === 'apps');
@@ -366,25 +286,32 @@ function distributeProjects(projects) {
 // FUNÇÃO REUTILIZÁVEL DE POPULAR O GRID
 // =================================================================
 
-/**
- * Insere os projetos (da API ou fictícios) no HTML.
- */
 function populateProjectGrid(gridElementId, projects) {
     const grid = document.getElementById(gridElementId);
-    if (!grid) {
-        return; 
-    }
+    if (!grid) return; 
     
-    grid.innerHTML = ''; // Limpa o grid
+    grid.innerHTML = ''; 
+    
+    // [NOVO] Encontra a seção pai (ex: section.project-category-page)
+    const section = grid.closest('section');
 
     if (!projects || projects.length === 0) {
-        grid.innerHTML = '<p class="empty-grid-message">Nenhum projeto encontrado nesta categoria.</p>';
+        // [MODIFICADO] Se não houver projetos, oculta a seção inteira (título + grid)
+        if (section) {
+            section.style.display = 'none';
+        }
         return;
+    }
+
+    // [NOVO] Se houver projetos, garante que a seção esteja visível
+    if (section) {
+        section.style.display = 'block';
     }
 
     projects.forEach(project => {
         const card = document.createElement('div');
         card.className = 'project-card';
+        // Salva os dados no dataset para o modal recuperar
         card.dataset.projectData = JSON.stringify(project);
 
         card.innerHTML = `
@@ -404,7 +331,6 @@ function populateProjectGrid(gridElementId, projects) {
 }
 
 function handleImageError(img, title) {
-    // ... (Nenhuma mudança aqui)
     const placeholder = document.createElement('div');
     placeholder.className = 'project-thumbnail-placeholder';
     placeholder.textContent = title || 'Pré-visualização indisponível';
@@ -414,19 +340,16 @@ function handleImageError(img, title) {
 }
 
 // =================================================================
-// PÁGINA SOBRE (sobre.html)
+// PÁGINA SOBRE
 // =================================================================
 
-function initSobrePage() {
-    // Nenhuma lógica JS específica
-}
+function initSobrePage() {}
 
 // =================================================================
-// PÁGINA DE CONTATO (contato.html)
+// PÁGINA DE CONTATO
 // =================================================================
 
 function initContatoPage() {
-    // ... (Nenhuma mudança aqui)
     const contactForm = document.getElementById('contact-form');
     if (contactForm) {
         contactForm.addEventListener('submit', handleContactSubmit);
@@ -434,14 +357,12 @@ function initContatoPage() {
 }
 
 async function handleContactSubmit(event) {
-    // ... (Nenhuma mudança aqui, exceto simulação de sucesso)
     event.preventDefault();
     const btn = document.getElementById('contact-submit-btn');
-    const msgElement = document.getElementById('form-message');
     btn.disabled = true;
     btn.textContent = 'Enviando...';
     try {
-        const response = await fetch(API_URL_CONTACT, { /* ... */ });
+        const response = await fetch(API_URL_CONTACT, { method: 'POST', body: new FormData(event.target) });
         if (!response.ok) throw new Error('Falha no envio.');
         showFormMessage('Mensagem enviada com sucesso!', 'success');
         event.target.reset();
@@ -456,7 +377,6 @@ async function handleContactSubmit(event) {
 }
 
 function showFormMessage(message, type) {
-    // ... (Nenhuma mudança aqui)
     const msgElement = document.getElementById('form-message');
     if (msgElement) {
         msgElement.textContent = message;
@@ -466,11 +386,10 @@ function showFormMessage(message, type) {
 }
 
 // =================================================================
-// PÁGINA DE LOGIN (login.html)
+// PÁGINA DE LOGIN
 // =================================================================
 
 function initLoginPage() {
-    // ... (Nenhuma mudança aqui)
     const loginForm = document.getElementById('login-form');
     if (loginForm) {
         loginForm.addEventListener('submit', handleLoginSubmit);
@@ -481,7 +400,6 @@ function initLoginPage() {
 }
 
 async function handleLoginSubmit(event) {
-    // ... (Nenhuma mudança aqui, lógica fictícia mantida)
     event.preventDefault();
     const btn = document.getElementById('login-submit-btn');
     const username = document.getElementById('username').value;
@@ -490,12 +408,12 @@ async function handleLoginSubmit(event) {
     
     console.warn("MODO FICTÍCIO: Bypass do Cognito ativado.");
     if (!username) {
-        showLoginMessage("Por favor, insira um e-mail (pode ser fictício).", "error");
+        showLoginMessage("Por favor, insira um e-mail.", "error");
         btn.disabled = false;
         btn.textContent = 'Entrar';
         return;
     }
-    showLoginMessage("Login fictício realizado com sucesso! Redirecionando...", "success");
+    showLoginMessage("Login fictício realizado!", "success");
     localStorage.setItem('authToken', 'fake-dev-token');
     localStorage.setItem('userEmail', username);
     setTimeout(() => {
@@ -504,7 +422,6 @@ async function handleLoginSubmit(event) {
 }
 
 function showLoginMessage(message, type) {
-    // ... (Nenhuma mudança aqui)
     const msgElement = document.getElementById('login-message');
     if (msgElement) {
         msgElement.textContent = message;
@@ -515,11 +432,10 @@ function showLoginMessage(message, type) {
 
 
 // =================================================================
-// PÁGINA ADMIN (admin.html)
+// PÁGINA ADMIN
 // =================================================================
 
 function initAdminPage() {
-    // ... (Nenhuma mudança aqui)
     checkAdminAuth();
     const logoutBtn = document.getElementById('logout-button');
     if (logoutBtn) {
@@ -537,10 +453,8 @@ function initAdminPage() {
 }
 
 function checkAdminAuth() {
-    // ... (Nenhuma mudança aqui)
     const token = localStorage.getItem('authToken');
     if (!token) {
-        console.warn("Acesso negado, redirecionando para login.");
         window.location.href = 'login.html';
         return;
     }
@@ -552,25 +466,24 @@ function checkAdminAuth() {
 }
 
 function handleLogout() {
-    // ... (Nenhuma mudança aqui)
     localStorage.removeItem('authToken');
     localStorage.removeItem('userEmail');
     window.location.href = 'login.html';
 }
 
 async function fetchProjectsForAdmin() {
-    // ... (Nenhuma mudança aqui, modo fictício mantido)
     const listContainer = document.getElementById('project-list-container');
     const loader = document.getElementById('project-list-loader');
     if (!listContainer || !loader) return;
     try {
-        const response = await fetch(API_URL_GET_PROJECTS, { /* ... */ });
+        const response = await fetch(API_URL_GET_PROJECTS);
         if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
         const projects = await response.json();
+        // [NOTA] Admin geralmente vê todos, inclusive ocultos, então não filtro aqui.
         populateAdminList(projects);
     } catch (error) {
-        console.warn("MODO FICTÍCIO (Admin):", error.message);
-        loader.textContent = "API não encontrada. Carregando projetos fictícios...";
+        console.warn("MODO FICTÍCIO (Admin): Carregando projetos fictícios.");
+        loader.textContent = "Carregando projetos fictícios...";
         setTimeout(() => {
             populateAdminList(MOCK_PROJECTS);
             loader.classList.add('hidden');
@@ -579,7 +492,6 @@ async function fetchProjectsForAdmin() {
 }
 
 function populateAdminList(projects) {
-    // ... (Nenhuma mudança aqui)
     const listContainer = document.getElementById('project-list-container');
     listContainer.innerHTML = '';
     if (!projects || projects.length === 0) {
@@ -590,28 +502,35 @@ function populateAdminList(projects) {
         const listItem = document.createElement('div');
         listItem.className = 'project-list-item';
         listItem.dataset.projectId = project.id;
+        
+        // [MODIFICADO] Indica visualmente se está oculto no painel de admin
+        const hiddenBadge = project.hidden ? ' <span style="color:red; font-size:0.8em;">(Oculto)</span>' : '';
+
         listItem.innerHTML = `
-            <span class="project-list-title">${project.title} <b>(${project.category || 'N/A'})</b></span>
+            <span class="project-list-title">${project.title} <b>(${project.category || 'N/A'})</b>${hiddenBadge}</span>
             <div class="project-list-actions">
                 <button class="project-list-button edit" data-id="${project.id}">Editar</button>
                 <button class="project-list-button delete" data-id="${project.id}">Excluir</button>
             </div>
         `;
-        listItem.querySelector('.edit').addEventListener('click', () => handleEditProject(project));
-        listItem.querySelector('.delete').addEventListener('click', () => handleDeleteProject(project.id, project.title));
+        
+        // Attach event listener manual para editar
+        const editBtn = listItem.querySelector('.edit');
+        editBtn.onclick = () => handleEditProject(project);
+
+        // Attach event listener manual para deletar
+        const deleteBtn = listItem.querySelector('.delete');
+        deleteBtn.onclick = () => handleDeleteProject(project.id, project.title);
+
         listContainer.appendChild(listItem);
     });
 }
 
-/**
- * Manipula o envio do formulário de projeto (Criar ou Atualizar).
- */
 async function handleProjectSubmit(event) {
     event.preventDefault();
     const btn = document.getElementById('project-submit-btn');
     btn.disabled = true;
 
-    // 1. Coleta os dados do formulário
     const projectId = document.getElementById('project-id').value;
     const project = {
         title: document.getElementById('project-title').value,
@@ -630,7 +549,6 @@ async function handleProjectSubmit(event) {
         }
     };
     
-    // ... (Lógica de API/Fictícia)
     const method = projectId ? 'PUT' : 'POST';
     const url = projectId ? `${API_URL_PUT_PROJECT}/${projectId}` : API_URL_POST_PROJECT;
     const token = localStorage.getItem('authToken');
@@ -641,7 +559,7 @@ async function handleProjectSubmit(event) {
             headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
             body: JSON.stringify(project)
         });
-        if (!response.ok) throw new Error('Falha ao salvar o projeto.');
+        if (!response.ok) throw new Error('Falha ao salvar.');
         showAdminMessage('Projeto salvo com sucesso!', 'success');
         resetProjectForm();
         fetchProjectsForAdmin(); 
@@ -650,19 +568,15 @@ async function handleProjectSubmit(event) {
         console.warn("MODO FICTÍCIO (Admin Submit):", error.message);
         showAdminMessage("MODO FICTÍCIO: Simulação de projeto salvo!", "success");
         
-        // Simulação de atualização da lista de MOCK
         if (projectId) {
-            // Editar
             const index = MOCK_PROJECTS.findIndex(p => p.id === projectId);
             if (index !== -1) {
                 MOCK_PROJECTS[index] = { ...MOCK_PROJECTS[index], ...project, id: projectId };
             }
         } else {
-            // Adicionar
             MOCK_PROJECTS.push({ ...project, id: `mock-${Date.now()}` });
         }
-        populateAdminList(MOCK_PROJECTS); // Atualiza a lista da UI
-
+        populateAdminList(MOCK_PROJECTS); 
         resetProjectForm();
     } finally {
         btn.disabled = false;
@@ -670,11 +584,7 @@ async function handleProjectSubmit(event) {
     }
 }
 
-/**
- * Preenche o formulário para edição.
- */
 function handleEditProject(project) {
-    // ... (Nenhuma mudança aqui)
     document.getElementById('project-id').value = project.id;
     document.getElementById('project-title').value = project.title;
     document.getElementById('project-category').value = project.category || 'other'; 
@@ -696,22 +606,14 @@ function handleEditProject(project) {
     window.scrollTo(0, document.getElementById('project-form').offsetTop);
 }
 
-/**
- * Reseta o formulário de projeto para o estado de "Adicionar Novo".
- */
 function resetProjectForm() {
-    // ... (Nenhuma mudança aqui)
     document.getElementById('project-form').reset();
     document.getElementById('project-id').value = '';
     document.getElementById('form-title').textContent = 'Adicionar Novo Projeto';
     document.getElementById('project-cancel-btn').classList.add('hidden');
 }
 
-/**
- * Manipula a exclusão de um projeto.
- */
 async function handleDeleteProject(id, title) {
-    // ... (Nenhuma mudança aqui, modo fictício mantido)
     if (!confirm(`Tem certeza que deseja excluir o projeto "${title}"?`)) {
         return;
     }
@@ -721,22 +623,20 @@ async function handleDeleteProject(id, title) {
         const response = await fetch(url, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` } });
         if (!response.ok) throw new Error('Falha ao excluir.');
         showAdminMessage('Projeto excluído com sucesso!', 'success');
-        fetchProjectsForAdmin(); // Atualiza a lista
+        fetchProjectsForAdmin(); 
     } catch (error) {
         console.warn("MODO FICTÍCIO (Admin Delete):", error.message);
         showAdminMessage("MODO FICTÍCIO: Simulação de projeto excluído!", 'error');
         
-        // Simulação de exclusão do MOCK
         const index = MOCK_PROJECTS.findIndex(p => p.id === id);
         if (index !== -1) {
             MOCK_PROJECTS.splice(index, 1);
         }
-        populateAdminList(MOCK_PROJECTS); // Atualiza a lista da UI
+        populateAdminList(MOCK_PROJECTS); 
     }
 }
 
 function showAdminMessage(message, type) {
-    // ... (Nenhuma mudança aqui)
     const msgElement = document.getElementById('admin-message');
     if (msgElement) {
         msgElement.textContent = message;
@@ -752,7 +652,6 @@ function showAdminMessage(message, type) {
 // =================================================================
 // MODAL DE PROJETO (Lógica Global)
 // =================================================================
-// ... (Nenhuma mudança aqui)
 
 let modalOverlay, modalContent, modalCloseButton, modalTitle, modalEmbedTitle, modalIframe;
 let modalTabButtons, modalTabPanels;
@@ -786,28 +685,26 @@ function initModalListeners() {
     modalTabButtons.forEach(button => {
         button.addEventListener('click', () => handleTabClick(button));
     });
+}
 
-    modalContent.addEventListener('keydown', (event) => {
-        if (event.key !== 'Tab') return;
-        const focusableElements = modalContent.querySelectorAll(
-            'button, [href], iframe, [tabindex]:not([tabindex="-1"])'
-        );
-        if (focusableElements.length === 0) return;
-        const firstElement = focusableElements[0];
-        const lastElement = focusableElements[focusableElements.length - 1];
-
-        if (event.shiftKey) {
-            if (document.activeElement === firstElement) {
-                lastElement.focus();
-                event.preventDefault();
-            }
-        } else {
-            if (document.activeElement === lastElement) {
-                firstElement.focus();
-                event.preventDefault();
-            }
-        }
-    });
+/**
+ * [SIMPLIFICADO] Helper para transformar links do YouTube em Embed Padrão
+ * Remove parâmetros complexos como 'enablejsapi' e 'origin' que podem causar
+ * Erro 153 em ambientes locais ou não homologados.
+ */
+function getEmbedUrl(url) {
+    if (!url) return "";
+    
+    // Regex para capturar ID do YouTube
+    const youtubeRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i;
+    const match = url.match(youtubeRegex);
+    
+    if (match && match[1]) {
+        // Retorna o embed simples, que funciona com a permissão "Allow Embedding" ativada no YouTube
+        return `https://www.youtube.com/embed/${match[1]}`;
+    }
+    
+    return url;
 }
 
 function openModal(project) {
@@ -815,7 +712,13 @@ function openModal(project) {
     lastFocusedElement = document.activeElement;
     modalTitle.textContent = project.title || 'Título do Projeto';
     modalEmbedTitle.textContent = project.embedTitle || 'Conteúdo Interativo';
-    modalIframe.src = project.iframeSrc || '';
+    
+    // [MODIFICADO] Permissões padrão para iframe
+    modalIframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share');
+    modalIframe.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
+
+    // [MODIFICADO] Usa a função helper simplificada
+    modalIframe.src = getEmbedUrl(project.iframeSrc) || '';
 
     const data = project.data || {};
     const panelMap = {
@@ -853,6 +756,9 @@ function closeModal() {
     if (!modalOverlay) return;
     modalOverlay.classList.add('hidden');
     modalIframe.src = '';
+    // Limpa atributos para não afetar outros iframes se necessário
+    modalIframe.removeAttribute('allow');
+    modalIframe.removeAttribute('referrerpolicy');
     document.body.style.overflow = 'auto';
     if (lastFocusedElement) {
         lastFocusedElement.focus();
