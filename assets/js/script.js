@@ -28,24 +28,46 @@ const MOCK_PROJECTS = [
       <p>Aqui está a medida utilizada para criar a tabela virtual de períodos:</p>
       
       <pre class="code-block"><code class="language-dax">
-_Periodos = 
-UNION(
-    ADDCOLUMNS(
-        DATESINPERIOD(dCalendario[Date], MAX(dCalendario[Date]), -20, YEAR),
+_Periodos =
+UNION (
+    ADDCOLUMNS (
+        DATESINPERIOD ( dCalendario[Date], MAX ( dCalendario[Date] ), -20, YEAR ),
         "Período", "Todo período (Escolher data)",
         "Ordem", 1
     ),
-    ADDCOLUMNS(
-        DATESINPERIOD(dCalendario[Date], DATE(YEAR(TODAY()), MONTH(TODAY()), DAY(TODAY()-1)), -2, YEAR),
+    ADDCOLUMNS (
+        DATESINPERIOD (
+            dCalendario[Date],
+            DATE ( YEAR ( TODAY () ), MONTH ( TODAY () ), DAY ( TODAY () - 1 ) ),
+            -2,
+            YEAR
+        ),
         "Período", "Vencido",
         "Ordem", 2
     ),
-    ADDCOLUMNS(
-        DATESINPERIOD(dCalendario[Date], TODAY(), 16, DAY),
+    ADDCOLUMNS (
+        DATESINPERIOD ( dCalendario[Date], TODAY (), 16, DAY ),
         "Período", "Próximos 15 dias",
         "Ordem", 3
+    ),
+    ADDCOLUMNS (
+        DATESINPERIOD ( dCalendario[Date], TODAY () + 1, 1, MONTH ),
+        "Período", "Próximos 30 dias",
+        "Ordem", 4
+    ),
+    ADDCOLUMNS (
+        DATESINPERIOD ( dCalendario[Date], TODAY () + 1, 2, MONTH ),
+        "Período", "Próximos 60 dias",
+        "Ordem", 5
+    ),
+    SELECTCOLUMNS (
+        FILTER ( dCalendario, dCalendario[Date] > TODAY () + 60 ),
+        "Date", dCalendario[Date],
+        "Período", "Acima de 60 dias",
+        "Ordem", 6
     )
 )
+
       </code></pre>
       <p>Esta lógica permite criar os cálculos de forma mais dinâmica e a segmentação de dados da tela principal</p>
     `,
@@ -54,17 +76,31 @@ UNION(
     },
     {
       id: "mock-2",
-      title: "Projeto 2: Análise Imobiliária (Fictício)",
-      category: "data-analysis", // Categoria
-      thumbnailSrc: "https://placehold.co/600x400/1A6A6C/FFFFFF?text=Imobiliária",
-      iframeSrc: "",
+      title: "Projeto 2: Hub de testes de desenvolvimento de projetos",
+      category: "apps", // Categoria
+      thumbnailSrc: "https://placehold.co/600x400/1A6A6C/FFFFFF?text=Test Hub",
+      iframeSrc: '<iframe width="560" height="315" src="https://www.youtube.com/embed/o8CvaeNNycs?si=PjEw1u3gEg3X6Iz-" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>',
       embedTitle: "Análise de Portfólio de Obras",
-      tabsToShow: "",
+      tabsToShow: "modal-descricao,modal-objetivos",
       data: {
-        descricao: "<p>Análise do setor imobiliário, focada em VGV...</p>",
-        objetivos: "<ul class='list-disc'><li>Acompanhar VGV por projeto.</li></ul>",
-        metricas: "<p>(WIP) Métricas...</p>",
-        tecnologias: "<p>(WIP) Tecnologias...</p>",
+        descricao: `
+      <p class="mb-4">
+        O <strong>Test Hub</strong> é uma solução robusta desenvolvida na <strong>Microsoft Power Platform</strong> para modernizar e centralizar o processo de Garantia de Qualidade (QA) em projetos de software.
+      </p>
+      <p class="mb-4">
+        Criado para substituir o gerenciamento descentralizado em planilhas, o aplicativo oferece um fluxo de trabalho completo: do planejamento de casos de teste à execução, reporte de bugs e validação de correções. Ele atua como um "mini-Jira" personalizado, focado na agilidade e na rastreabilidade das entregas.
+      </p>
+    `,
+        objetivos: `
+      <ul class="list-disc pl-5 space-y-2">
+        <li><strong>Centralizar a Gestão:</strong> Consolidar planos de teste, execuções e bugs em uma única fonte da verdade.</li>
+        <li><strong>Padronizar Processos:</strong> Garantir que todos os testes sigam um padrão rigoroso com passos, pré-condições e massas de dados definidas.</li>
+        <li><strong>Aumentar a Rastreabilidade:</strong> Vincular automaticamente bugs aos casos de teste de origem e às evidências (prints/vídeos).</li>
+        <li><strong>Melhorar a Colaboração:</strong> Facilitar a comunicação entre QA e Desenvolvedores através de comentários e status claros no quadro Kanban.</li>
+      </ul>
+    `,
+        metricas: "",
+        tecnologias: "",
         detalhes: "<p>(WIP) Detalhes...</p>",
         fontes: "<p>(WIP) Fontes...</p>"
       }
