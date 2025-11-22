@@ -989,7 +989,7 @@ select:focus-visible {
         font-size: 0.95rem;
     }
     .nav-logo {
-        max-width: 160px;
+        max-width: 100px;
     }
 }
 

@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Erro 404 - Página Não Encontrada</title>
+    
+    <!-- Inclui o CSS principal para manter o estilo -->
+    <link rel="stylesheet" href="assets/css/style.css">
+    
+    <style>
+        .error-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 80vh;
+            text-align: center;
+            padding: 2rem;
+        }
+        .error-code {
+            font-size: 8rem;
+            font-weight: 700;
+            color: var(--primary-color-accessible);
+            margin-bottom: 0;
+            line-height: 1;
+        }
+        .error-message {
+            font-size: 2rem;
+            color: var(--text-color);
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    
+    <!-- Reutiliza a navegação para que o usuário possa sair -->
+    <nav class="main-nav">
+        <div class="container nav-container">
+            <a href="/" class="nav-logo-link" aria-label="Página Inicial - Pinheiro Tecnologia">
+                <img src="images/Logo Branco - Pinheiro Tecnologia.png" alt="Pinheiro Tecnologia - Logo" class="nav-logo" width="180" height="30">
+            </a>
+            <ul class="nav-links">
+                <li><a href="/">Início</a></li>
+                <li><a href="/projetos">Projetos</a></li>
+                <li><a href="/contato">Contato</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main class="container">
+        <div class="error-container">
+            <p class="error-code">404</p>
+            <h1 class="error-message">Página Não Encontrada</h1>
+            <p style="font-size: 1.1rem; max-width: 500px;">
+                Parece que a página que você tentou acessar não existe ou foi movida. 
+                Utilize o menu acima ou clique no botão abaixo para retornar à página inicial.
+            </p>
+            <a href="/" class="cta-button" style="margin-top: 1.5rem;">Voltar para o Início</a>
+        </div>
+    </main>
+
+    <!-- O rodapé não é essencial para a página de erro, mas pode ser adicionado se necessário -->
+
+</body>
+</html>
