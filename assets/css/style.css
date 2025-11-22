@@ -171,6 +171,15 @@ select:focus-visible {
     display: block;
 }
 
+/* Estilos para o Wrapper do Menu (para controle mobile) */
+.nav-menu-wrapper {
+    /* Em desktop, este wrapper se comporta como um container flex para os links */
+    display: flex;
+    align-items: center;
+    flex-grow: 1; /* Permite ocupar o espaço restante (se necessário) */
+    justify-content: flex-end; /* Alinha os links à direita em desktop */
+}
+
 .nav-links {
     display: flex;
     list-style: none;
@@ -202,6 +211,21 @@ select:focus-visible {
     background-color: var(--primary-color-active);
     color: white;
     font-weight: 600;
+}
+
+/* Botão do Menu Sanduíche (Oculto por padrão em Desktop) */
+.menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    padding: 0.5rem;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    z-index: 101; /* Fica acima de tudo */
+}
+.menu-toggle svg rect {
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
 }
 
 
@@ -1012,13 +1036,85 @@ select:focus-visible {
         font-size: 1.75rem;
         margin-bottom: 1.5rem;
     }
+    
+    /* === MOBILE NAV === */
+    .nav-container {
+        /* Garante que o logo e o toggle fiquem alinhados */
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+    }
+    .nav-menu-wrapper {
+        /* Oculta o wrapper por padrão em mobile */
+        display: none; 
+        position: absolute;
+        top: 45px; /* Altura da nav */
+        left: 0;
+        width: 100%;
+        background-color: var(--primary-color-accessible);
+        box-shadow: 0 4px 5px rgba(0, 0, 0, 0.2);
+        flex-direction: column;
+        justify-content: flex-start;
+        padding-bottom: 1rem;
+        transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+        transform: translateY(-10px);
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    /* Estilo quando o menu está aberto */
+    .nav-menu-wrapper.open {
+        display: flex;
+        transform: translateY(0);
+        opacity: 1;
+        pointer-events: auto;
+    }
+
     .nav-links {
-        gap: 0.25rem;
+        flex-direction: column;
+        align-items: stretch;
+        width: 100%;
+        gap: 0;
+        padding: 0 1rem;
     }
+    .nav-links li {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1); /* Separador visual */
+    }
+    .nav-links li:last-child {
+        border-bottom: none;
+    }
+
     .nav-links a {
-        padding: 0.5rem 0.5rem;
-        font-size: 0.85rem;
+        padding: 1rem 1rem;
+        font-size: 1rem;
+        text-align: left;
+        border-radius: 0;
+        width: 100%;
     }
+    .nav-links a.active,
+    .nav-links a[aria-current="page"] {
+        background-color: var(--primary-color-active);
+        border-left: 5px solid white; /* Indicador ativo mobile */
+    }
+    
+    /* Torna o botão do menu visível em mobile */
+    .menu-toggle {
+        display: flex;
+    }
+
+    /* Transformação do ícone Sanduíche para X (Acessibilidade) */
+    .menu-toggle[aria-expanded="true"] svg rect:first-child {
+        transform: translateY(30px) rotate(45deg);
+    }
+    .menu-toggle[aria-expanded="true"] svg rect:nth-child(2) {
+        opacity: 0;
+    }
+    .menu-toggle[aria-expanded="true"] svg rect:last-child {
+        transform: translateY(-30px) rotate(-45deg);
+    }
+    /* === FIM MOBILE NAV === */
+
+
     .nav-logo {
         max-width: 130px;
     }

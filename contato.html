@@ -42,12 +42,26 @@
             <a href="index.html" class="nav-logo-link" aria-label="Página Inicial - Pinheiro Tecnologia">
                 <img src="images/Logo Branco - Pinheiro Tecnologia.png" alt="Pinheiro Tecnologia - Logo" class="nav-logo" width="180" height="30">
             </a>
-            <ul class="nav-links">
-                <li><a href="/">Início</a></li>
-                <li><a href="projetos.html">Projetos</a></li>
-                <li><a href="sobre.html">Sobre Nós</a></li>
-                <li><a href="contato.html" class="active" aria-current="page">Contato</a></li>
-            </ul>
+            
+            <!-- Botão de Menu Sanduíche (Apenas para Mobile) -->
+            <button class="menu-toggle" aria-expanded="false" aria-controls="mobile-menu" aria-label="Abrir Menu Principal">
+                <!-- Ícone SVG de Sanduíche -->
+                <svg viewBox="0 0 100 80" width="25" height="20" fill="white">
+                    <rect width="100" height="15" rx="8"></rect>
+                    <rect y="30" width="100" height="15" rx="8"></rect>
+                    <rect y="60" width="100" height="15" rx="8"></rect>
+                </svg>
+            </button>
+
+            <!-- Links do Menu (Wrapper para controle de Mobile) -->
+            <div class="nav-menu-wrapper" id="mobile-menu">
+                <ul class="nav-links">
+                    <li><a href="/">Início</a></li>
+                    <li><a href="projetos.html">Projetos</a></li>
+                    <li><a href="sobre.html">Sobre Nós</a></li>
+                    <li><a href="contato.html" class="active" aria-current="page">Contato</a></li>
+                </ul>
+            </div>
         </div>
     </nav>
 
@@ -126,7 +140,7 @@
     
                     <a href="https://api.whatsapp.com/send?phone=5511986777281" target="_blank" rel="noopener noreferrer" class="contact-card">
                         <div class="contact-card-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="currentColor" role="img" aria-hidden="true"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 4.315 1.847 6.039l-1.25 4.562 4.65-1.225z"></path></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="currentColor" role="img" aria-hidden="true"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zM6.597 20.193c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 4.315 1.847 6.039l-1.25 4.562 4.65-1.225z"></path></svg>
                         </div>
                         <div>
                             <h3 class="contact-card-title">WhatsApp</h3>

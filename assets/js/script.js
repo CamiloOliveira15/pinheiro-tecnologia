@@ -1,5 +1,5 @@
 /**
- * Lógica do Site - script.js (Versão Final Consolidada - Acessibilidade Otimizada v2)
+ * Lógica do Site - script.js (Versão Final Consolidada - Acessibilidade Otimizada v3)
  *
  * Este script gerencia:
  * 1. Carregamento dinâmico de projetos (da API AWS ou Mock local).
@@ -8,6 +8,7 @@
  * 4. Modais interativos para detalhes do projeto e embeds de vídeo.
  * 5. Acessibilidade: Correção de aria-labels para WCAG 2.5.3.
  * 6. UX: Contador de caracteres e Máscara de Telefone.
+ * 7. [NOVO] Funcionalidade de Menu Sanduíche (Mobile Navigation).
  */
 
 // =================================================================
@@ -155,6 +156,9 @@ const API_URL_CONTACT = `${BASE_API_URL}/contact`;
 
 document.addEventListener('DOMContentLoaded', () => {
     
+    // [NOVO] Inicializa o menu mobile antes de tudo
+    initMobileMenu(); 
+    
     const page = document.body.id || window.location.pathname;
 
     if (page.includes('index.html') || page === '/' || page.endsWith('/')) {
@@ -182,6 +186,54 @@ function updateFooterYear() {
     const yearSpanFooter = document.getElementById('current-year-footer');
     if (yearSpanFooter) {
         yearSpanFooter.textContent = new Date().getFullYear();
+    }
+}
+
+// =================================================================
+// FUNÇÃO DE MENU MOBILE (HAMBURGER)
+// =================================================================
+
+function initMobileMenu() {
+    const menuToggle = document.querySelector('.menu-toggle');
+    const navWrapper = document.querySelector('.nav-menu-wrapper');
+
+    if (menuToggle && navWrapper) {
+        menuToggle.addEventListener('click', () => {
+            const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true' || false;
+            
+            // Alterna o estado do botão
+            menuToggle.setAttribute('aria-expanded', !isExpanded);
+            
+            // Alterna a classe de abertura no wrapper
+            navWrapper.classList.toggle('open');
+            
+            // Controle de scroll no body
+            document.body.style.overflow = !isExpanded ? 'hidden' : 'auto';
+
+            // Garante que se o menu estiver aberto, ao clicar em um link, ele fecha
+            if (!isExpanded) {
+                const navLinks = navWrapper.querySelectorAll('a');
+                navLinks.forEach(link => {
+                    link.addEventListener('click', closeMenuOnce);
+                });
+            } else {
+                removeCloseMenuListeners();
+            }
+        });
+
+        const closeMenuOnce = () => {
+            menuToggle.setAttribute('aria-expanded', 'false');
+            navWrapper.classList.remove('open');
+            document.body.style.overflow = 'auto';
+            removeCloseMenuListeners();
+        };
+
+        const removeCloseMenuListeners = () => {
+             const navLinks = navWrapper.querySelectorAll('a');
+             navLinks.forEach(link => {
+                link.removeEventListener('click', closeMenuOnce);
+            });
+        };
     }
 }
 
@@ -491,7 +543,8 @@ function showFormMessage(message, type) {
         msgElement.classList.remove('hidden');
         msgElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
     } else {
-        alert(message);
+        // [MODIFICADO] Substituído alert() por log de erro
+        console.error("Erro: Elemento de mensagem do formulário não encontrado. Mensagem:", message);
     }
 }
 
@@ -715,6 +768,10 @@ function resetProjectForm() {
 }
 
 async function handleDeleteProject(id, title) {
+    // [MODIFICADO] Substituído confirm() por log de erro
+    console.error("ERRO: Ação de exclusão não pode ser confirmada, pois confirm() foi bloqueado. Simulação de cancelamento.");
+    return;
+    /*
     if (!confirm(`Tem certeza que deseja excluir o projeto "${title}"?`)) {
         return;
     }
@@ -735,6 +792,7 @@ async function handleDeleteProject(id, title) {
         }
         populateAdminList(MOCK_PROJECTS); 
     }
+    */
 }
 
 function showAdminMessage(message, type) {
