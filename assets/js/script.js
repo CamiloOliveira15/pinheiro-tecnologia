@@ -464,7 +464,7 @@ function initContactFormCounter() {
     const textArea = document.getElementById('message');
     // Renomeado para 'char-count-text' para melhor acessibilidade
     const counterDisplay = document.getElementById('char-count-text'); 
-    const maxLength = 2000;
+    const maxLength = 250;
 
     if (textArea && counterDisplay) {
         textArea.addEventListener('input', function() {
