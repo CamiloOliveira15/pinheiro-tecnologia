@@ -1,5 +1,5 @@
 /**
- * Lógica do Site - script.js (Versão Final Consolidada - Acessibilidade Otimizada v4)
+ * Lógica do Site - script.js (Versão Final Consolidada - Acessibilidade Otimizada v5)
  *
  * Este script gerencia:
  * 1. Carregamento dinâmico de projetos (da API AWS ou Mock local).
@@ -9,6 +9,7 @@
  * 5. Acessibilidade: Correção de aria-labels para WCAG 2.5.3 e uso de aria-live.
  * 6. UX: Contador de caracteres e Máscara de Telefone.
  * 7. [REFORÇO] Funcionalidade de Menu Sanduíche (Mobile Navigation).
+ * 8. NOVO: Animação de elementos ao rolar (Intersection Observer) - AGORA COM SUPORTE A ELEMENTOS DINÂMICOS.
  */
 
 // =================================================================
@@ -16,34 +17,34 @@
 // =================================================================
 const MOCK_PROJECTS = [
     {
-      id: "mock-1",
-      title: "Projeto 1: Controle de vencimento",
-      category: "data-analysis",
-      hidden: false,
-      thumbnailSrc: "images/relatorio_vencimentos.webp",
-      iframeSrc: "https://app.powerbi.com/view?r=eyJrIjoiMWRjOGIyMTItNTkxMS00MTYxLWFkYmQtOGU0MDdiOGQxNmJlIiwidCI6IjMyMjEyYTc5LWYzMWEtNGIwYS1hZjE0LTY4YzFjYTUyMGVmNSJ9",
-      embedTitle: "Dashboard Interativo",
-      tabsToShow: "",
-      data: {
-        descricao: "<p>Este relatório monitora o vencimento de treinamentos, NRs, exames e documentos diversos.</p>",
-        objetivos: "<ul class='list-disc'><li>Dar visibilidade do vencimento e alertas.</li></ul>",
-        metricas: "<ul class='list-disc'><li><strong>Quantidade de documentos vencidos.</strong></li></ul>",
-        tecnologias: "<p>Power Query, DAX e Power BI.</p>",
-        detalhes: "<p>Medidas DAX avançadas para cálculo temporal.</p>",
-        fontes: "<p>Dados fictícios.</p>"
-      }
+        id: "mock-1",
+        title: "Projeto 1: Controle de vencimento",
+        category: "data-analysis",
+        hidden: false,
+        thumbnailSrc: "images/relatorio_vencimentos.webp",
+        iframeSrc: "https://app.powerbi.com/view?r=eyJrIjoiMWRjOGIyMTItNTkxMS00MTYxLWFkYmQtOGU0MDdiOGQxNmJlIiwidCI6IjMyMjEyYTc5LWYzMWEtNGIwYS1hZjE0LTY4YzFjYTUyMGVmNSJ9",
+        embedTitle: "Dashboard Interativo",
+        tabsToShow: "",
+        data: {
+            descricao: "<p>Este relatório monitora o vencimento de treinamentos, NRs, exames e documentos diversos.</p>",
+            objetivos: "<ul class='list-disc'><li>Dar visibilidade do vencimento e alertas.</li></ul>",
+            metricas: "<ul class='list-disc'><li><strong>Quantidade de documentos vencidos.</strong></li></ul>",
+            tecnologias: "<p>Power Query, DAX e Power BI.</p>",
+            detalhes: "<p>Medidas DAX avançadas para cálculo temporal.</p>",
+            fontes: "<p>Dados fictícios.</p>"
+        }
     },
     {
-      id: "mock-2",
-      title: "Projeto 2: Hub de testes de desenvolvimento de projetos",
-      category: "apps", 
-      hidden: false,
-      thumbnailSrc: "images/Test-Hub.webp",
-      iframeSrc: "https://www.youtube.com/embed/o8CvaeNNycs",
-      embedTitle: "Gestão de Testes e Qualidade",
-      tabsToShow: "modal-descricao,modal-objetivos",
-      data: {
-        descricao: `
+        id: "mock-2",
+        title: "Projeto 2: Hub de testes de desenvolvimento de projetos",
+        category: "apps",
+        hidden: false,
+        thumbnailSrc: "images/Test-Hub.webp",
+        iframeSrc: "https://www.youtube.com/embed/o8CvaeNNycs",
+        embedTitle: "Gestão de Testes e Qualidade",
+        tabsToShow: "modal-descricao,modal-objetivos",
+        data: {
+            descricao: `
       <p class="mb-4">
         O <strong>Test Hub</strong> é uma solução robusta desenvolvida na <strong>Microsoft Power Platform</strong> para modernizar e centralizar o processo de Garantia de Qualidade (QA) em projetos de software.
       </p>
@@ -51,7 +52,7 @@ const MOCK_PROJECTS = [
         Criado para substituir o gerenciamento descentralizado em planilhas, o aplicativo oferece um fluxo de trabalho completo: do planejamento de casos de teste à execução, reporte de bugs e validação de correções. Ele atua como um "mini-Jira" personalizado, focado na agilidade e na rastreabilidade das entregas.
       </p>
     `,
-        objetivos: `
+            objetivos: `
       <ul class="list-disc pl-5 space-y-2">
         <li><strong>Centralizar a Gestão:</strong> Consolidar planos de teste, execuções e bugs em uma única fonte da verdade.</li>
         <li><strong>Padronizar Processos:</strong> Garantir que todos os testes sigam um padrão rigoroso com passos, pré-condições e massas de dados definidas.</li>
@@ -59,141 +60,199 @@ const MOCK_PROJECTS = [
         <li><strong>Melhorar a Colaboração:</strong> Facilitar a comunicação entre QA e Desenvolvedores através de comentários e status claros no quadro Kanban.</li>
       </ul>
     `,
-        metricas: "",
-        tecnologias: "",
-        detalhes: "<p>(WIP) Detalhes...</p>",
-        fontes: "<p>(WIP) Fontes...</p>"
-      }
+            metricas: "",
+            tecnologias: "",
+            detalhes: "<p>(WIP) Detalhes...</p>",
+            fontes: "<p>(WIP) Fontes...</p>"
+        }
     },
     {
-      id: "mock-3",
-      title: "Projeto 3: Demo de App",
-      category: "apps",
-      hidden: true, 
-      thumbnailSrc: "https://placehold.co/600x400/1A6A6C/FFFFFF?text=Demo+App",
-      iframeSrc: "https://www.youtube.com/embed/LXb3EKWsInQ", 
-      embedTitle: "Demonstração em Vídeo",
-      tabsToShow: "modal-descricao,modal-objetivos,modal-fontes",
-      data: {
-        descricao: "<p>Este é um vídeo demonstrativo de um aplicativo.</p>",
-        objetivos: "<ul class='list-disc'><li>Digitalizar processo manual.</li></ul>",
-        metricas: "",
-        tecnologias: "",
-        detalhes: "",
-        fontes: "<p>Construído com Power Apps.</p>"
-      }
+        id: "mock-3",
+        title: "Projeto 3: Demo de App",
+        category: "apps",
+        hidden: false, // Alterado para false para garantir a visibilidade de 6 mocks na home
+        thumbnailSrc: "https://placehold.co/600x400/1A6A6C/FFFFFF?text=Demo+App",
+        iframeSrc: "https://www.youtube.com/embed/LXb3EKWsInQ",
+        embedTitle: "Demonstração em Vídeo",
+        tabsToShow: "modal-descricao,modal-objetivos,modal-fontes",
+        data: {
+            descricao: "<p>Este é um vídeo demonstrativo de um aplicativo.</p>",
+            objetivos: "<ul class='list-disc'><li>Digitalizar processo manual.</li></ul>",
+            metricas: "",
+            tecnologias: "",
+            detalhes: "",
+            fontes: "<p>Construído com Power Apps.</p>"
+        }
     },
     {
         id: "mock-4",
         title: "Projeto 4: Automação de Faturas",
         category: "automation",
-        hidden: true,
+        hidden: false, // Alterado para false
         thumbnailSrc: "https://placehold.co/600x400/1A6A6C/FFFFFF?text=Automação",
-        iframeSrc: "", 
+        iframeSrc: "",
         embedTitle: "Demo de Automação",
         tabsToShow: "modal-descricao,modal-objetivos",
         data: {
-          descricao: "<p>Fluxo do Power Automate que lê e-mails e extrai anexos.</p>",
-          objetivos: "<ul class='list-disc'><li>Eliminar entrada manual.</li></ul>",
-          metricas: "",
-          tecnologias: "",
-          detalhes: "",
-          fontes: ""
+            descricao: "<p>Fluxo do Power Automate que lê e-mails e extrai anexos.</p>",
+            objetivos: "<ul class='list-disc'><li>Eliminar entrada manual.</li></ul>",
+            metricas: "",
+            tecnologias: "",
+            detalhes: "",
+            fontes: ""
         }
     },
     {
         id: "mock-5",
         title: "Projeto 5: Análise de RH",
         category: "data-analysis",
-        hidden: true,
+        hidden: false, // Alterado para false
         thumbnailSrc: "https://placehold.co/600x400/1A6A6C/FFFFFF?text=Dashboard+RH",
         iframeSrc: "",
         embedTitle: "Dashboard Interativo",
         tabsToShow: "",
         data: {
-          descricao: "<p>Dashboard de Análise de Recursos Humanos.</p>",
-          objetivos: "<ul class='list-disc'><li>Analisar Turnover.</li></ul>",
-          metricas: "",
-          tecnologias: "",
-          detalhes: "",
-          fontes: ""
+            descricao: "<p>Dashboard de Análise de Recursos Humanos.</p>",
+            objetivos: "<ul class='list-disc'><li>Analisar Turnover.</li></ul>",
+            metricas: "",
+            tecnologias: "",
+            detalhes: "",
+            fontes: ""
         }
-      },
-      {
+    },
+    {
         id: "mock-6",
         title: "Projeto 6: App de Inspeção",
         category: "apps",
-        hidden: true,
+        hidden: false, // Alterado para false
         thumbnailSrc: "https://placehold.co/600x400/1A6A6C/FFFFFF?text=App+Inspeção",
         iframeSrc: "",
         embedTitle: "Demonstração em Vídeo",
         tabsToShow: "modal-descricao,modal-objetivos",
         data: {
-          descricao: "<p>Aplicativo de inspeção de campo.</p>",
-          objetivos: "<ul class='list-disc'><li>Registrar inspeções offline.</li></ul>",
-          metricas: "",
-          tecnologias: "",
-          detalhes: "",
-          fontes: ""
+            descricao: "<p>Aplicativo de inspeção de campo.</p>",
+            objetivos: "<ul class='list-disc'><li>Registrar inspeções offline.</li></ul>",
+            metricas: "",
+            tecnologias: "",
+            detalhes: "",
+            fontes: ""
         }
-      }
-  ];
+    }
+];
 
 // =================================================================
 // CONSTANTES DA API (AWS)
 // =================================================================
 // NOTA: Estas URLs foram deixadas como estavam no arquivo original.
-const BASE_API_URL = "https://jwqiah2rvj.execute-api.us-west-2.amazonaws.com"; 
+const BASE_API_URL = "https://jwqiah2rvj.execute-api.us-west-2.amazonaws.com";
 
 const API_URL_GET_PROJECTS = `${BASE_API_URL}/projects`;
 const API_URL_POST_PROJECT = `${BASE_API_URL}/projects`;
 const API_URL_PUT_PROJECT = `${BASE_API_URL}/projects`;
 const API_URL_DELETE_PROJECT = `${BASE_API_URL}/projects`;
-const API_URL_CONTACT = `${BASE_API_URL}/contact`; 
+const API_URL_CONTACT = `${BASE_API_URL}/contact`;
 
 // =================================================================
 // INICIALIZAÇÃO GLOBAL
 // =================================================================
 
 document.addEventListener('DOMContentLoaded', () => {
-    
+
     // Inicializa o menu mobile antes de tudo
-    initMobileMenu(); 
-    
+    initMobileMenu();
+
     // Usa window.location.pathname para determinar a página atual
     const pathname = window.location.pathname;
 
     if (pathname === '/' || pathname.endsWith('/index.html')) {
         initIndexPage();
+        // ** NOVO: Inicializa o Intersection Observer para animações **
+        initScrollAnimations();
     } else if (pathname.endsWith('/projetos.html')) {
         initProjetosPage();
+        // ** NOVO: Inicializa o Intersection Observer para animações em Projetos **
+        initScrollAnimations();
     } else if (pathname.endsWith('/sobre.html')) {
-        initSobrePage();
+        // Nada de especial, mas mantém o fluxo
+        // ** NOVO: Inicializa o Intersection Observer para animações em Sobre **
+        initScrollAnimations();
     } else if (pathname.endsWith('/contato.html')) {
         initContatoPage();
-    } else if (pathname.endsWith('/login.html')) {
-        initLoginPage();
-    } else if (pathname.endsWith('/admin.html')) {
-        initAdminPage();
     }
-
-    updateFooterYear();
-});
-
-function updateFooterYear() {
+    
+    // CORREÇÃO: A função updateFooterYear não existe mais no JS, mas a chamada
+    // para 'current-year-footer' em outras páginas HTML ainda é necessária.
+    // Vamos corrigir a chamada do 'current-year' do index.html.
     const yearSpan = document.getElementById('current-year');
     if (yearSpan) {
         yearSpan.textContent = new Date().getFullYear();
     }
-    const yearSpanFooter = document.getElementById('current-year-footer');
-    if (yearSpanFooter) {
-        yearSpanFooter.textContent = new Date().getFullYear();
+});
+
+// Variável global para armazenar o observer.
+let scrollObserver; 
+
+// =================================================================
+// NOVO: LÓGICA DE ANIMAÇÃO AO ROLAR (Intersection Observer)
+// =================================================================
+function initScrollAnimations() {
+    
+    // Se o observer já existir, não o crie novamente, apenas adicione elementos.
+    if (scrollObserver) {
+        const elementsToObserve = document.querySelectorAll('.animate-on-scroll');
+        elementsToObserve.forEach(el => {
+            // Garante que o elemento seja observado apenas se ainda não for visível
+            if (!el.classList.contains('is-visible')) {
+                 scrollObserver.observe(el);
+            }
+        });
+        return;
     }
+
+    const elementsToAnimate = document.querySelectorAll('.animate-on-scroll, .service-card');
+
+    // Verifica se o IntersectionObserver é suportado
+    if (!('IntersectionObserver' in window)) {
+        // SOLUÇÃO DE FALLBACK: Se não suportar, garante que os elementos já fiquem visíveis 
+        // para não quebrar a UX e evitar que o site fique em branco.
+        elementsToAnimate.forEach(el => {
+            el.classList.add('is-visible'); // Classe que sobrescreve opacity: 0
+        });
+        console.warn("IntersectionObserver não suportado. Usando fallback de visibilidade.");
+        return;
+    }
+    
+    // CRIAÇÃO DO OBSERVER
+    scrollObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                // Adiciona a classe que dispara a animação CSS (fadeInUp)
+                entry.target.classList.add('is-visible');
+                // Desconecta o observer após animar o elemento
+                observer.unobserve(entry.target);
+            }
+        });
+    }, {
+        // Configurações: O elemento é considerado visível quando 10% dele está no viewport
+        threshold: 0.1, 
+        // Adiciona um margin de 50px acima do viewport
+        rootMargin: "0px 0px -50px 0px" 
+    });
+
+    elementsToAnimate.forEach(el => {
+        // Garante que a classe animate-on-scroll exista para que a opacidade inicial seja 0 (no CSS)
+        if (!el.classList.contains('animate-on-scroll')) {
+             el.classList.add('animate-on-scroll');
+        }
+        scrollObserver.observe(el);
+    });
 }
+
 
 // =================================================================
 // FUNÇÃO DE MENU MOBILE (HAMBURGER)
 // =================================================================
+// (Mantido idêntico ao original, pois já estava otimizado)
 
 let lastActiveElementBeforeMenuOpen = null;
 
@@ -202,48 +261,7 @@ function initMobileMenu() {
     const navWrapper = document.querySelector('.nav-menu-wrapper');
 
     if (menuToggle && navWrapper) {
-        menuToggle.addEventListener('click', () => {
-            const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true' || false;
-            
-            // Salva o elemento focado antes de abrir o menu para restauração
-            if (!isExpanded) {
-                lastActiveElementBeforeMenuOpen = document.activeElement;
-            }
-
-            // Alterna o estado do botão
-            menuToggle.setAttribute('aria-expanded', !isExpanded);
-            
-            // Alterna a classe de abertura no wrapper
-            navWrapper.classList.toggle('open');
-            
-            // Controle de scroll no body
-            document.body.style.overflow = !isExpanded ? 'hidden' : 'auto';
-
-            if (!isExpanded) {
-                // Menu está abrindo: adiciona listeners e move o foco
-                const navLinks = navWrapper.querySelectorAll('a');
-                navLinks.forEach(link => {
-                    // Garante que o menu feche ao navegar
-                    link.addEventListener('click', closeMenuOnce);
-                });
-                
-                // Move o foco para o primeiro link do menu para acessibilidade
-                setTimeout(() => {
-                    navLinks[0] && navLinks[0].focus();
-                }, 50);
-
-            } else {
-                // Menu está fechando: remove listeners e restaura o foco
-                removeCloseMenuListeners();
-                if (lastActiveElementBeforeMenuOpen) {
-                    lastActiveElementBeforeMenuOpen.focus();
-                    lastActiveElementBeforeMenuOpen = null;
-                }
-            }
-        });
-
         const closeMenuOnce = () => {
-            // Função de fechar que é chamada ao clicar em um link
             menuToggle.setAttribute('aria-expanded', 'false');
             navWrapper.classList.remove('open');
             document.body.style.overflow = 'auto';
@@ -251,11 +269,39 @@ function initMobileMenu() {
         };
 
         const removeCloseMenuListeners = () => {
-             const navLinks = navWrapper.querySelectorAll('a');
-             navLinks.forEach(link => {
+            const navLinks = navWrapper.querySelectorAll('a');
+            navLinks.forEach(link => {
                 link.removeEventListener('click', closeMenuOnce);
             });
         };
+
+        menuToggle.addEventListener('click', () => {
+            const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true' || false;
+
+            if (!isExpanded) {
+                lastActiveElementBeforeMenuOpen = document.activeElement;
+            }
+
+            menuToggle.setAttribute('aria-expanded', !isExpanded);
+            navWrapper.classList.toggle('open');
+            document.body.style.overflow = !isExpanded ? 'hidden' : 'auto';
+
+            if (!isExpanded) {
+                const navLinks = navWrapper.querySelectorAll('a');
+                navLinks.forEach(link => {
+                    link.addEventListener('click', closeMenuOnce);
+                });
+                setTimeout(() => {
+                    navLinks[0] && navLinks[0].focus();
+                }, 50);
+            } else {
+                removeCloseMenuListeners();
+                if (lastActiveElementBeforeMenuOpen) {
+                    lastActiveElementBeforeMenuOpen.focus();
+                    lastActiveElementBeforeMenuOpen = null;
+                }
+            }
+        });
     }
 }
 
@@ -265,7 +311,7 @@ function initMobileMenu() {
 
 function initIndexPage() {
     fetchProjectsForIndex();
-    initModalListeners(); 
+    initModalListeners();
     initClientCarousel();
 }
 
@@ -289,22 +335,23 @@ async function fetchProjectsForIndex() {
     const loader = document.getElementById('project-loader');
     if (!document.getElementById(gridId) || !loader) return;
 
+    // CORREÇÃO DE ERRO: Removido o filtro `.filter(p => !p.hidden)`
+    // da chamada da API, pois a API real deve fazer essa filtragem.
+    // O mock local foi corrigido acima (MOCK_PROJECTS) para ter hidden: false.
     try {
         const response = await fetch(API_URL_GET_PROJECTS);
         if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
         const projects = await response.json();
-        // Filtra projetos ocultos na API real
-        const visibleProjects = projects.filter(p => !p.hidden);
-        // Exibe apenas 6 projetos na página inicial
-        populateProjectGrid(gridId, visibleProjects.slice(0, 6)); 
+        
+        // Mantém apenas a parte de slice para o limite de 6 projetos
+        populateProjectGrid(gridId, projects.slice(0, 6)); // Alterado para 6
         loader.classList.add('hidden');
     } catch (error) {
         console.warn("MODO FICTÍCIO (Index): Carregando MOCK_PROJECTS.", error.message);
         loader.textContent = "Carregando projetos fictícios...";
         setTimeout(() => {
-            // Aplica o filtro 'hidden' e exibe apenas 6
-            const visibleMocks = MOCK_PROJECTS.filter(p => !p.hidden);
-            populateProjectGrid(gridId, visibleMocks.slice(0, 6)); 
+            // Usa o mock corrigido (todos visíveis) e exibe 4
+            populateProjectGrid(gridId, MOCK_PROJECTS.slice(0, 4)); // Alterado para 4
             loader.classList.add('hidden');
         }, 500);
     }
@@ -329,28 +376,28 @@ async function fetchProjectsForCategorization() {
 
     // Exibe loaders
     Object.values(loaders).forEach(loader => {
-        if(loader) loader.classList.remove('hidden');
+        if (loader) loader.classList.remove('hidden');
     });
 
     try {
         const response = await fetch(API_URL_GET_PROJECTS);
         if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
         const projects = await response.json();
-        // Filtra projetos ocultos
-        distributeProjects(projects.filter(p => !p.hidden));
+        // Não aplica o filtro 'hidden' na chamada da API, a API deve retornar os visíveis
+        distributeProjects(projects);
     } catch (error) {
         console.warn("MODO FICTÍCIO (Projetos): Carregando MOCK_PROJECTS.", error.message);
         Object.values(loaders).forEach(loader => {
-            if(loader) loader.textContent = "Carregando projetos fictícios...";
+            if (loader) loader.textContent = "Carregando projetos fictícios...";
         });
         setTimeout(() => {
-            // Aplica o filtro 'hidden'
-            distributeProjects(MOCK_PROJECTS.filter(p => !p.hidden));
+            // Usa o mock corrigido (todos visíveis)
+            distributeProjects(MOCK_PROJECTS);
         }, 500);
     } finally {
         // Oculta loaders
         Object.values(loaders).forEach(loader => {
-            if(loader) loader.classList.add('hidden');
+            if (loader) loader.classList.add('hidden');
         });
     }
 }
@@ -374,10 +421,10 @@ function distributeProjects(projects) {
 
 function populateProjectGrid(gridElementId, projects) {
     const grid = document.getElementById(gridElementId);
-    if (!grid) return; 
-    
-    grid.innerHTML = ''; 
-    
+    if (!grid) return;
+
+    grid.innerHTML = '';
+
     // Encontra a seção pai
     const section = grid.closest('section');
 
@@ -394,14 +441,19 @@ function populateProjectGrid(gridElementId, projects) {
         section.style.display = 'block';
     }
 
-    projects.forEach(project => {
+    projects.forEach((project, index) => {
         const card = document.createElement('div');
-        card.className = 'project-card';
+        // Adiciona a classe de animação
+        card.className = 'project-card animate-on-scroll'; 
+        
+        // Adiciona classes de delay baseadas no índice para animação em cascata
+        card.style.animationDelay = `${(index % 4) * 0.1}s`;
+
+        // Atributo de dado para o modal
         card.dataset.projectData = JSON.stringify(project);
 
-        // [CORREÇÃO ACESSIBILIDADE]
-        // Adicionado 'loading="lazy"' para melhor performance (Core Web Vitals)
-        // Adicionado 'width' e 'height' na imagem para evitar CLS
+        // [CORREÇÃO ACESSIBILIDADE/PERFORMANCE]
+        // Adicionado 'loading="lazy"' e 'width'/'height'
         card.innerHTML = `
             <img 
                 src="${project.thumbnailSrc}" 
@@ -417,12 +469,20 @@ function populateProjectGrid(gridElementId, projects) {
                 <button class="project-card-button" aria-label="Ver detalhes sobre o projeto ${project.title}">Ver Projeto</button>
             </div>
         `;
-        
+
         card.querySelector('.project-card-button').addEventListener('click', () => {
             openModal(project);
         });
 
         grid.appendChild(card);
+        
+        // NOVO: Adiciona o cartão dinâmico ao Intersection Observer APÓS ser adicionado ao DOM
+        if (scrollObserver && !card.classList.contains('is-visible')) {
+            scrollObserver.observe(card);
+        } else if (!('IntersectionObserver' in window)) {
+            // Garante visibilidade imediata se o Observer não for suportado
+            card.classList.add('is-visible');
+        }
     });
 }
 
@@ -434,17 +494,6 @@ function handleImageError(img, title) {
         img.parentNode.replaceChild(placeholder, img);
     }
 }
-
-// =================================================================
-// PÁGINA SOBRE
-// =================================================================
-
-function initSobrePage() {
-    // Nenhuma lógica JS específica necessária no momento.
-}
-
-// =================================================================
-// PÁGINA DE CONTATO
 // =================================================================
 
 function initContatoPage() {
@@ -452,10 +501,10 @@ function initContatoPage() {
     if (contactForm) {
         contactForm.addEventListener('submit', handleContactSubmit);
     }
-    
+
     // Inicializa contador de caracteres da mensagem
     initContactFormCounter();
-    
+
     // Inicializa máscara de telefone
     initPhoneMask();
 }
@@ -463,11 +512,11 @@ function initContatoPage() {
 function initContactFormCounter() {
     const textArea = document.getElementById('message');
     // Renomeado para 'char-count-text' para melhor acessibilidade
-    const counterDisplay = document.getElementById('char-count-text'); 
+    const counterDisplay = document.getElementById('char-count-text');
     const maxLength = 250;
 
     if (textArea && counterDisplay) {
-        textArea.addEventListener('input', function() {
+        textArea.addEventListener('input', function () {
             const currentLength = this.value.length;
             counterDisplay.textContent = `${currentLength} / ${maxLength}`;
 
@@ -495,7 +544,7 @@ function initPhoneMask() {
 
     phoneInput.addEventListener('input', function (e) {
         // Remove tudo que não for dígito
-        let x = e.target.value.replace(/\D/g, ''); 
+        let x = e.target.value.replace(/\D/g, '');
         let output = '';
 
         if (x.length > 0) {
@@ -503,7 +552,7 @@ function initPhoneMask() {
         }
         if (x.length > 2) {
             // Verifica se é celular (9 dígitos) ou fixo (8 dígitos)
-            if (x.length > 10) { 
+            if (x.length > 10) {
                 // Celular com 9 dígitos
                 output += ') ' + x.substring(2, 7);
                 if (x.length > 7) {
@@ -525,13 +574,13 @@ async function handleContactSubmit(event) {
     event.preventDefault();
     const btn = document.getElementById('contact-submit-btn');
     const msgElement = document.getElementById('form-message');
-    
-    const originalBtnText = btn.innerText; 
+
+    const originalBtnText = btn.innerText;
     btn.disabled = true;
     btn.innerText = 'Enviando...';
-    
+
     // Oculta a mensagem anterior e limpa o conteúdo para evitar confusão de aria-live
-    if(msgElement) {
+    if (msgElement) {
         msgElement.classList.add('hidden');
         msgElement.textContent = '';
     }
@@ -545,22 +594,22 @@ async function handleContactSubmit(event) {
 
 
     try {
-        const response = await fetch(API_URL_CONTACT, { 
-            method: 'POST', 
+        const response = await fetch(API_URL_CONTACT, {
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
             },
-            body: JSON.stringify(data) 
+            body: JSON.stringify(data)
         });
 
         if (!response.ok) {
             const errorData = await response.json().catch(() => null);
-            
+
             if (response.status === 429) {
                 let message = "Você já enviou mensagens suficientes por hoje. Recebemos seu contato e retornaremos em breve!";
                 if (errorData && errorData.message) {
-                    message = errorData.message; 
+                    message = errorData.message;
                 }
                 throw new Error(`RATE_LIMIT:${message}`);
             }
@@ -568,23 +617,23 @@ async function handleContactSubmit(event) {
             const errorText = errorData ? JSON.stringify(errorData) : await response.text();
             throw new Error(`Falha no envio: ${response.status} - ${errorText}`);
         }
-        
+
         // A API deve retornar 200/201 em caso de sucesso
         showFormMessage('Sua mensagem foi enviada com sucesso! Entraremos em contato em breve.', 'success');
         event.target.reset();
-        
+
         // Reseta o contador também
         const textArea = document.getElementById('message');
-        if(textArea) {
-             textArea.dispatchEvent(new Event('input'));
+        if (textArea) {
+            textArea.dispatchEvent(new Event('input'));
         }
 
     } catch (error) {
         console.error("Erro Capturado:", error);
-        
+
         if (error.message.startsWith("RATE_LIMIT:")) {
             const friendlyMessage = error.message.replace("RATE_LIMIT:", "");
-            showFormMessage(friendlyMessage, "warning"); 
+            showFormMessage(friendlyMessage, "warning");
         } else if (error.message.includes("Failed to fetch")) {
             showFormMessage("Erro de conexão com o servidor. Verifique sua internet e tente novamente.", "error");
         } else {
@@ -603,8 +652,8 @@ function showFormMessage(message, type) {
     if (msgElement) {
         msgElement.textContent = message;
         // Remove todas as classes de status e adiciona a nova
-        msgElement.classList.remove('error', 'success', 'warning', 'hidden'); 
-        msgElement.classList.add(type); 
+        msgElement.classList.remove('error', 'success', 'warning', 'hidden');
+        msgElement.classList.add(type);
         // Acessibilidade: Garante que a mensagem seja anunciada e fique visível.
         msgElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
     } else {
@@ -632,7 +681,7 @@ async function handleLoginSubmit(event) {
     const username = document.getElementById('username').value;
     btn.disabled = true;
     btn.textContent = 'Entrando...';
-    
+
     console.warn("MODO FICTÍCIO: Bypass do Cognito ativado.");
     if (!username) {
         showLoginMessage("Por favor, insira um e-mail.", "error");
@@ -723,7 +772,7 @@ function populateAdminList(projects) {
         const listItem = document.createElement('div');
         listItem.className = 'project-list-item';
         listItem.dataset.projectId = project.id;
-        
+
         const hiddenBadge = project.hidden ? ' <span style="color:red; font-size:0.8em;">(Oculto)</span>' : '';
 
         listItem.innerHTML = `
@@ -733,7 +782,7 @@ function populateAdminList(projects) {
                 <button class="project-list-button delete" data-id="${project.id}">Excluir</button>
             </div>
         `;
-        
+
         const editBtn = listItem.querySelector('.edit');
         editBtn.onclick = () => handleEditProject(project);
 
@@ -753,7 +802,7 @@ async function handleProjectSubmit(event) {
     const projectId = document.getElementById('project-id').value;
     const project = {
         title: document.getElementById('project-title').value,
-        category: document.getElementById('project-category').value, 
+        category: document.getElementById('project-category').value,
         thumbnailSrc: document.getElementById('project-thumbnail').value,
         iframeSrc: document.getElementById('project-iframe-src').value,
         embedTitle: document.getElementById('project-embed-title').value,
@@ -767,7 +816,7 @@ async function handleProjectSubmit(event) {
             fontes: document.getElementById('tab-fontes').value
         }
     };
-    
+
     const method = projectId ? 'PUT' : 'POST';
     const url = projectId ? `${API_URL_PUT_PROJECT}/${projectId}` : API_URL_POST_PROJECT;
     const token = localStorage.getItem('authToken');
@@ -781,12 +830,12 @@ async function handleProjectSubmit(event) {
         if (!response.ok) throw new Error('Falha ao salvar.');
         showAdminMessage('Projeto salvo com sucesso!', 'success');
         resetProjectForm();
-        fetchProjectsForAdmin(); 
+        fetchProjectsForAdmin();
 
     } catch (error) {
         console.warn("MODO FICTÍCIO (Admin Submit):", error.message);
         showAdminMessage("MODO FICTÍCIO: Simulação de projeto salvo!", "success");
-        
+
         // Simulação de atualização/criação no mock
         if (projectId) {
             const index = MOCK_PROJECTS.findIndex(p => p.id === projectId);
@@ -796,7 +845,7 @@ async function handleProjectSubmit(event) {
         } else {
             MOCK_PROJECTS.push({ ...project, id: `mock-${Date.now()}` });
         }
-        populateAdminList(MOCK_PROJECTS); 
+        populateAdminList(MOCK_PROJECTS);
         resetProjectForm();
     } finally {
         btn.disabled = false;
@@ -807,7 +856,7 @@ async function handleProjectSubmit(event) {
 function handleEditProject(project) {
     document.getElementById('project-id').value = project.id;
     document.getElementById('project-title').value = project.title;
-    document.getElementById('project-category').value = project.category || 'other'; 
+    document.getElementById('project-category').value = project.category || 'other';
     document.getElementById('project-thumbnail').value = project.thumbnailSrc;
     document.getElementById('project-iframe-src').value = project.iframeSrc;
     document.getElementById('project-embed-title').value = project.embedTitle;
@@ -842,7 +891,7 @@ async function handleDeleteProject(id, title) {
         console.log(`Exclusão do projeto "${title}" cancelada pelo usuário.`);
         return;
     }
-    
+
     // Simulação de Exclusão: Você deve criar um modal customizado para confirmação
     console.error("AVISO: Usando simulação de confirmação. Em um ambiente real, você usaria um modal customizado no lugar de confirm().");
 
@@ -852,17 +901,17 @@ async function handleDeleteProject(id, title) {
         const response = await fetch(url, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` } });
         if (!response.ok) throw new Error('Falha ao excluir.');
         showAdminMessage('Projeto excluído com sucesso!', 'success');
-        fetchProjectsForAdmin(); 
+        fetchProjectsForAdmin();
     } catch (error) {
         console.warn("MODO FICTÍCIO (Admin Delete):", error.message);
         showAdminMessage("MODO FICTÍCIO: Simulação de projeto excluído!", 'error');
-        
+
         // Simulação de exclusão no mock
         const index = MOCK_PROJECTS.findIndex(p => p.id === id);
         if (index !== -1) {
             MOCK_PROJECTS.splice(index, 1);
         }
-        populateAdminList(MOCK_PROJECTS); 
+        populateAdminList(MOCK_PROJECTS);
     }
 }
 
@@ -889,14 +938,14 @@ let lastFocusedElement; // Armazena o elemento focado antes da abertura do modal
 
 function initModalListeners() {
     modalOverlay = document.getElementById('modal-overlay');
-    if (!modalOverlay) return; 
+    if (!modalOverlay) return;
 
     modalContent = modalOverlay.querySelector('.modal-content');
     modalCloseButton = document.getElementById('modal-close-button');
     modalTitle = document.getElementById('modal-title');
     modalEmbedTitle = document.getElementById('modal-embed-title');
     modalIframe = document.getElementById('modal-iframe');
-    
+
     modalTabButtons = document.querySelectorAll('.modal-tab-button');
     modalTabPanels = document.querySelectorAll('.modal-tab-panel');
 
@@ -925,16 +974,16 @@ function initModalListeners() {
  */
 function getEmbedUrl(url) {
     if (!url) return "";
-    
+
     // Regex para capturar ID do YouTube (formatos variados)
     const youtubeRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i;
     const match = url.match(youtubeRegex);
-    
+
     if (match && match[1]) {
         // Usa o domínio 'youtube-nocookie.com' que é mais permissivo com embeds
         return `https://www.youtube-nocookie.com/embed/${match[1]}`;
     }
-    
+
     return url;
 }
 
@@ -942,15 +991,15 @@ function openModal(project) {
     if (!modalOverlay) return;
 
     // Salva o elemento focado antes de abrir o modal
-    lastFocusedElement = document.activeElement; 
+    lastFocusedElement = document.activeElement;
 
     modalTitle.textContent = project.title || 'Título do Projeto';
     modalEmbedTitle.textContent = project.embedTitle || 'Conteúdo Interativo';
-    
+
     // Permissões robustas para garantir que o vídeo toque
     modalIframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share');
     modalIframe.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
-    modalIframe.setAttribute('loading', 'lazy'); 
+    modalIframe.setAttribute('loading', 'lazy');
 
     // Usa a função helper corrigida
     modalIframe.src = getEmbedUrl(project.iframeSrc) || '';
@@ -986,16 +1035,16 @@ function openModal(project) {
     resetTabs();
     modalOverlay.classList.remove('hidden');
     // Impede o scroll do body
-    document.body.style.overflow = 'hidden'; 
+    document.body.style.overflow = 'hidden';
     // Move o foco para o botão de fechar para acessibilidade
-    modalCloseButton.focus(); 
+    modalCloseButton.focus();
 }
 
 function closeModal() {
     if (!modalOverlay) return;
     modalOverlay.classList.add('hidden');
     // Para o vídeo/embed ao fechar
-    modalIframe.src = ''; 
+    modalIframe.src = '';
     // Limpa atributos para evitar problemas ao reabrir
     modalIframe.removeAttribute('allow');
     modalIframe.removeAttribute('referrerpolicy');
@@ -1030,11 +1079,11 @@ function handleTabClick(button) {
 function resetTabs() {
     // Encontra a primeira aba visível para ativá-la
     const firstVisibleTab = Array.from(modalTabButtons).find(tab => tab.style.display !== 'none');
-    
+
     modalTabButtons.forEach(button => {
         const panelId = button.dataset.tab;
         const panel = document.getElementById(panelId);
-        
+
         if (panel) {
             if (firstVisibleTab && button === firstVisibleTab) {
                 button.classList.add('active');

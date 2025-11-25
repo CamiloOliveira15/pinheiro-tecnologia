@@ -11,7 +11,7 @@
     <!-- SEO Meta Tags Essenciais -->
     <meta name="description"
         content="Pinheiro Tecnologia oferece soluções empresariais em Microsoft Power Platform (Power BI, Power Apps, Power Automate) e Análise de Dados. Transforme seus dados em inteligência.">
-    
+
     <!-- Canonical URL -->
     <link rel="canonical" href="https://pinheirotecnologia.com/">
 
@@ -19,8 +19,8 @@
     <meta property="og:title" content="Pinheiro Tecnologia - Soluções em Power Platform">
     <meta property="og:description"
         content="Especialistas em transformar dados em resultados com Power BI, Power Apps e Automação de Processos.">
-    <meta property="og:image" content="https://pinheirotecnologia.com/images/Logo_Pinheiro_Tecnologia_1200x630.png"> 
-    <meta property="og:url" content="https://pinheirotecnologia.com"> 
+    <meta property="og:image" content="https://pinheirotecnologia.com/images/Logo_Pinheiro_Tecnologia_1200x630.png">
+    <meta property="og:url" content="https://pinheirotecnologia.com">
     <meta property="og:type" content="website">
 
     <!-- Twitter Card -->
@@ -28,8 +28,9 @@
     <meta property="twitter:title" content="Pinheiro Tecnologia - Soluções em Power Platform">
     <meta property="twitter:description"
         content="Especialistas em transformar dados em resultados com Power BI, Power Apps e Automação de Processos.">
-    <meta property="twitter:image" content="https://pinheirotecnologia.com/images/Logo_Pinheiro_Tecnologia_1200x630.png">
-    
+    <meta property="twitter:image"
+        content="https://pinheirotecnologia.com/images/Logo_Pinheiro_Tecnologia_1200x630.png">
+
     <!-- Segurança Básica -->
     <meta http-equiv="X-Content-Type-Options" content="nosniff">
     <meta name="referrer" content="strict-origin-when-cross-origin">
@@ -44,12 +45,12 @@
     connect-src 'self' https://jwqiah2rvj.execute-api.us-west-2.amazonaws.com https://www.google-analytics.com;
     frame-src 'self' https://app.powerbi.com https://www.youtube.com https://www.youtube-nocookie.com;
 ">
-    
+
     <!-- Fontes Google (Corrigido com display=swap) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
+
     <!-- Ícone Favicon - Simplificação de links para o navegador lidar com cache -->
     <link rel="icon" type="image/png" href="images/favicon-96x96.png" sizes="96x96" />
     <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png" />
@@ -58,48 +59,174 @@
     <!-- Performance: Critical CSS INLINE (Melhoria do LCP) -->
     <style>
         :root {
-            --primary-color-accessible: #1A6A6C; 
-            --primary-color-hover: #218c8f;      
-            --primary-color-active: #15585a;     
-            --background-color: #f4f7f6; 
-            --surface-color: #ffffff;    
-            --text-color: #333333;       
-            --text-color-light: #555555;   
-            --text-color-inverse: #ffffff; 
-            --border-color: #e0e0e0;     
+            --primary-color-accessible: #1A6A6C;
+            --primary-color-hover: #218c8f;
+            --primary-color-active: #15585a;
+            --background-color: #f4f7f6;
+            --surface-color: #ffffff;
+            --text-color: #333333;
+            --text-color-light: #555555;
+            --text-color-inverse: #ffffff;
+            --border-color: #e0e0e0;
             --font-primary: 'Inter', sans-serif;
             --border-radius-sm: 8px;
             --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.05);
         }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        html { scroll-behavior: smooth; }
-        body { font-family: var(--font-primary); background-color: var(--background-color); color: var(--text-color); line-height: 1.6; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
-        .container { width: 100%; max-width: 1280px; margin: 0 auto; padding: 0 2rem; }
-        .main-nav { background: var(--primary-color-accessible); padding: 0.75rem 0; position: relative; z-index: 100; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); }
-        .nav-container { display: flex; justify-content: space-between; align-items: center; }
-        .nav-logo { height: 30px; width: auto; object-fit: contain; display: block; }
-        .nav-menu-wrapper { display: flex; align-items: center; justify-content: flex-end; }
-        .nav-links { display: flex; list-style: none; gap: 0.5rem; }
-        .nav-links a { color: white; padding: 0.75rem 1.5rem; text-decoration: none; font-weight: 500; display: block; border-radius: var(--border-radius-sm); }
-        .hero-section { background: var(--surface-color); padding: 4rem 0; border-bottom: 1px solid var(--border-color); }
-        .hero-container { display: grid; grid-template-columns: 1fr; align-items: center; gap: 2rem; }
-        .hero-content { text-align: center; max-width: 800px; margin: 0 auto; }
-        .hero-content h1 { font-size: 2.75rem; font-weight: 700; color: #1a202c; margin-bottom: 1rem; line-height: 1.2; }
-        .hero-subheading { font-size: 1.25rem; color: var(--text-color-light); margin-bottom: 2rem; max-width: 650px; margin-left: auto; margin-right: auto; }
-        .cta-button { background-color: var(--primary-color-accessible); color: #ffffff; padding: 0.75rem 1.75rem; border-radius: 50px; text-decoration: none; font-weight: 600; display: inline-block; border: none; font-size: 1rem; cursor: pointer; }
-        .cta-button:hover { background-color: var(--primary-color-hover); }
-        .main-footer { text-align: center; padding: 1.5rem 0; margin-top: 2rem; border-top: 1px solid var(--border-color); color: #454545; background: var(--surface-color); }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font-primary);
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .main-nav {
+            background: var(--primary-color-accessible);
+            padding: 0.75rem 0;
+            position: relative;
+            z-index: 100;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-logo {
+            height: 30px;
+            width: auto;
+            object-fit: contain;
+            display: block;
+        }
+
+        .nav-menu-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 0.5rem;
+        }
+
+        .nav-links a {
+            color: white;
+            padding: 0.75rem 1.5rem;
+            text-decoration: none;
+            font-weight: 500;
+            display: block;
+            border-radius: var(--border-radius-sm);
+        }
+
+        .hero-section {
+            background: var(--surface-color);
+            padding: 4rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .hero-container {
+            display: grid;
+            grid-template-columns: 1fr;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .hero-content {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero-content h1 {
+            font-size: 2.75rem;
+            font-weight: 700;
+            color: #1a202c;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .hero-subheading {
+            font-size: 1.25rem;
+            color: var(--text-color-light);
+            margin-bottom: 2rem;
+            max-width: 650px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-button {
+            background-color: var(--primary-color-accessible);
+            color: #ffffff;
+            padding: 0.75rem 1.75rem;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-block;
+            border: none;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+
+        .cta-button:hover {
+            background-color: var(--primary-color-hover);
+        }
+
+        .main-footer {
+            text-align: center;
+            padding: 1.5rem 0;
+            margin-top: 2rem;
+            border-top: 1px solid var(--border-color);
+            color: #454545;
+            background: var(--surface-color);
+        }
+
         @media (max-width: 767px) {
-            .container { padding: 0 1rem; }
-            .nav-menu-wrapper { display: none; }
-            .menu-toggle { display: flex !important; }
-            .hero-content h1 { font-size: 2rem; }
+            .container {
+                padding: 0 1rem;
+            }
+
+            .nav-menu-wrapper {
+                display: none;
+            }
+
+            .menu-toggle {
+                display: flex !important;
+            }
+
+            .hero-content h1 {
+                font-size: 2rem;
+            }
         }
     </style>
 
     <!-- Performance: Carregamento Assíncrono do CSS Completo -->
     <link rel="preload" href="assets/css/style.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="assets/css/style.css"></noscript>
+    <noscript>
+        <link rel="stylesheet" href="assets/css/style.css">
+    </noscript>
 </head>
 
 <!-- JSON-LD - Schema.org Organization (SEO) -->
@@ -143,11 +270,13 @@
         <div class="container nav-container">
             <!-- Logo com Aria-Label para Acessibilidade -->
             <a href="/" class="nav-logo-link" aria-label="Ir para a Página Inicial da Pinheiro Tecnologia">
-                <img src="images/Logo Branco - Pinheiro Tecnologia.png" alt="Pinheiro Tecnologia - Soluções em Dados" class="nav-logo" width="180" height="30">
+                <img src="images/Logo Branco - Pinheiro Tecnologia.png" alt="Pinheiro Tecnologia - Soluções em Dados"
+                    class="nav-logo" width="180" height="30">
             </a>
-            
+
             <!-- Botão de Menu Sanduíche (Apenas para Mobile) -->
-            <button class="menu-toggle" aria-expanded="false" aria-controls="mobile-menu" aria-label="Abrir Menu Principal">
+            <button class="menu-toggle" aria-expanded="false" aria-controls="mobile-menu"
+                aria-label="Abrir Menu Principal">
                 <!-- Ícone SVG de Sanduíche -->
                 <svg viewBox="0 0 100 80" width="25" height="20" fill="white">
                     <rect width="100" height="15" rx="8"></rect>
@@ -177,13 +306,15 @@
         <section class="hero-section" aria-labelledby="hero-title">
             <div class="container hero-container">
                 <div class="hero-content">
-                    <h1 id="hero-title">Transformamos seus desafios em soluções escaláveis</h1>
-                    <p class="hero-subheading">
+                    <h1 id="hero-title" class="animate-on-scroll">Transformamos seus desafios em soluções escaláveis
+                    </h1>
+                    <p class="hero-subheading animate-on-scroll delay-100">
                         Somos especialistas em Microsoft Power Platform.
                         Criamos soluções de Business Intelligence, automação e aplicativos
                         que geram resultados reais para o seu negócio e impulsionam a sua eficiência operacional.
                     </p>
-                    <a href="/contato.html" class="cta-button hero-cta">Solicite uma Consultoria</a>
+                    <a href="/contato.html" class="cta-button hero-cta animate-on-scroll delay-200">Solicite uma
+                        Consultoria</a>
                 </div>
             </div>
         </section>
@@ -191,10 +322,10 @@
         <!-- Seção de Serviços -->
         <section class="services-section" aria-labelledby="services-title">
             <div class="container">
-                <h2 class="section-title" id="services-title">Nossos Serviços</h2>
+                <h2 class="section-title animate-on-scroll" id="services-title">Nossos Serviços</h2>
                 <div class="services-grid">
                     <!-- Serviço 1: Business Intelligence (Power BI) -->
-                    <article class="service-card">
+                    <article class="service-card animate-on-scroll delay-100">
                         <div class="service-icon">
                             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
                                 fill="currentColor" role="img" aria-label="Ícone de Dashboard/Gráfico">
@@ -207,7 +338,7 @@
                             revelam insights valiosos para a tomada de decisão.</p>
                     </article>
                     <!-- Serviço 2: Desenvolvimento (Power Apps) -->
-                    <article class="service-card">
+                    <article class="service-card animate-on-scroll delay-200">
                         <div class="service-icon">
                             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
                                 fill="currentColor" role="img" aria-label="Ícone de Aplicativo Móvel">
@@ -220,7 +351,7 @@
                             personalizados para sua equipe, acessíveis de qualquer dispositivo.</p>
                     </article>
                     <!-- Serviço 3: Automação de Processos (Power Automate) -->
-                    <article class="service-card">
+                    <article class="service-card animate-on-scroll delay-300">
                         <div class="service-icon">
                             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
                                 fill="currentColor" role="img" aria-label="Ícone de Automação/Engrenagens">
@@ -233,15 +364,20 @@
                             desde aprovações simples até integrações complexas entre sistemas.</p>
                     </article>
                     <!-- Serviço 4: Treinamentos Corporativos -->
-                    <article class="service-card">
+                    <article class="service-card animate-on-scroll delay-400">
                         <div class="service-icon">
                             <!-- Ícone: Apresentação/Treinamento (Quadro com pessoa) -->
-                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="currentColor" role="img" aria-label="Ícone de Treinamento">
-                                <path d="M20 3H4c-1.1 0-2 .9-2 2v11c0 1.1.9 2 2 2h6l-2 2v1h8v-1l-2-2h6c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1 12H5V5h14v10zM8 10h8v2H8zm0-4h8v2H8z"/>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24"
+                                fill="currentColor" role="img" aria-label="Ícone de Treinamento">
+                                <path
+                                    d="M20 3H4c-1.1 0-2 .9-2 2v11c0 1.1.9 2 2 2h6l-2 2v1h8v-1l-2-2h6c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1 12H5V5h14v10zM8 10h8v2H8zm0-4h8v2H8z" />
                             </svg>
                         </div>
                         <h3 class="service-title">Treinamentos Corporativos</h3>
-                        <p class="service-description">Acelere a transformação digital da sua empresa. Ministramos workshops e treinamentos hands-on que habilitam sua equipe a extrair o máximo do ecossistema Microsoft (Power BI, Apps, Automatem, SharePoint e Excel), padronizando o conhecimento e elevando a maturidade analítica da organização.</p>
+                        <p class="service-description">Acelere a transformação digital da sua empresa. Ministramos
+                            workshops e treinamentos hands-on que habilitam sua equipe a extrair o máximo do ecossistema
+                            Microsoft (Power BI, Apps, Automatem, SharePoint e Excel), padronizando o conhecimento e
+                            elevando a maturidade analítica da organização.</p>
                     </article>
                 </div>
             </div>
@@ -249,13 +385,12 @@
 
         <!-- Seção de Projetos em Destaque -->
         <section class="project-category container" aria-labelledby="project-title">
-            <h2 class="section-title" id="project-title">Nossos Cases de Sucesso</h2>
+            <h2 class="section-title animate-on-scroll" id="project-title">Nossos Cases de Sucesso</h2>
 
-            <!-- [NOVO] Wrapper para forçar linha única e ocultar overflow -->
-            <div class="project-grid-index-wrapper">
-                <div class="project-grid" id="project-grid-dynamic">
-                    <!-- O script.js irá popular esta grade (com um limite de 6) -->
-                </div>
+            <!-- REMOVIDO: Wrapper para forçar scroll lateral (project-grid-index-wrapper) -->
+            <!-- O grid agora é responsivo e quebra de linha naturalmente -->
+            <div class="project-grid" id="project-grid-dynamic">
+                <!-- O script.js irá popular esta grade (agora com limite de 4) -->
             </div>
 
             <p id="project-loader" class="loader-text">Carregando projetos...</p>
@@ -275,22 +410,28 @@
                     <div class="client-carousel-track" id="client-carousel-track">
                         <!-- Logos dos Clientes -->
                         <div class="client-logo">
-                            <img src="https://placehold.co/150x60/f4f7f6/888?text=Cliente+A" alt="Logo Cliente A" width="150" height="60">
+                            <img src="https://placehold.co/150x60/f4f7f6/888?text=Cliente+A" alt="Logo Cliente A"
+                                width="150" height="60">
                         </div>
                         <div class="client-logo">
-                            <img src="https://placehold.co/150x60/f4f7f6/888?text=Empresa+B" alt="Logo Empresa B" width="150" height="60">
+                            <img src="https://placehold.co/150x60/f4f7f6/888?text=Empresa+B" alt="Logo Empresa B"
+                                width="150" height="60">
                         </div>
                         <div class="client-logo">
-                            <img src="https://placehold.co/150x60/f4f7f6/888?text=Parceiro+C" alt="Logo Parceiro C" width="150" height="60">
+                            <img src="https://placehold.co/150x60/f4f7f6/888?text=Parceiro+C" alt="Logo Parceiro C"
+                                width="150" height="60">
                         </div>
                         <div class="client-logo">
-                            <img src="https://placehold.co/150x60/f4f7f6/888?text=Cliente+D" alt="Logo Cliente D" width="150" height="60">
+                            <img src="https://placehold.co/150x60/f4f7f6/888?text=Cliente+D" alt="Logo Cliente D"
+                                width="150" height="60">
                         </div>
                         <div class="client-logo">
-                            <img src="https://placehold.co/150x60/f4f7f6/888?text=Empresa+E" alt="Logo Empresa E" width="150" height="60">
+                            <img src="https://placehold.co/150x60/f4f7f6/888?text=Empresa+E" alt="Logo Empresa E"
+                                width="150" height="60">
                         </div>
                         <div class="client-logo">
-                            <img src="https://placehold.co/150x60/f4f7f6/888?text=Parceiro+F" alt="Logo Parceiro F" width="150" height="60">
+                            <img src="https://placehold.co/150x60/f4f7f6/888?text=Parceiro+F" alt="Logo Parceiro F"
+                                width="150" height="60">
                         </div>
                     </div>
                 </div>
