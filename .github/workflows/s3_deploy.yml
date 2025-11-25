@@ -7,12 +7,10 @@ on:
     # Este fluxo será executado sempre que houver um push para o branch 'main'.
     branches:
       - main
-    # [NOVO] Configurações de caminhos para ignorar o deploy se APENAS arquivos de documentação
+    # Configurações de caminhos para ignorar o deploy se APENAS arquivos de documentação
     # forem modificados.
     paths-ignore:
-      # Ignora alterações no arquivo README.md (no diretório raiz)
       - 'README.md'
-      # Adicione outros arquivos de documentação ou teste que não exigem deploy
       - '*.txt'
       - '*.xml'
       - '.gitignore'
@@ -23,28 +21,43 @@ on:
 
 # Define as variáveis de ambiente padrão para os jobs.
 env:
-  # Região da AWS (substitua pelo seu valor ou use Secret)
   AWS_REGION: ${{ secrets.AWS_REGION }} 
-  # Nome do bucket S3 onde o site será hospedado
   S3_BUCKET_NAME: ${{ secrets.AWS_S3_BUCKET }}
-  # ID da distribuição CloudFront (necessário para invalidar o cache após o deploy)
   CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.AWS_CLOUDFRONT_DISTRIBUTION_ID }}
   
 jobs:
   # Define um único trabalho chamado 'deploy'
   deploy:
-    # O agente de execução. Usamos o mais recente para compatibilidade.
     runs-on: ubuntu-latest
     
-    # Passos a serem executados
+    # Adiciona um output para a lista de arquivos alterados que será usada na invalidação.
+    outputs:
+      changed_files: ${{ steps.get_changed_files.outputs.all_modified_files }}
+      
     steps:
-      # 1. Checkout do código
-      # Baixa o conteúdo do repositório para o runner do Action.
+      # 1. Checkout do código (para ter acesso ao histórico de commits)
       - name: Checkout do Repositório
         uses: actions/checkout@v4
+        with:
+          # Necessário para comparar o commit anterior
+          fetch-depth: 0 
 
-      # 2. Configuração das Credenciais AWS
-      # Usa o Action oficial da AWS para configurar as credenciais a partir das Secrets.
+      # 2. Obter lista de arquivos alterados (NOVO PASSO CHAVE)
+      - name: Obter Arquivos Alterados
+        id: get_changed_files
+        uses: tj-actions/changed-files@v44
+        with:
+          # Define o output como a lista de todos os arquivos modificados (adicionados, alterados)
+          files_ignore: |
+            README.md
+            .vscode/**
+            *.txt
+            *.xml
+            .gitignore
+          # Salva a lista de arquivos alterados como uma string delimitada por vírgula
+          json: true
+          
+      # 3. Configuração das Credenciais AWS
       - name: Configurar Credenciais AWS
         uses: aws-actions/configure-aws-credentials@v4
         with:
@@ -52,32 +65,39 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: ${{ env.AWS_REGION }}
 
-      # 3. Sincronização e Deploy para o S3
-      # Usa a CLI da AWS para sincronizar a pasta de trabalho (o repositório) com o bucket S3.
-      # A flag '--delete' remove arquivos no S3 que não existem mais localmente (IMPORTANTE).
-      # REMOVIDO: '--acl public-read'
-      - name: Deploy para AWS S3
+      # 4. Sincronização e Deploy para o S3 (Mantido o SYNC para segurança e exclusão)
+      # Nota: O S3 Sync é inteligente e SÓ fará upload de arquivos modificados ou novos.
+      - name: Deploy Seletivo para AWS S3 (SYNC)
         run: |
           echo "Sincronizando arquivos para s3://${{ env.S3_BUCKET_NAME }}"
           aws s3 sync . s3://${{ env.S3_BUCKET_NAME }} \
             --delete \
             --exclude ".git/*" \
             --exclude ".github/*"
-          echo "Deploy para S3 concluído com sucesso."
+          echo "Deploy para S3 concluído com sucesso. (Apenas arquivos modificados foram realmente enviados)"
           
-      # 4. Invalidação do Cache CloudFront
-      # (Opcional, mas RECOMENDADO) Invalida o cache para que as alterações apareçam imediatamente.
-      # A invalidação de '/*' garante que todos os arquivos sejam atualizados.
-      - name: Invalidação do CloudFront (Limpar Cache)
-        # O passo só será executado se o CLOUDFRONT_DISTRIBUTION_ID for fornecido.
-        if: success() && env.CLOUDFRONT_DISTRIBUTION_ID != '' 
+      # 5. Invalidação do Cache CloudFront (AGORA SELETIVA)
+      - name: Invalidação Seletiva do CloudFront
+        # O passo só será executado se o CLOUDFRONT_DISTRIBUTION_ID for fornecido E se houver arquivos modificados.
+        if: success() && env.CLOUDFRONT_DISTRIBUTION_ID != '' && steps.get_changed_files.outputs.files_modified
+        env:
+          MODIFIED_FILES_JSON: ${{ steps.get_changed_files.outputs.modified_files }}
         run: |
-          echo "Iniciando invalidação para distribuição CloudFront: ${{ env.CLOUDFRONT_DISTRIBUTION_ID }}"
-          aws cloudfront create-invalidation \
-            --distribution-id ${{ env.CLOUDFRONT_DISTRIBUTION_ID }} \
-            --paths "/*"
-          echo "Invalidação do CloudFront solicitada."
+          # 1. Converte o JSON de arquivos alterados em uma lista de caminhos do CloudFront.
+          #    Garante que o caminho comece com / e substitui o separador de nova linha por vírgula.
+          MODIFIED_PATHS=$(echo "$MODIFIED_FILES_JSON" | jq -r 'join(" ")' | tr ' ' '\n' | sed 's/^/\//g' | tr '\n' ' ')
 
-      # 5. Feedback de Sucesso
+          if [ -z "$MODIFIED_PATHS" ]; then
+            echo "Nenhum arquivo de conteúdo alterado. Invalidação de cache ignorada."
+          else
+            echo "Arquivos a serem invalidados: $MODIFIED_PATHS"
+            # 2. Realiza a invalidação de cache APENAS para os caminhos alterados.
+            aws cloudfront create-invalidation \
+              --distribution-id ${{ env.CLOUDFRONT_DISTRIBUTION_ID }} \
+              --paths $MODIFIED_PATHS
+            echo "Invalidação Seletiva do CloudFront solicitada para $MODIFIED_PATHS."
+          fi
+
+      # 6. Feedback de Sucesso
       - name: Notificar Sucesso
         run: echo "O Deploy e a Invalidação de Cache (se aplicável) foram concluídos."
