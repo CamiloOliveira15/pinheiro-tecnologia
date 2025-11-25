@@ -3,29 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Contato - Pinheiro Tecnologia</title>
+    <title>Contato - Fale com a Pinheiro Tecnologia | Power BI e Automação</title>
     <meta name="description" content="Entre em contato com a Pinheiro Tecnologia para solicitar uma consultoria em Power BI, Power Apps ou automação de processos.">
-    
-    <!-- Ícone Favicon -->
-    <link rel="icon" href="images/Logo_Pinheiro_Tecnologia.png" type="image/png">
     
     <meta property="og:title" content="Contato - Pinheiro Tecnologia">
     <meta property="og:description" content="Solicite uma consultoria ou tire suas dúvidas sobre nossas soluções em dados.">
+    <meta property="og:image" content="https://pinheirotecnologia.com/images/Logo_Pinheiro_Tecnologia_1200x630.png">
     <meta property="og:url" content="https://pinheirotecnologia.com/contato.html">
     
-    <link rel="stylesheet" href="assets/css/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Ícone Favicon -->
+    
+    <!-- Ícone Favicon - Simplificação de links -->
     <link rel="icon" type="image/png" href="images/favicon-96x96.png" sizes="96x96" />
-    <link rel="icon" type="image/svg+xml" href="images/favicon.svg" />
-    <link rel="shortcut icon" href="images/favicon.ico" />
     <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png" />
     <link rel="manifest" href="assets/manifest/site.webmanifest" />
+
+    <!-- Performance: Critical CSS INLINE (Melhoria do LCP) -->
+    <style>
+        :root {
+            --primary-color-accessible: #1A6A6C; 
+            --primary-color-hover: #218c8f;      
+            --primary-color-active: #15585a;     
+            --background-color: #f4f7f6; 
+            --surface-color: #ffffff;    
+            --text-color: #333333;       
+            --text-color-light: #555555;   
+            --text-color-inverse: #ffffff; 
+            --border-color: #e0e0e0;     
+            --font-primary: 'Inter', sans-serif;
+            --border-radius-sm: 8px;
+            --border-radius-lg: 16px;
+            --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family: var(--font-primary); background-color: var(--background-color); color: var(--text-color); line-height: 1.6; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+        .container { width: 100%; max-width: 1280px; margin: 0 auto; padding: 0 2rem; }
+        .main-nav { background: var(--primary-color-accessible); padding: 0.75rem 0; position: relative; z-index: 100; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); }
+        .nav-container { display: flex; justify-content: space-between; align-items: center; }
+        .nav-logo { height: 30px; width: auto; object-fit: contain; display: block; }
+        .nav-menu-wrapper { display: flex; align-items: center; justify-content: flex-end; }
+        .nav-links { display: flex; list-style: none; gap: 0.5rem; }
+        .nav-links a { color: white; padding: 0.75rem 1.5rem; text-decoration: none; font-weight: 500; display: block; border-radius: var(--border-radius-sm); }
+        .section-title { font-size: 2.0rem; font-weight: 600; text-align: center; margin-bottom: 2.5rem; color: #1a202c; }
+        .contact-page-container { padding: 3rem 0; max-width: 800px; margin: 0 auto; }
+        .contact-form-wrapper { background: var(--surface-color); padding: 2.5rem; border-radius: var(--border-radius-lg); box-shadow: var(--shadow-sm); margin-bottom: 3rem; }
+        .contact-subtitle { font-size: 1.5rem; font-weight: 600; color: #1a202c; margin-bottom: 1.5rem; text-align: center; }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 0.5rem; color: var(--text-color); }
+        .form-input, .form-textarea { width: 100%; padding: 0.75rem; font-size: 1rem; font-family: var(--font-primary); border: 1px solid var(--border-color); border-radius: var(--border-radius-sm); background: #f9f9f9; }
+        .cta-button { background-color: var(--primary-color-accessible); color: #ffffff; padding: 0.75rem 1.75rem; border-radius: 50px; text-decoration: none; font-weight: 600; display: inline-block; border: none; font-size: 1rem; cursor: pointer; }
+        .main-footer { text-align: center; padding: 1.5rem 0; margin-top: 2rem; border-top: 1px solid var(--border-color); color: #454545; background: var(--surface-color); }
+        @media (max-width: 767px) {
+            .container { padding: 0 1rem; }
+            .nav-menu-wrapper { display: none; }
+            .menu-toggle { display: flex !important; }
+        }
+    </style>
+    
+    <!-- Performance: Carregamento Assíncrono do CSS Completo -->
+    <link rel="preload" href="assets/css/style.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="assets/css/style.css"></noscript>
 </head>
 
-<!-- Google tag (gtag.js) -->
+<!-- Google tag (gtag.js) - Movido para o head para capturar todas as sessões -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-8VSYDM66L6"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
@@ -39,7 +81,7 @@
 
     <nav class="main-nav">
         <div class="container nav-container">
-            <a href="index.html" class="nav-logo-link" aria-label="Página Inicial - Pinheiro Tecnologia">
+            <a href="/" class="nav-logo-link" aria-label="Página Inicial - Pinheiro Tecnologia">
                 <img src="images/Logo Branco - Pinheiro Tecnologia.png" alt="Pinheiro Tecnologia - Logo" class="nav-logo" width="180" height="30">
             </a>
             
@@ -57,9 +99,9 @@
             <div class="nav-menu-wrapper" id="mobile-menu">
                 <ul class="nav-links">
                     <li><a href="/">Início</a></li>
-                    <li><a href="projetos.html">Projetos</a></li>
-                    <li><a href="sobre.html">Sobre Nós</a></li>
-                    <li><a href="contato.html" class="active" aria-current="page">Contato</a></li>
+                    <li><a href="/projetos.html">Projetos</a></li>
+                    <li><a href="/sobre.html">Sobre Nós</a></li>
+                    <li><a href="/contato.html" class="active" aria-current="page">Contato</a></li>
                 </ul>
             </div>
         </div>
@@ -78,33 +120,35 @@
                 <h2 class="contact-subtitle">Envie sua mensagem</h2>
                 <form id="contact-form" class="form-admin">
                     
-                    <div id="form-message" class="form-message hidden"></div>
+                    <div id="form-message" class="form-message hidden" role="alert" aria-live="polite"></div>
 
                     <div class="form-group">
                         <label for="name">Seu Nome</label>
-                        <input type="text" id="name" name="name" class="form-input" required>
+                        <input type="text" id="name" name="name" class="form-input" required autocomplete="name">
                     </div>
                     
                     <div class="form-group">
                         <label for="email">Seu E-mail</label>
-                        <input type="email" id="email" name="email" class="form-input" required>
+                        <input type="email" id="email" name="email" class="form-input" required autocomplete="email">
                     </div>
 
-                    <!-- [NOVO] Campo de Telefone/Celular -->
+                    <!-- [NOVO] Campo de Telefone/Celular com Autocomplete -->
                     <div class="form-group">
                         <label for="phone">Celular / WhatsApp</label>
-                        <input type="tel" id="phone" name="phone" class="form-input" placeholder="(11) 99999-9999" maxlength="15">
+                        <input type="tel" id="phone" name="phone" class="form-input" placeholder="(11) 99999-9999" maxlength="15" autocomplete="tel">
                     </div>
 
                     <div class="form-group">
                         <label for="subject">Assunto</label>
-                        <input type="text" id="subject" name="subject" class="form-input" required>
+                        <input type="text" id="subject" name="subject" class="form-input" required autocomplete="off">
                     </div>
                     
                     <div class="form-group">
                         <label for="message">Mensagem</label>
-                        <textarea id="message" name="message" class="form-textarea" rows="5" maxlength="2000" required aria-describedby="char-count"></textarea>
-                        <small id="char-count" style="display: block; text-align: right; color: #666; margin-top: 0.25rem;">0 / 2000</small>
+                        <!-- Acessibilidade: Adicionado aria-describedby para associar o contador de caracteres -->
+                        <textarea id="message" name="message" class="form-textarea" rows="5" maxlength="2000" required aria-describedby="char-count-text"></textarea>
+                        <!-- Acessibilidade: Adicionado role="status" e aria-live="polite" para leitores de tela -->
+                        <small id="char-count-text" role="status" aria-live="polite" style="display: block; text-align: right; color: #666; margin-top: 0.25rem;">0 / 2000</small>
                     </div>
                     
                     <button type="submit" id="contact-submit-btn" class="cta-button">
@@ -118,9 +162,10 @@
                 
                 <div class="contact-card-grid">
                     
-                    <a href="https://www.linkedin.com/in/camilo-pinheiro/" target="_blank" rel="noopener noreferrer" class="contact-card">
+                    <a href="https://www.linkedin.com/in/camilo-pinheiro/" target="_blank" rel="noopener noreferrer" class="contact-card" aria-label="Nosso perfil no LinkedIn">
                         <div class="contact-card-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="currentColor" role="img" aria-hidden="true"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.783-1.75-1.75s.784-1.75 1.75-1.75 1.75.783 1.75 1.75-.784 1.75-1.75 1.75zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"></path></svg>
+                            <!-- SVG com role="img" e aria-label para acessibilidade -->
+                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="currentColor" role="img" aria-label="LinkedIn Icon"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.783-1.75-1.75s.784-1.75 1.75-1.75 1.75.783 1.75 1.75-.784 1.75-1.75 1.75zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"></path></svg>
                         </div>
                         <div>
                             <h3 class="contact-card-title">LinkedIn</h3>
@@ -128,9 +173,9 @@
                         </div>
                     </a>
     
-                    <a href="mailto:camilo@pinheirotecnologia.com" class="contact-card">
+                    <a href="mailto:camilo@pinheirotecnologia.com" class="contact-card" aria-label="Nosso endereço de e-mail">
                         <div class="contact-card-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="currentColor" role="img" aria-hidden="true"><path d="M0 3v18h24v-18h-24zm21.518 4.211-8.518 6.208-8.518-6.208h17.036zm-19.518 12.789v-11.524l8.239 5.996 1.279 1.135 1.279-1.135 8.239-5.996v11.524h-19.036z"></path></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="currentColor" role="img" aria-label="E-mail Icon"><path d="M0 3v18h24v-18h-24zm21.518 4.211-8.518 6.208-8.518-6.208h17.036zm-19.518 12.789v-11.524l8.239 5.996 1.279 1.135 1.279-1.135 8.239-5.996v11.524h-19.036z"></path></svg>
                         </div>
                         <div>
                             <h3 class="contact-card-title">E-mail</h3>
@@ -138,9 +183,9 @@
                         </div>
                     </a>
     
-                    <a href="https://api.whatsapp.com/send?phone=5511986777281" target="_blank" rel="noopener noreferrer" class="contact-card">
+                    <a href="https://api.whatsapp.com/send?phone=5511986777281" target="_blank" rel="noopener noreferrer" class="contact-card" aria-label="Enviar mensagem via WhatsApp">
                         <div class="contact-card-icon">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="currentColor" role="img" aria-hidden="true"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zM6.597 20.193c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 4.315 1.847 6.039l-1.25 4.562 4.65-1.225z"></path></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="currentColor" role="img" aria-label="WhatsApp Icon"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zM6.597 20.193c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 4.315 1.847 6.039l-1.25 4.562 4.65-1.225z"></path></svg>
                         </div>
                         <div>
                             <h3 class="contact-card-title">WhatsApp</h3>
@@ -158,7 +203,7 @@
         <p>Pinheiro Tecnologia &copy; <span id="current-year"></span> - Todos os direitos reservados.</p>
     </footer>
 
-    <!-- CORREÇÃO AQUI: Caminho atualizado para assets/js/script.js -->
-    <script src="assets/js/script.js"></script>
+    <!-- JavaScript - Adicionado DEFER para execução não bloqueante -->
+    <script src="assets/js/script.js" defer></script>
 </body>
 </html>

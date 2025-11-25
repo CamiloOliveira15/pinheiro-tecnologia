@@ -5,30 +5,72 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Sobre Nós - Pinheiro Tecnologia</title>
+    <title>Sobre Nós - Missão, Valores e Especialidade em Power Platform | Pinheiro Tecnologia</title>
     <meta name="description"
         content="Conheça a Pinheiro Tecnologia, nossa missão, valores e a equipe especialista em transformar dados em soluções de negócio com a Power Platform.">
 
     <meta property="og:title" content="Sobre Nós - Pinheiro Tecnologia">
     <meta property="og:description"
         content="Nossa missão é democratizar o uso de dados e tecnologia, capacitando empresas a alcançarem seu potencial máximo.">
-    <meta property="og:image" content="https://placehold.co/1200x630/1A6A6C/FFFFFF?text=Sobre+Nós">
+    <meta property="og:image" content="https://pinheirotecnologia.com/images/Logo_Pinheiro_Tecnologia_1200x630.png">
     <meta property="og:url" content="https://pinheirotecnologia.com/sobre.html">
     <meta property="og:type" content="website">
 
-    <link rel="stylesheet" href="assets/css/style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Ícone Favicon -->
+    
+    <!-- Ícone Favicon - Simplificação de links -->
     <link rel="icon" type="image/png" href="images/favicon-96x96.png" sizes="96x96" />
-    <link rel="icon" type="image/svg+xml" href="images/favicon.svg" />
-    <link rel="shortcut icon" href="images/favicon.ico" />
     <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png" />
     <link rel="manifest" href="assets/manifest/site.webmanifest" />
+
+    <!-- Performance: Critical CSS INLINE (Melhoria do LCP) -->
+    <style>
+        :root {
+            --primary-color-accessible: #1A6A6C; 
+            --primary-color-hover: #218c8f;      
+            --primary-color-active: #15585a;     
+            --background-color: #f4f7f6; 
+            --surface-color: #ffffff;    
+            --text-color: #333333;       
+            --text-color-light: #555555;   
+            --text-color-inverse: #ffffff; 
+            --border-color: #e0e0e0;     
+            --font-primary: 'Inter', sans-serif;
+            --border-radius-sm: 8px;
+            --border-radius-lg: 16px;
+            --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body { font-family: var(--font-primary); background-color: var(--background-color); color: var(--text-color); line-height: 1.6; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+        .container { width: 100%; max-width: 1280px; margin: 0 auto; padding: 0 2rem; }
+        .main-nav { background: var(--primary-color-accessible); padding: 0.75rem 0; position: relative; z-index: 100; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); }
+        .nav-container { display: flex; justify-content: space-between; align-items: center; }
+        .nav-logo { height: 30px; width: auto; object-fit: contain; display: block; }
+        .nav-menu-wrapper { display: flex; align-items: center; justify-content: flex-end; }
+        .nav-links { display: flex; list-style: none; gap: 0.5rem; }
+        .nav-links a { color: white; padding: 0.75rem 1.5rem; text-decoration: none; font-weight: 500; display: block; border-radius: var(--border-radius-sm); }
+        .about-container { background: var(--surface-color); border-radius: var(--border-radius-lg); padding: 2.5rem 3rem; max-width: 900px; margin: 3rem auto; box-shadow: var(--shadow-sm); }
+        .about-container h1, .about-container h2 { font-size: 2rem; color: #1a202c; margin-bottom: 1.5rem; }
+        .about-container .about-subtitle { font-size: 1.5rem; color: var(--text-color); margin-top: 2rem; margin-bottom: 1rem; border-bottom: 3px solid var(--primary-color-accessible); padding-bottom: 0.5rem; display: inline-block; }
+        .about-container p { font-size: 1.1rem; color: var(--text-color); margin-bottom: 1rem; line-height: 1.7; }
+        .main-footer { text-align: center; padding: 1.5rem 0; margin-top: 2rem; border-top: 1px solid var(--border-color); color: #454545; background: var(--surface-color); }
+        @media (max-width: 767px) {
+            .container { padding: 0 1rem; }
+            .nav-menu-wrapper { display: none; }
+            .menu-toggle { display: flex !important; }
+            .about-container { margin-top: 1rem; margin-bottom: 1rem; padding: 1.5rem; }
+        }
+    </style>
+    
+    <!-- Performance: Carregamento Assíncrono do CSS Completo -->
+    <link rel="preload" href="assets/css/style.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="assets/css/style.css"></noscript>
 </head>
 
-<!-- Google tag (gtag.js) -->
+<!-- Google tag (gtag.js) - Movido para o head para capturar todas as sessões -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-8VSYDM66L6"></script>
 <script>
     window.dataLayer = window.dataLayer || [];
@@ -42,7 +84,7 @@
 
     <nav class="main-nav">
         <div class="container nav-container">
-            <a href="index.html" class="nav-logo-link" aria-label="Página Inicial - Pinheiro Tecnologia">
+            <a href="/" class="nav-logo-link" aria-label="Página Inicial - Pinheiro Tecnologia">
                 <img src="images/Logo Branco - Pinheiro Tecnologia.png" alt="Pinheiro Tecnologia - Logo"
                     class="nav-logo" width="180" height="30">
             </a>
@@ -73,80 +115,94 @@
     <main class="container">
         <section class="about-container" aria-labelledby="about-title">
 
-
-
             <h1 id="about-title" class="section-title" style="text-align: left;">Sobre a Pinheiro Tecnologia</h1>
 
-<p>
-    A Pinheiro Tecnologia nasceu de um princípio claro: <strong>usar tecnologia para resolver problemas reais de negócio</strong>.  
-    Para nós, ferramentas são importantes — mas nunca são o ponto de partida. O que importa é entender as pessoas, os processos e o resultado que a empresa precisa atingir.
-</p>
+            <p>
+                A Pinheiro Tecnologia nasceu de um princípio claro: <strong>usar tecnologia para resolver problemas reais de
+                    negócio</strong>.
+                Para nós, ferramentas são importantes — mas nunca são o ponto de partida. O que importa é entender as pessoas, os
+                processos e o resultado que a empresa precisa atingir.
+            </p>
 
-<p>
-    Cada projeto que desenvolvemos é construído em conjunto com o cliente. Trabalhamos lado a lado, conectando conhecimento operacional, visão estratégica e soluções tecnológicas que simplificam rotinas, aumentam eficiência e criam impacto tangível.
-</p>
+            <p>
+                Cada projeto que desenvolvemos é construído em conjunto com o cliente. Trabalhamos lado a lado, conectando
+                conhecimento operacional, visão estratégica e soluções tecnológicas que simplificam rotinas, aumentam eficiência e
+                criam impacto tangível.
+            </p>
 
-<p>
-    Atuamos com forte domínio em plataformas modernas — como Microsoft Power Platform, SharePoint, automação inteligente, integrações e análise de dados — mas nossa verdadeira especialidade é <strong>projetar soluções que funcionam</strong>, independentemente da tecnologia escolhida.
-</p>
+            <p>
+                Atuamos com forte domínio em plataformas modernas — como Microsoft Power Platform, SharePoint, automação
+                inteligente, integrações e análise de dados — mas nossa verdadeira especialidade é <strong>projetar soluções que
+                    funcionam</strong>, independentemente da tecnologia escolhida.
+            </p>
 
-<h3 class="about-subtitle">Nossa forma de trabalhar</h3>
+            <!-- Alterado de H3 para H2 para corrigir a hierarquia de headings (H1 > H2 > H2...) -->
+            <h2 class="about-subtitle">Nossa forma de trabalhar</h2>
 
-<p>
-    Não começamos escrevendo código. Começamos escutando.  
-    Antes de qualquer desenvolvimento, buscamos compreender seus processos, desafios e necessidades. Só então desenhamos soluções que realmente façam sentido — simples quando possível, sofisticadas quando necessário.
-</p>
+            <p>
+                Não começamos escrevendo código. Começamos escutando.
+                Antes de qualquer desenvolvimento, buscamos compreender seus processos, desafios e necessidades. Só então
+                desenhamos soluções que realmente façam sentido — simples quando possível, sofisticadas quando necessário.
+            </p>
 
-<p>
-    Essa abordagem colaborativa garante que cada entrega seja útil, escalável e alinhada ao que a empresa precisa agora, sem perder de vista o que ela pode precisar amanhã.
-</p>
+            <p>
+                Essa abordagem colaborativa garante que cada entrega seja útil, escalável e alinhada ao que a empresa precisa
+                agora, sem perder de vista o que ela pode precisar amanhã.
+            </p>
 
-<h3 class="about-subtitle">O que entregamos</h3>
+            <h2 class="about-subtitle">O que entregamos</h2>
 
-<ul class="skills-list">
-    <li><strong>Soluções personalizadas:</strong> sistemas, automações, dashboards e aplicativos construídos sob medida.</li>
-    <li><strong>Melhoria de processos:</strong> ajustamos o fluxo antes de automatizar, garantindo eficiência real.</li>
-    <li><strong>Integração de equipes e dados:</strong> unimos informações dispersas para facilitar a tomada de decisão.</li>
-    <li><strong>Decisões mais inteligentes:</strong> dados organizados, visíveis e confiáveis.</li>
-    <li><strong>Suporte técnico e estratégico:</strong> ajudamos seu time a evoluir, não apenas a usar ferramentas.</li>
-</ul>
+            <ul class="skills-list">
+                <li><strong>Soluções personalizadas:</strong> sistemas, automações, dashboards e aplicativos construídos sob
+                    medida.</li>
+                <li><strong>Melhoria de processos:</strong> ajustamos o fluxo antes de automatizar, garantindo eficiência real.
+                </li>
+                <li><strong>Integração de equipes e dados:</strong> unimos informações dispersas para facilitar a tomada de
+                    decisão.</li>
+                <li><strong>Decisões mais inteligentes:</strong> dados organizados, visíveis e confiáveis.</li>
+                <li><strong>Suporte técnico e estratégico:</strong> ajudamos seu time a evoluir, não apenas a usar ferramentas.
+                </li>
+            </ul>
 
-<h3 class="about-subtitle">Por que empresas trabalham conosco</h3>
+            <h2 class="about-subtitle">Por que empresas trabalham conosco</h2>
 
-<ul class="skills-list">
-    <li><strong>Visão de negócio:</strong> entendemos a operação e os objetivos antes de falar em tecnologia.</li>
-    <li><strong>Experiência colaborativa:</strong> atuamos como extensão da sua equipe, não como um fornecedor distante.</li>
-    <li><strong>Flexibilidade tecnológica:</strong> escolhemos a solução certa para cada problema, sem apego a ferramentas.</li>
-    <li><strong>Foco em resultado:</strong> entregamos eficiência, clareza e impacto — não apenas “sistemas prontos”.</li>
-    <li><strong>Qualidade e transparência:</strong> arquitetura sólida, boas práticas e comunicação clara em todas as etapas.</li>
-</ul>
+            <ul class="skills-list">
+                <li><strong>Visão de negócio:</strong> entendemos a operação e os objetivos antes de falar em tecnologia.</li>
+                <li><strong>Experiência colaborativa:</strong> atuamos como extensão da sua equipe, não como um fornecedor
+                    distante.</li>
+                <li><strong>Flexibilidade tecnológica:</strong> escolhemos a solução certa para cada problema, sem apego a
+                    ferramentas.</li>
+                <li><strong>Foco em resultado:</strong> entregamos eficiência, clareza e impacto — não apenas “sistemas prontos”.
+                </li>
+                <li><strong>Qualidade e transparência:</strong> arquitetura sólida, boas práticas e comunicação clara em todas
+                    as etapas.</li>
+            </ul>
 
-<h3 class="about-subtitle">Nossos resultados</h3>
+            <h2 class="about-subtitle">Nossos resultados</h2>
 
-<ul class="skills-list">
-    <li>Redução significativa de retrabalho em processos operacionais críticos.</li>
-    <li>Automação de rotinas que liberam equipes para atividades mais estratégicas.</li>
-    <li>Centralização de dados e criação de visões gerenciais que apoiam decisões imediatas.</li>
-    <li>Implantação de sistemas que conectam áreas antes isoladas.</li>
-    <li>Melhorias de performance em aplicações e rotinas chave para o negócio.</li>
-</ul>
+            <ul class="skills-list">
+                <li>Redução significativa de retrabalho em processos operacionais críticos.</li>
+                <li>Automação de rotinas que liberam equipes para atividades mais estratégicas.</li>
+                <li>Centralização de dados e criação de visões gerenciais que apoiam decisões imediatas.</li>
+                <li>Implantação de sistemas que conectam áreas antes isoladas.</li>
+                <li>Melhorias de performance em aplicações e rotinas chave para o negócio.</li>
+            </ul>
 
-<h3 class="about-subtitle">Como podemos trabalhar juntos</h3>
+            <h2 class="about-subtitle">Como podemos trabalhar juntos</h2>
 
-<p>
-    Atuamos em projetos sob demanda, treinamentos, sustentação, consultoria contínua, apoio técnico para times internos e também em alocação dedicada quando necessário.
-</p>
+            <p>
+                Atuamos em projetos sob demanda, treinamentos, sustentação, consultoria contínua, apoio técnico para times
+                internos e também em alocação dedicada quando necessário.
+            </p>
 
-<p>
-    Seja qual for o desafio — automatizar processos, organizar dados, integrar áreas ou criar soluções sob medida — estamos prontos para construir isso com você.
-</p>
+            <p>
+                Seja qual for o desafio — automatizar processos, organizar dados, integrar áreas ou criar soluções sob medida —
+                estamos prontos para construir isso com você.
+            </p>
 
-<p>
-    <a href="contato.html" class="link-inline">Vamos conversar</a> e encontrar a solução ideal para o seu negócio.
-</p>
-
-
-
+            <p>
+                <a href="/contato.html" class="link-inline">Vamos conversar</a> e encontrar a solução ideal para o seu negócio.
+            </p>
 
 
         </section>
@@ -156,7 +212,7 @@
         <p>Pinheiro Tecnologia &copy; <span id="current-year-footer"></span> - Todos os direitos reservados.</p>
     </footer>
 
-    <script src="assets/js/script.js"></script>
+    <script src="assets/js/script.js" defer></script>
 
 </body>
 

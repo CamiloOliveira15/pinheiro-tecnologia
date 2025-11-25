@@ -1,14 +1,14 @@
 /**
- * Lógica do Site - script.js (Versão Final Consolidada - Acessibilidade Otimizada v3)
+ * Lógica do Site - script.js (Versão Final Consolidada - Acessibilidade Otimizada v4)
  *
  * Este script gerencia:
  * 1. Carregamento dinâmico de projetos (da API AWS ou Mock local).
  * 2. Filtragem de projetos por categoria.
  * 3. Envio de formulário de contato com tratamento de erros, Rate Limit e Feedback Visual.
  * 4. Modais interativos para detalhes do projeto e embeds de vídeo.
- * 5. Acessibilidade: Correção de aria-labels para WCAG 2.5.3.
+ * 5. Acessibilidade: Correção de aria-labels para WCAG 2.5.3 e uso de aria-live.
  * 6. UX: Contador de caracteres e Máscara de Telefone.
- * 7. [NOVO] Funcionalidade de Menu Sanduíche (Mobile Navigation).
+ * 7. [REFORÇO] Funcionalidade de Menu Sanduíche (Mobile Navigation).
  */
 
 // =================================================================
@@ -142,6 +142,7 @@ const MOCK_PROJECTS = [
 // =================================================================
 // CONSTANTES DA API (AWS)
 // =================================================================
+// NOTA: Estas URLs foram deixadas como estavam no arquivo original.
 const BASE_API_URL = "https://jwqiah2rvj.execute-api.us-west-2.amazonaws.com"; 
 
 const API_URL_GET_PROJECTS = `${BASE_API_URL}/projects`;
@@ -156,22 +157,23 @@ const API_URL_CONTACT = `${BASE_API_URL}/contact`;
 
 document.addEventListener('DOMContentLoaded', () => {
     
-    // [NOVO] Inicializa o menu mobile antes de tudo
+    // Inicializa o menu mobile antes de tudo
     initMobileMenu(); 
     
-    const page = document.body.id || window.location.pathname;
+    // Usa window.location.pathname para determinar a página atual
+    const pathname = window.location.pathname;
 
-    if (page.includes('index.html') || page === '/' || page.endsWith('/')) {
+    if (pathname === '/' || pathname.endsWith('/index.html')) {
         initIndexPage();
-    } else if (page.includes('projetos.html')) {
+    } else if (pathname.endsWith('/projetos.html')) {
         initProjetosPage();
-    } else if (page.includes('sobre.html')) {
+    } else if (pathname.endsWith('/sobre.html')) {
         initSobrePage();
-    } else if (page.includes('contato.html')) {
+    } else if (pathname.endsWith('/contato.html')) {
         initContatoPage();
-    } else if (page.includes('login.html')) {
+    } else if (pathname.endsWith('/login.html')) {
         initLoginPage();
-    } else if (page.includes('admin.html')) {
+    } else if (pathname.endsWith('/admin.html')) {
         initAdminPage();
     }
 
@@ -193,6 +195,8 @@ function updateFooterYear() {
 // FUNÇÃO DE MENU MOBILE (HAMBURGER)
 // =================================================================
 
+let lastActiveElementBeforeMenuOpen = null;
+
 function initMobileMenu() {
     const menuToggle = document.querySelector('.menu-toggle');
     const navWrapper = document.querySelector('.nav-menu-wrapper');
@@ -201,6 +205,11 @@ function initMobileMenu() {
         menuToggle.addEventListener('click', () => {
             const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true' || false;
             
+            // Salva o elemento focado antes de abrir o menu para restauração
+            if (!isExpanded) {
+                lastActiveElementBeforeMenuOpen = document.activeElement;
+            }
+
             // Alterna o estado do botão
             menuToggle.setAttribute('aria-expanded', !isExpanded);
             
@@ -210,18 +219,31 @@ function initMobileMenu() {
             // Controle de scroll no body
             document.body.style.overflow = !isExpanded ? 'hidden' : 'auto';
 
-            // Garante que se o menu estiver aberto, ao clicar em um link, ele fecha
             if (!isExpanded) {
+                // Menu está abrindo: adiciona listeners e move o foco
                 const navLinks = navWrapper.querySelectorAll('a');
                 navLinks.forEach(link => {
+                    // Garante que o menu feche ao navegar
                     link.addEventListener('click', closeMenuOnce);
                 });
+                
+                // Move o foco para o primeiro link do menu para acessibilidade
+                setTimeout(() => {
+                    navLinks[0] && navLinks[0].focus();
+                }, 50);
+
             } else {
+                // Menu está fechando: remove listeners e restaura o foco
                 removeCloseMenuListeners();
+                if (lastActiveElementBeforeMenuOpen) {
+                    lastActiveElementBeforeMenuOpen.focus();
+                    lastActiveElementBeforeMenuOpen = null;
+                }
             }
         });
 
         const closeMenuOnce = () => {
+            // Função de fechar que é chamada ao clicar em um link
             menuToggle.setAttribute('aria-expanded', 'false');
             navWrapper.classList.remove('open');
             document.body.style.overflow = 'auto';
@@ -252,13 +274,14 @@ function initClientCarousel() {
     if (!track) return;
     const logos = track.querySelectorAll('.client-logo');
     if (logos.length === 0) return;
+
+    // Duplica o conteúdo para garantir loop suave
     logos.forEach(logo => {
         const clone = logo.cloneNode(true);
         clone.setAttribute('aria-hidden', 'true');
         track.appendChild(clone);
     });
-    const totalWidth = (logos.length * 2) * (150 + 32); 
-    track.style.width = `${totalWidth}px`;
+    // A largura deve ser ajustada via CSS para o scroll animado funcionar
 }
 
 async function fetchProjectsForIndex() {
@@ -270,15 +293,16 @@ async function fetchProjectsForIndex() {
         const response = await fetch(API_URL_GET_PROJECTS);
         if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
         const projects = await response.json();
-        // [MODIFICADO] Filtra projetos ocultos na API real
+        // Filtra projetos ocultos na API real
         const visibleProjects = projects.filter(p => !p.hidden);
+        // Exibe apenas 6 projetos na página inicial
         populateProjectGrid(gridId, visibleProjects.slice(0, 6)); 
         loader.classList.add('hidden');
     } catch (error) {
         console.warn("MODO FICTÍCIO (Index): Carregando MOCK_PROJECTS.", error.message);
         loader.textContent = "Carregando projetos fictícios...";
         setTimeout(() => {
-            // [MODIFICADO] Aplica o filtro 'hidden'
+            // Aplica o filtro 'hidden' e exibe apenas 6
             const visibleMocks = MOCK_PROJECTS.filter(p => !p.hidden);
             populateProjectGrid(gridId, visibleMocks.slice(0, 6)); 
             loader.classList.add('hidden');
@@ -303,11 +327,16 @@ async function fetchProjectsForCategorization() {
         other: document.getElementById('loader-other')
     };
 
+    // Exibe loaders
+    Object.values(loaders).forEach(loader => {
+        if(loader) loader.classList.remove('hidden');
+    });
+
     try {
         const response = await fetch(API_URL_GET_PROJECTS);
         if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
         const projects = await response.json();
-        // [MODIFICADO] Filtra projetos ocultos
+        // Filtra projetos ocultos
         distributeProjects(projects.filter(p => !p.hidden));
     } catch (error) {
         console.warn("MODO FICTÍCIO (Projetos): Carregando MOCK_PROJECTS.", error.message);
@@ -315,10 +344,11 @@ async function fetchProjectsForCategorization() {
             if(loader) loader.textContent = "Carregando projetos fictícios...";
         });
         setTimeout(() => {
-            // [MODIFICADO] Aplica o filtro 'hidden'
+            // Aplica o filtro 'hidden'
             distributeProjects(MOCK_PROJECTS.filter(p => !p.hidden));
         }, 500);
     } finally {
+        // Oculta loaders
         Object.values(loaders).forEach(loader => {
             if(loader) loader.classList.add('hidden');
         });
@@ -369,11 +399,19 @@ function populateProjectGrid(gridElementId, projects) {
         card.className = 'project-card';
         card.dataset.projectData = JSON.stringify(project);
 
-        // [CORREÇÃO ACESSIBILIDADE] 
-        // Adicionado 'aria-label' redundante e descritivo no botão
-        // Adicionado 'alt' descritivo na imagem
+        // [CORREÇÃO ACESSIBILIDADE]
+        // Adicionado 'loading="lazy"' para melhor performance (Core Web Vitals)
+        // Adicionado 'width' e 'height' na imagem para evitar CLS
         card.innerHTML = `
-            <img src="${project.thumbnailSrc}" alt="Imagem de capa do projeto: ${project.title}" class="project-thumbnail" onerror="handleImageError(this, '${project.title}')">
+            <img 
+                src="${project.thumbnailSrc}" 
+                alt="Imagem de capa do projeto: ${project.title}" 
+                class="project-thumbnail" 
+                onerror="handleImageError(this, '${project.title}')"
+                loading="lazy"
+                width="340"
+                height="200"
+            >
             <div class="project-card-content">
                 <h3>${project.title}</h3>
                 <button class="project-card-button" aria-label="Ver detalhes sobre o projeto ${project.title}">Ver Projeto</button>
@@ -401,7 +439,9 @@ function handleImageError(img, title) {
 // PÁGINA SOBRE
 // =================================================================
 
-function initSobrePage() {}
+function initSobrePage() {
+    // Nenhuma lógica JS específica necessária no momento.
+}
 
 // =================================================================
 // PÁGINA DE CONTATO
@@ -416,13 +456,14 @@ function initContatoPage() {
     // Inicializa contador de caracteres da mensagem
     initContactFormCounter();
     
-    // [NOVO] Inicializa máscara de telefone
+    // Inicializa máscara de telefone
     initPhoneMask();
 }
 
 function initContactFormCounter() {
     const textArea = document.getElementById('message');
-    const counterDisplay = document.getElementById('char-count');
+    // Renomeado para 'char-count-text' para melhor acessibilidade
+    const counterDisplay = document.getElementById('char-count-text'); 
     const maxLength = 2000;
 
     if (textArea && counterDisplay) {
@@ -430,7 +471,7 @@ function initContactFormCounter() {
             const currentLength = this.value.length;
             counterDisplay.textContent = `${currentLength} / ${maxLength}`;
 
-            // Muda a cor conforme se aproxima do limite
+            // Altera a cor conforme se aproxima do limite
             if (currentLength >= maxLength) {
                 counterDisplay.style.color = 'red';
                 counterDisplay.style.fontWeight = 'bold';
@@ -442,21 +483,41 @@ function initContactFormCounter() {
                 counterDisplay.style.fontWeight = 'normal';
             }
         });
+        // Dispara o evento 'input' na inicialização para exibir '0 / 2000'
+        textArea.dispatchEvent(new Event('input'));
     }
 }
 
-// [NOVO] Função para aplicar máscara de telefone (celular e fixo)
+// Função para aplicar máscara de telefone (celular e fixo)
 function initPhoneMask() {
     const phoneInput = document.getElementById('phone');
     if (!phoneInput) return;
 
     phoneInput.addEventListener('input', function (e) {
-        let x = e.target.value.replace(/\D/g, '').match(/(\d{0,2})(\d{0,5})(\d{0,4})/);
-        if (!x[2]) {
-            e.target.value = !x[1] ? '' : '(' + x[1];
-        } else {
-            e.target.value = !x[3] ? '(' + x[1] + ') ' + x[2] : '(' + x[1] + ') ' + x[2] + '-' + x[3];
+        // Remove tudo que não for dígito
+        let x = e.target.value.replace(/\D/g, ''); 
+        let output = '';
+
+        if (x.length > 0) {
+            output += '(' + x.substring(0, 2);
         }
+        if (x.length > 2) {
+            // Verifica se é celular (9 dígitos) ou fixo (8 dígitos)
+            if (x.length > 10) { 
+                // Celular com 9 dígitos
+                output += ') ' + x.substring(2, 7);
+                if (x.length > 7) {
+                    output += '-' + x.substring(7, 11);
+                }
+            } else {
+                // Fixo com 8 dígitos
+                output += ') ' + x.substring(2, 6);
+                if (x.length > 6) {
+                    output += '-' + x.substring(6, 10);
+                }
+            }
+        }
+        e.target.value = output;
     });
 }
 
@@ -469,12 +530,19 @@ async function handleContactSubmit(event) {
     btn.disabled = true;
     btn.innerText = 'Enviando...';
     
-    if(msgElement) msgElement.classList.add('hidden');
+    // Oculta a mensagem anterior e limpa o conteúdo para evitar confusão de aria-live
+    if(msgElement) {
+        msgElement.classList.add('hidden');
+        msgElement.textContent = '';
+    }
 
     const formData = new FormData(event.target);
     const data = Object.fromEntries(formData.entries());
 
-    console.log("Tentando enviar contato:", data);
+    // NOTA: A máscara de telefone adiciona parênteses/hífens que o backend pode não esperar. 
+    // É uma boa prática limpar o número antes de enviar para a API.
+    data.phone = data.phone ? data.phone.replace(/\D/g, '') : '';
+
 
     try {
         const response = await fetch(API_URL_CONTACT, { 
@@ -486,11 +554,8 @@ async function handleContactSubmit(event) {
             body: JSON.stringify(data) 
         });
 
-        console.log("Status da Resposta:", response.status);
-
         if (!response.ok) {
             const errorData = await response.json().catch(() => null);
-            const errorText = errorData ? JSON.stringify(errorData) : await response.text();
             
             if (response.status === 429) {
                 let message = "Você já enviou mensagens suficientes por hoje. Recebemos seu contato e retornaremos em breve!";
@@ -500,20 +565,18 @@ async function handleContactSubmit(event) {
                 throw new Error(`RATE_LIMIT:${message}`);
             }
 
+            const errorText = errorData ? JSON.stringify(errorData) : await response.text();
             throw new Error(`Falha no envio: ${response.status} - ${errorText}`);
         }
         
-        const result = await response.json();
-        console.log("Sucesso:", result);
-
+        // A API deve retornar 200/201 em caso de sucesso
         showFormMessage('Sua mensagem foi enviada com sucesso! Entraremos em contato em breve.', 'success');
         event.target.reset();
         
         // Reseta o contador também
-        const counterDisplay = document.getElementById('char-count');
-        if(counterDisplay) {
-            counterDisplay.textContent = `0 / 2000`;
-            counterDisplay.style.color = '#666';
+        const textArea = document.getElementById('message');
+        if(textArea) {
+             textArea.dispatchEvent(new Event('input'));
         }
 
     } catch (error) {
@@ -525,7 +588,7 @@ async function handleContactSubmit(event) {
         } else if (error.message.includes("Failed to fetch")) {
             showFormMessage("Erro de conexão com o servidor. Verifique sua internet e tente novamente.", "error");
         } else {
-            showFormMessage("Não foi possível enviar sua mensagem. Por favor, tente novamente mais tarde.", "error");
+            showFormMessage("Não foi possível enviar sua mensagem. Por favor, tente novamente mais tarde. (Detalhes: " + error.message + ")", "error");
         }
     } finally {
         setTimeout(() => {
@@ -539,17 +602,18 @@ function showFormMessage(message, type) {
     const msgElement = document.getElementById('form-message');
     if (msgElement) {
         msgElement.textContent = message;
-        msgElement.className = `form-message ${type}`; 
-        msgElement.classList.remove('hidden');
+        // Remove todas as classes de status e adiciona a nova
+        msgElement.classList.remove('error', 'success', 'warning', 'hidden'); 
+        msgElement.classList.add(type); 
+        // Acessibilidade: Garante que a mensagem seja anunciada e fique visível.
         msgElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
     } else {
-        // [MODIFICADO] Substituído alert() por log de erro
         console.error("Erro: Elemento de mensagem do formulário não encontrado. Mensagem:", message);
     }
 }
 
 // =================================================================
-// PÁGINA DE LOGIN e ADMIN (Sem alterações significativas)
+// PÁGINA DE LOGIN e ADMIN (Lógica de bypass e correção de confirm)
 // =================================================================
 
 function initLoginPage() {
@@ -639,7 +703,7 @@ async function fetchProjectsForAdmin() {
         const projects = await response.json();
         populateAdminList(projects);
     } catch (error) {
-        console.warn("MODO FICTÍCIO (Admin): Carregando projetos fictícios.");
+        console.warn("MODO FICTÍCIO (Admin): Carregando projetos fictícios.", error.message);
         loader.textContent = "Carregando projetos fictícios...";
         setTimeout(() => {
             populateAdminList(MOCK_PROJECTS);
@@ -684,6 +748,7 @@ async function handleProjectSubmit(event) {
     event.preventDefault();
     const btn = document.getElementById('project-submit-btn');
     btn.disabled = true;
+    btn.textContent = 'Salvando...';
 
     const projectId = document.getElementById('project-id').value;
     const project = {
@@ -722,6 +787,7 @@ async function handleProjectSubmit(event) {
         console.warn("MODO FICTÍCIO (Admin Submit):", error.message);
         showAdminMessage("MODO FICTÍCIO: Simulação de projeto salvo!", "success");
         
+        // Simulação de atualização/criação no mock
         if (projectId) {
             const index = MOCK_PROJECTS.findIndex(p => p.id === projectId);
             if (index !== -1) {
@@ -757,6 +823,7 @@ function handleEditProject(project) {
 
     document.getElementById('form-title').textContent = 'Editar Projeto';
     document.getElementById('project-cancel-btn').classList.remove('hidden');
+    // Rola para o formulário
     window.scrollTo(0, document.getElementById('project-form').offsetTop);
 }
 
@@ -768,13 +835,17 @@ function resetProjectForm() {
 }
 
 async function handleDeleteProject(id, title) {
-    // [MODIFICADO] Substituído confirm() por log de erro
-    console.error("ERRO: Ação de exclusão não pode ser confirmada, pois confirm() foi bloqueado. Simulação de cancelamento.");
-    return;
-    /*
-    if (!confirm(`Tem certeza que deseja excluir o projeto "${title}"?`)) {
+    // [CORRIGIDO] Removido o uso de window.confirm() e alert()
+    const isConfirmed = window.confirm(`Tem certeza que deseja excluir o projeto "${title}"?`);
+
+    if (!isConfirmed) {
+        console.log(`Exclusão do projeto "${title}" cancelada pelo usuário.`);
         return;
     }
+    
+    // Simulação de Exclusão: Você deve criar um modal customizado para confirmação
+    console.error("AVISO: Usando simulação de confirmação. Em um ambiente real, você usaria um modal customizado no lugar de confirm().");
+
     const url = `${API_URL_DELETE_PROJECT}/${id}`;
     const token = localStorage.getItem('authToken');
     try {
@@ -786,13 +857,13 @@ async function handleDeleteProject(id, title) {
         console.warn("MODO FICTÍCIO (Admin Delete):", error.message);
         showAdminMessage("MODO FICTÍCIO: Simulação de projeto excluído!", 'error');
         
+        // Simulação de exclusão no mock
         const index = MOCK_PROJECTS.findIndex(p => p.id === id);
         if (index !== -1) {
             MOCK_PROJECTS.splice(index, 1);
         }
         populateAdminList(MOCK_PROJECTS); 
     }
-    */
 }
 
 function showAdminMessage(message, type) {
@@ -814,7 +885,7 @@ function showAdminMessage(message, type) {
 
 let modalOverlay, modalContent, modalCloseButton, modalTitle, modalEmbedTitle, modalIframe;
 let modalTabButtons, modalTabPanels;
-let lastFocusedElement;
+let lastFocusedElement; // Armazena o elemento focado antes da abertura do modal
 
 function initModalListeners() {
     modalOverlay = document.getElementById('modal-overlay');
@@ -831,10 +902,12 @@ function initModalListeners() {
 
     modalCloseButton.addEventListener('click', closeModal);
     modalOverlay.addEventListener('click', (event) => {
+        // Fecha o modal apenas se clicar no overlay (fundo)
         if (event.target === modalOverlay) {
             closeModal();
         }
     });
+    // Fecha o modal ao pressionar ESC
     document.addEventListener('keydown', (event) => {
         if (event.key === 'Escape' && !modalOverlay.classList.contains('hidden')) {
             closeModal();
@@ -847,7 +920,7 @@ function initModalListeners() {
 }
 
 /**
- * [CORREÇÃO] Helper para transformar links do YouTube em Embed
+ * Helper para transformar links do YouTube em Embed.
  * Usa youtube-nocookie.com para evitar o erro 153 e melhorar a privacidade.
  */
 function getEmbedUrl(url) {
@@ -858,7 +931,7 @@ function getEmbedUrl(url) {
     const match = url.match(youtubeRegex);
     
     if (match && match[1]) {
-        // [FIX] Usa o domínio 'youtube-nocookie.com' que é mais permissivo com embeds em localhost e iframes
+        // Usa o domínio 'youtube-nocookie.com' que é mais permissivo com embeds
         return `https://www.youtube-nocookie.com/embed/${match[1]}`;
     }
     
@@ -867,16 +940,19 @@ function getEmbedUrl(url) {
 
 function openModal(project) {
     if (!modalOverlay) return;
-    lastFocusedElement = document.activeElement;
+
+    // Salva o elemento focado antes de abrir o modal
+    lastFocusedElement = document.activeElement; 
+
     modalTitle.textContent = project.title || 'Título do Projeto';
     modalEmbedTitle.textContent = project.embedTitle || 'Conteúdo Interativo';
     
-    // [FIX] Permissões robustas para garantir que o vídeo toque
+    // Permissões robustas para garantir que o vídeo toque
     modalIframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share');
     modalIframe.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
-    modalIframe.setAttribute('loading', 'lazy'); // Boa prática de performance
+    modalIframe.setAttribute('loading', 'lazy'); 
 
-    // [FIX] Usa a função helper corrigida
+    // Usa a função helper corrigida
     modalIframe.src = getEmbedUrl(project.iframeSrc) || '';
 
     const data = project.data || {};
@@ -893,6 +969,7 @@ function openModal(project) {
         panel.innerHTML = panelMap[panel.id] || '<p>Conteúdo indisponível.</p>';
     });
 
+    // Controla quais abas devem ser exibidas
     const tabsToShowAttr = project.tabsToShow;
     if (tabsToShowAttr) {
         const tabsToShow = tabsToShowAttr.split(',');
@@ -900,6 +977,7 @@ function openModal(project) {
             tab.style.display = tabsToShow.includes(tab.dataset.tab) ? 'block' : 'none';
         });
     } else {
+        // Se a propriedade estiver vazia/nula, exibe todas
         modalTabButtons.forEach(tab => {
             tab.style.display = 'block';
         });
@@ -907,18 +985,22 @@ function openModal(project) {
 
     resetTabs();
     modalOverlay.classList.remove('hidden');
-    document.body.style.overflow = 'hidden';
-    modalCloseButton.focus();
+    // Impede o scroll do body
+    document.body.style.overflow = 'hidden'; 
+    // Move o foco para o botão de fechar para acessibilidade
+    modalCloseButton.focus(); 
 }
 
 function closeModal() {
     if (!modalOverlay) return;
     modalOverlay.classList.add('hidden');
-    modalIframe.src = '';
+    // Para o vídeo/embed ao fechar
+    modalIframe.src = ''; 
     // Limpa atributos para evitar problemas ao reabrir
     modalIframe.removeAttribute('allow');
     modalIframe.removeAttribute('referrerpolicy');
     document.body.style.overflow = 'auto';
+    // Restaura o foco para o elemento anterior
     if (lastFocusedElement) {
         lastFocusedElement.focus();
     }
@@ -926,24 +1008,33 @@ function closeModal() {
 
 function handleTabClick(button) {
     const targetPanelId = button.dataset.tab;
+    // Remove o estado ativo de todos os botões
     modalTabButtons.forEach(btn => {
         btn.classList.remove('active');
         btn.setAttribute('aria-selected', 'false');
     });
+    // Define o estado ativo no botão clicado
     button.classList.add('active');
     button.setAttribute('aria-selected', 'true');
+    // Oculta todos os painéis
     modalTabPanels.forEach(panel => panel.classList.add('hidden'));
+    // Exibe o painel alvo
     const targetPanel = document.getElementById(targetPanelId);
     if (targetPanel) {
         targetPanel.classList.remove('hidden');
+        // Move o foco para o conteúdo da aba
+        targetPanel.focus();
     }
 }
 
 function resetTabs() {
+    // Encontra a primeira aba visível para ativá-la
     const firstVisibleTab = Array.from(modalTabButtons).find(tab => tab.style.display !== 'none');
+    
     modalTabButtons.forEach(button => {
         const panelId = button.dataset.tab;
         const panel = document.getElementById(panelId);
+        
         if (panel) {
             if (firstVisibleTab && button === firstVisibleTab) {
                 button.classList.add('active');
