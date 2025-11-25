@@ -1,0 +1,83 @@
+# Nome do fluxo de trabalho.
+name: Deploy Estático para AWS S3
+
+# Define o gatilho para o fluxo de trabalho.
+on:
+  push:
+    # Este fluxo será executado sempre que houver um push para o branch 'main'.
+    branches:
+      - main
+    # [NOVO] Configurações de caminhos para ignorar o deploy se APENAS arquivos de documentação
+    # forem modificados.
+    paths-ignore:
+      # Ignora alterações no arquivo README.md (no diretório raiz)
+      - 'README.md'
+      # Adicione outros arquivos de documentação ou teste que não exigem deploy
+      - '*.txt'
+      - '*.xml'
+      - '.gitignore'
+      - '.vscode/**'
+      
+  # Permite que você execute o fluxo de trabalho manualmente através da interface do GitHub.
+  workflow_dispatch:
+
+# Define as variáveis de ambiente padrão para os jobs.
+env:
+  # Região da AWS (substitua pelo seu valor ou use Secret)
+  AWS_REGION: ${{ secrets.AWS_REGION }} 
+  # Nome do bucket S3 onde o site será hospedado
+  S3_BUCKET_NAME: ${{ secrets.AWS_S3_BUCKET }}
+  # ID da distribuição CloudFront (necessário para invalidar o cache após o deploy)
+  CLOUDFRONT_DISTRIBUTION_ID: ${{ secrets.AWS_CLOUDFRONT_DISTRIBUTION_ID }}
+  
+jobs:
+  # Define um único trabalho chamado 'deploy'
+  deploy:
+    # O agente de execução. Usamos o mais recente para compatibilidade.
+    runs-on: ubuntu-latest
+    
+    # Passos a serem executados
+    steps:
+      # 1. Checkout do código
+      # Baixa o conteúdo do repositório para o runner do Action.
+      - name: Checkout do Repositório
+        uses: actions/checkout@v4
+
+      # 2. Configuração das Credenciais AWS
+      # Usa o Action oficial da AWS para configurar as credenciais a partir das Secrets.
+      - name: Configurar Credenciais AWS
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      # 3. Sincronização e Deploy para o S3
+      # Usa a CLI da AWS para sincronizar a pasta de trabalho (o repositório) com o bucket S3.
+      # A flag '--delete' remove arquivos no S3 que não existem mais localmente (IMPORTANTE).
+      # REMOVIDO: '--acl public-read'
+      - name: Deploy para AWS S3
+        run: |
+          echo "Sincronizando arquivos para s3://${{ env.S3_BUCKET_NAME }}"
+          aws s3 sync . s3://${{ env.S3_BUCKET_NAME }} \
+            --delete \
+            --exclude ".git/*" \
+            --exclude ".github/*"
+          echo "Deploy para S3 concluído com sucesso."
+          
+      # 4. Invalidação do Cache CloudFront
+      # (Opcional, mas RECOMENDADO) Invalida o cache para que as alterações apareçam imediatamente.
+      # A invalidação de '/*' garante que todos os arquivos sejam atualizados.
+      - name: Invalidação do CloudFront (Limpar Cache)
+        # O passo só será executado se o CLOUDFRONT_DISTRIBUTION_ID for fornecido.
+        if: success() && env.CLOUDFRONT_DISTRIBUTION_ID != '' 
+        run: |
+          echo "Iniciando invalidação para distribuição CloudFront: ${{ env.CLOUDFRONT_DISTRIBUTION_ID }}"
+          aws cloudfront create-invalidation \
+            --distribution-id ${{ env.CLOUDFRONT_DISTRIBUTION_ID }} \
+            --paths "/*"
+          echo "Invalidação do CloudFront solicitada."
+
+      # 5. Feedback de Sucesso
+      - name: Notificar Sucesso
+        run: echo "O Deploy e a Invalidação de Cache (se aplicável) foram concluídos."
