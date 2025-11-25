@@ -11,20 +11,20 @@
  */
 :root {
     /* Paleta de Cores */
-    --primary-color-accessible: #1A6A6C; 
-    --primary-color-hover: #218c8f;      
-    --primary-color-active: #15585a;     
-    
-    --background-color: #f4f7f6; 
-    --surface-color: #ffffff;    
-    --text-color: #333333;       
-    --text-color-light: #555555;   
-    --text-color-inverse: #ffffff; 
-    --border-color: #e0e0e0;     
-    
+    --primary-color-accessible: #1A6A6C;
+    --primary-color-hover: #218c8f;
+    --primary-color-active: #15585a;
+
+    --background-color: #f4f7f6;
+    --surface-color: #ffffff;
+    --text-color: #333333;
+    --text-color-light: #555555;
+    --text-color-inverse: #ffffff;
+    --border-color: #e0e0e0;
+
     /* Tipografia */
     --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    
+
     /* Outras Propriedades */
     --border-radius-sm: 8px;
     --border-radius-md: 12px;
@@ -35,7 +35,11 @@
 
 /* Esconder seção de clientes (carrossel) se não usada */
 .clients-section {
+<<<<<<< Updated upstream
     display: none; /* Remova se quiser reativar */
+=======
+    display: none !important;
+>>>>>>> Stashed changes
 }
 
 /* * =========================================
@@ -49,7 +53,7 @@
 }
 
 html {
-    scroll-behavior: smooth; 
+    scroll-behavior: smooth;
 }
 
 body {
@@ -84,16 +88,21 @@ select:focus-visible {
     border-radius: var(--border-radius-sm);
     box-shadow: 0 0 0 3px rgba(26, 106, 108, 0.3);
 }
+
 input:focus-visible,
 textarea:focus-visible,
 select:focus-visible {
+<<<<<<< Updated upstream
+=======
+    /* Oculta o outline padrão e usa o box-shadow customizado para foco */
+>>>>>>> Stashed changes
     outline: none;
     border-color: var(--primary-color-accessible);
 }
 
 /* Título Padrão de Seção */
 .section-title {
-    font-size: 2.0rem; 
+    font-size: 2.0rem;
     font-weight: 600;
     text-align: center;
     margin-bottom: 2.5rem;
@@ -133,6 +142,7 @@ select:focus-visible {
     color: var(--primary-color-accessible);
     border: 2px solid var(--primary-color-accessible);
 }
+
 .cta-button.secondary-button:hover {
     background-color: #f0fafa;
     transform: translateY(-2px);
@@ -146,7 +156,7 @@ select:focus-visible {
 .main-nav {
     background: var(--primary-color-accessible);
     padding: 0.75rem 0;
-    position: relative; 
+    position: relative;
     z-index: 100;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
 }
@@ -164,13 +174,25 @@ select:focus-visible {
 
 .nav-logo {
     /* [CORREÇÃO] Define altura fixa e largura automática para manter proporção */
-    height: 30px; 
-    width: auto; 
+    height: 30px;
+    width: auto;
     /* object-fit garante que a imagem não distorça se houver restrições externas */
-    object-fit: contain; 
+    object-fit: contain;
     display: block;
 }
 
+<<<<<<< Updated upstream
+=======
+/* Estilos para o Wrapper do Menu (para controle mobile) */
+.nav-menu-wrapper {
+    /* Em desktop, este wrapper se comporta como um container flex para os links */
+    display: flex;
+    align-items: center;
+    flex-grow: 1;
+    justify-content: flex-end;
+}
+
+>>>>>>> Stashed changes
 .nav-links {
     display: flex;
     list-style: none;
@@ -204,6 +226,28 @@ select:focus-visible {
     font-weight: 600;
 }
 
+<<<<<<< Updated upstream
+=======
+/* Botão do Menu Sanduíche (Oculto por padrão em Desktop) */
+.menu-toggle {
+    display: none;
+    background: none;
+    border: none;
+    padding: 0.5rem;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    z-index: 101;
+    width: 40px;
+    /* Garante tamanho de toque/clique adequado */
+    height: 40px;
+}
+
+.menu-toggle svg rect {
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+}
+
+>>>>>>> Stashed changes
 
 /* * =========================================
  * SEÇÃO "HERO" (INDEX)
@@ -262,7 +306,12 @@ select:focus-visible {
 
 .services-grid {
     display: grid;
+<<<<<<< Updated upstream
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+=======
+    /* Reduzido o minmax para 280px para melhor adaptação em tablets menores */
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+>>>>>>> Stashed changes
     gap: 2rem;
 }
 
@@ -271,16 +320,27 @@ select:focus-visible {
     border: 1px solid var(--border-color);
     border-radius: var(--border-radius-lg);
     padding: 2rem;
+<<<<<<< Updated upstream
     /* [MODIFICADO] Alinhamento à esquerda para o texto */
     text-align: left; 
+=======
+    text-align: left;
+>>>>>>> Stashed changes
     box-shadow: var(--shadow-sm);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     
     /* [NOVO] Flexbox para garantir alinhamento correto dos itens internos */
     display: flex;
     flex-direction: column;
+<<<<<<< Updated upstream
     /* [MODIFICADO] Mantém o ícone centralizado OU mude para flex-start para alinhar à esquerda */
     align-items: center; 
+=======
+    align-items: flex-start;
+    /* Alinhamento dos itens internos à esquerda */
+    min-height: 250px;
+    /* Garante altura mínima para estabilidade visual */
+>>>>>>> Stashed changes
 }
 
 /* Se você quiser o ícone à esquerda também, mude align-items acima para flex-start */
@@ -314,8 +374,12 @@ select:focus-visible {
     font-weight: 600;
     color: #1a202c;
     margin-bottom: 0.75rem;
+<<<<<<< Updated upstream
     /* O título também deve respeitar o alinhamento do pai (.service-card) */
     width: 100%; 
+=======
+    width: 100%;
+>>>>>>> Stashed changes
 }
 
 .service-description {
@@ -346,6 +410,7 @@ select:focus-visible {
     font-style: italic;
 }
 
+<<<<<<< Updated upstream
 .project-grid {
     display: flex;
     flex-wrap: wrap;
@@ -353,6 +418,44 @@ select:focus-visible {
     gap: 2rem;
 }
 
+=======
+/* Wrapper para o grid de projetos na Index (para forçar o scroll horizontal) */
+.project-grid-index-wrapper {
+    overflow-x: auto;
+    /* Esconde a barra de rolagem no Safari/Chrome, mas mantém a funcionalidade */
+    -ms-overflow-style: none;
+    /* IE and Edge */
+    scrollbar-width: none;
+    /* Firefox */
+}
+
+.project-grid-index-wrapper::-webkit-scrollbar {
+    display: none;
+}
+
+/* Grid de Projetos */
+.project-grid {
+    display: flex;
+    /* MODIFICADO: Para o index, não queremos quebra de linha. Usamos flex-wrap: nowrap
+       e forçamos o overflow-x. Nas páginas internas (projetos.html), a responsividade é tratada
+       no media query. */
+    flex-wrap: wrap;
+    justify-content: center;
+    /* Centraliza itens em grid normal */
+    gap: 2rem;
+}
+
+/* Estilo para o grid na página Index (forçando linha única em desktop) */
+@media (min-width: 1024px) {
+    #project-grid-dynamic {
+        flex-wrap: nowrap;
+        justify-content: flex-start;
+        /* Garante que o track tenha o tamanho mínimo para o scroll */
+        min-width: fit-content;
+    }
+}
+
+>>>>>>> Stashed changes
 
 /* Estilo para o botão "Ver Todos" */
 .see-all-container {
@@ -374,8 +477,15 @@ select:focus-visible {
     flex-direction: column;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     width: 100%;
+<<<<<<< Updated upstream
     max-width: 340px;
     flex-shrink: 1; 
+=======
+    /* Mantém largura padrão para desktop/tablet */
+    max-width: 340px;
+    flex-shrink: 0;
+    /* IMPEDE que o card encolha no scroll horizontal */
+>>>>>>> Stashed changes
 }
 
 .project-card:hover {
@@ -386,7 +496,12 @@ select:focus-visible {
 .project-thumbnail {
     width: 100%;
     height: 200px;
+<<<<<<< Updated upstream
     object-fit: contain;
+=======
+    /* Usar 'cover' em vez de 'contain' pode ser melhor para UX em portfólio */
+    object-fit: cover;
+>>>>>>> Stashed changes
     display: block;
     background-color: #f0f0f0;
 }
@@ -461,7 +576,13 @@ select:focus-visible {
 .client-carousel-track {
     display: flex;
     gap: 2rem;
+<<<<<<< Updated upstream
     animation: scroll 40s linear infinite;
+=======
+    /* Ajustado para um valor que funcione com o JS clonando os itens */
+    animation: scroll 40s linear infinite;
+    min-width: fit-content;
+>>>>>>> Stashed changes
 }
 
 .client-logo {
@@ -488,8 +609,20 @@ select:focus-visible {
 }
 
 @keyframes scroll {
+<<<<<<< Updated upstream
     0% { transform: translateX(0); }
     100% { transform: translateX(-50%); }
+=======
+
+    /* O JS duplica o conteúdo, o 50% garante que o loop seja perfeito */
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(-50%);
+    }
+>>>>>>> Stashed changes
 }
 
 
@@ -507,6 +640,10 @@ select:focus-visible {
 }
 
 .about-container h1,
+<<<<<<< Updated upstream
+=======
+/* H2 incluído devido à correção da hierarquia no HTML */
+>>>>>>> Stashed changes
 .about-container h2 {
     font-size: 2rem;
     color: #1a202c;
@@ -536,6 +673,7 @@ select:focus-visible {
     margin-bottom: 1.5rem;
     padding-left: 1rem;
 }
+
 .skills-list li,
 .about-container li {
     margin-bottom: 0.5rem;
@@ -549,6 +687,7 @@ select:focus-visible {
     border-bottom: 2px solid transparent;
     transition: border-bottom-color 0.2s ease;
 }
+
 .link-inline:hover {
     border-bottom-color: var(--primary-color-accessible);
 }
@@ -658,19 +797,22 @@ select:focus-visible {
     font-weight: 500;
     border: 1px solid transparent;
 }
+
 .form-message.error {
     background: #fbe9e7;
     color: #D93025;
     border-color: #D93025;
 }
+
 .form-message.success {
     background: #e6f4ea;
     color: #1E8E3E;
     border-color: #1E8E3E;
 }
+
 .form-message.warning {
-    background: #fff8e1; 
-    color: #f57f17;       
+    background: #fff8e1;
+    color: #f57f17;
     border-color: #ffb300;
 }
 
@@ -706,10 +848,23 @@ select:focus-visible {
     box-shadow: var(--shadow-md);
     color: var(--primary-color-accessible);
 }
+<<<<<<< Updated upstream
+=======
+
+/* Acessibilidade: Garante que os filhos de contact-card herdem a cor no hover */
+.contact-card:hover .contact-card-icon {
+    color: var(--primary-color-accessible);
+}
+>>>>>>> Stashed changes
 
 .contact-card-icon {
     color: var(--primary-color-accessible);
     flex-shrink: 0;
+<<<<<<< Updated upstream
+=======
+    /* Transição para suavizar a mudança de cor no hover */
+    transition: color 0.3s ease;
+>>>>>>> Stashed changes
 }
 
 .contact-card-icon svg {
@@ -724,6 +879,7 @@ select:focus-visible {
     margin-bottom: 0.25rem;
     color: #1a202c;
 }
+
 .contact-card:hover .contact-card-title {
     color: var(--primary-color-accessible);
 }
@@ -870,9 +1026,11 @@ select:focus-visible {
 .tab-navigation::-webkit-scrollbar {
     height: 8px;
 }
+
 .tab-navigation::-webkit-scrollbar-track {
     background: #f0f0f0;
 }
+
 .tab-navigation::-webkit-scrollbar-thumb {
     background-color: #ccc;
     border-radius: 4px;
@@ -918,6 +1076,7 @@ select:focus-visible {
     margin-bottom: 1rem;
     padding-left: 1rem;
 }
+
 .modal-tab-panel li {
     margin-bottom: 0.5rem;
 }
@@ -945,6 +1104,7 @@ select:focus-visible {
     margin-top: 1.5rem;
     margin-bottom: 0.75rem;
 }
+
 .source-container .modal-subtitle:first-child {
     margin-top: 0;
 }
@@ -954,6 +1114,7 @@ select:focus-visible {
     text-decoration: none;
     font-weight: 500;
 }
+
 .link-externo:hover {
     text-decoration: underline;
 }
@@ -968,26 +1129,32 @@ select:focus-visible {
     .container {
         padding: 0 2rem;
     }
+
     .section-title {
         font-size: 2rem;
     }
+
     .hero-content h1 {
         font-size: 2.5rem;
     }
+
     .services-grid {
         grid-template-columns: repeat(2, 1fr);
     }
+
     .project-grid {
         gap: 1.5rem;
     }
-    
+
     .contact-card-grid {
         grid-template-columns: 1fr;
     }
+
     .nav-links a {
         padding: 0.75rem 1rem;
         font-size: 0.95rem;
     }
+
     .nav-logo {
         max-width: 100px;
     }
@@ -995,9 +1162,20 @@ select:focus-visible {
 
 /* Telas Grandes (Desktops) */
 @media (min-width: 1024px) {
+<<<<<<< Updated upstream
     .services-grid {
         grid-template-columns: repeat(3, 1fr);
+=======
+
+    /* [CORREÇÃO SOLICITADA] Alterado de 4 para 2 colunas em desktop para a seção de serviços */
+    .services-grid {
+        grid-template-columns: repeat(2, 1fr);
+        max-width: 900px;
+        /* Limita a largura do grid para centralizar 2 itens */
+        margin: 0 auto;
+>>>>>>> Stashed changes
     }
+
     .contact-card-grid {
         grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     }
@@ -1008,34 +1186,119 @@ select:focus-visible {
     .container {
         padding: 0 1rem;
     }
+
     .section-title {
         font-size: 1.75rem;
         margin-bottom: 1.5rem;
     }
+<<<<<<< Updated upstream
+=======
+
+    /* === MOBILE NAV === */
+    .nav-container {
+        justify-content: space-between;
+        align-items: center;
+        width: 100%;
+    }
+
+    .nav-menu-wrapper {
+        display: none;
+        position: absolute;
+        top: 45px;
+        left: 0;
+        width: 100%;
+        background-color: var(--primary-color-accessible);
+        box-shadow: 0 4px 5px rgba(0, 0, 0, 0.2);
+        flex-direction: column;
+        justify-content: flex-start;
+        padding-bottom: 1rem;
+        transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+        transform: translateY(-10px);
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    /* Estilo quando o menu está aberto */
+    .nav-menu-wrapper.open {
+        display: flex;
+        transform: translateY(0);
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+>>>>>>> Stashed changes
     .nav-links {
         gap: 0.25rem;
     }
+<<<<<<< Updated upstream
+=======
+
+    .nav-links li {
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .nav-links li:last-child {
+        border-bottom: none;
+    }
+
+>>>>>>> Stashed changes
     .nav-links a {
         padding: 0.5rem 0.5rem;
         font-size: 0.85rem;
     }
+<<<<<<< Updated upstream
+=======
+
+    .nav-links a.active,
+    .nav-links a[aria-current="page"] {
+        background-color: var(--primary-color-active);
+        border-left: 5px solid white;
+    }
+
+    /* Torna o botão do menu visível em mobile */
+    .menu-toggle {
+        display: flex;
+    }
+
+    /* Transformação do ícone Sanduíche para X (Acessibilidade) */
+    .menu-toggle[aria-expanded="true"] svg rect:first-child {
+        transform: translateY(30px) rotate(45deg);
+    }
+
+    .menu-toggle[aria-expanded="true"] svg rect:nth-child(2) {
+        opacity: 0;
+    }
+
+    .menu-toggle[aria-expanded="true"] svg rect:last-child {
+        transform: translateY(-30px) rotate(-45deg);
+    }
+
+    /* === FIM MOBILE NAV === */
+
+
+>>>>>>> Stashed changes
     .nav-logo {
         max-width: 130px;
     }
+
     .hero-content h1 {
         font-size: 2rem;
     }
+
     .hero-subheading {
         font-size: 1.1rem;
     }
+
     .services-grid {
         grid-template-columns: 1fr;
     }
+
     .project-grid {
         gap: 1.5rem;
         flex-wrap: wrap;
         justify-content: center;
     }
+
     .project-card {
         max-width: 100%;
         flex-shrink: 1;
@@ -1044,25 +1307,205 @@ select:focus-visible {
     .contact-card-grid {
         grid-template-columns: 1fr;
     }
+
     .contact-card {
         padding: 1.5rem;
         gap: 1rem;
         flex-direction: column;
         align-items: flex-start;
     }
+
     .about-container {
         margin-top: 1rem;
         margin-bottom: 1rem;
         padding: 1.5rem;
     }
+
     .modal-body {
         padding: 1rem;
     }
+
     .modal-tab-button {
         padding: 0.75rem 1rem;
         font-size: 0.9rem;
     }
+
     .tab-content {
         padding: 1rem;
     }
+}
+
+/* * =========================================
+ * ANIMAÇÕES E INTERATIVIDADE (NOVO)
+ * =========================================
+ */
+
+/* Keyframes */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translate3d(0, 40px, 0);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes float {
+    0% {
+        transform: translateY(0px);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+
+    100% {
+        transform: translateY(0px);
+    }
+}
+
+@keyframes pulse-soft {
+    0% {
+        box-shadow: 0 0 0 0 rgba(26, 106, 108, 0.4);
+    }
+
+    70% {
+        box-shadow: 0 0 0 10px rgba(26, 106, 108, 0);
+    }
+
+    100% {
+        box-shadow: 0 0 0 0 rgba(26, 106, 108, 0);
+    }
+}
+
+/* Classes Utilitárias de Animação */
+.animate-on-scroll {
+    opacity: 0;
+    /* Começa invisível */
+    will-change: opacity, transform;
+}
+
+.animate-on-scroll.is-visible {
+    animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+.delay-100 {
+    animation-delay: 0.1s;
+}
+
+.delay-200 {
+    animation-delay: 0.2s;
+}
+
+.delay-300 {
+    animation-delay: 0.3s;
+}
+
+.delay-400 {
+    animation-delay: 0.4s;
+}
+
+/* * =========================================
+ * MELHORIAS VISUAIS (HERO, CARDS, ETC)
+ * =========================================
+ */
+
+/* Hero Section - Mais vibrante */
+.hero-section {
+    background: linear-gradient(135deg, #ffffff 0%, #f0fafa 100%);
+    /* Gradiente sutil */
+    position: relative;
+    overflow: hidden;
+}
+
+/* Elemento decorativo de fundo (opcional) */
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: -50px;
+    right: -50px;
+    width: 300px;
+    height: 300px;
+    background: rgba(26, 106, 108, 0.05);
+    border-radius: 50%;
+    z-index: 0;
+}
+
+.hero-content {
+    position: relative;
+    z-index: 1;
+}
+
+.hero-content h1 {
+    /* Gradiente no texto para destaque */
+    background: linear-gradient(90deg, #1a202c, #1A6A6C);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 1.5rem;
+}
+
+.cta-button.hero-cta {
+    box-shadow: 0 4px 15px rgba(26, 106, 108, 0.3);
+    transition: all 0.3s ease;
+}
+
+.cta-button.hero-cta:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 8px 20px rgba(26, 106, 108, 0.4);
+}
+
+/* Service Cards - Mais interativos */
+.service-card {
+    border: 1px solid transparent;
+    /* Prepara para hover */
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    /* Efeito "bouncy" sutil */
+}
+
+.service-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 30px rgba(0, 0, 0, 0.08);
+    border-color: rgba(26, 106, 108, 0.2);
+}
+
+.service-card:hover .service-icon {
+    transform: scale(1.1) rotate(5deg);
+    background-color: var(--primary-color-hover);
+}
+
+.service-icon {
+    transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+/* Project Cards */
+.project-card {
+    transition: all 0.3s ease;
+}
+
+.project-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+}
+
+.project-thumbnail {
+    transition: transform 0.5s ease;
+}
+
+.project-card:hover .project-thumbnail {
+    transform: scale(1.05);
+    /* Zoom suave na imagem */
 }

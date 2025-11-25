@@ -15,34 +15,34 @@
 // =================================================================
 const MOCK_PROJECTS = [
     {
-      id: "mock-1",
-      title: "Projeto 1: Controle de vencimento",
-      category: "data-analysis",
-      hidden: false,
-      thumbnailSrc: "images/relatorio_vencimentos.webp",
-      iframeSrc: "https://app.powerbi.com/view?r=eyJrIjoiMWRjOGIyMTItNTkxMS00MTYxLWFkYmQtOGU0MDdiOGQxNmJlIiwidCI6IjMyMjEyYTc5LWYzMWEtNGIwYS1hZjE0LTY4YzFjYTUyMGVmNSJ9",
-      embedTitle: "Dashboard Interativo",
-      tabsToShow: "",
-      data: {
-        descricao: "<p>Este relatório monitora o vencimento de treinamentos, NRs, exames e documentos diversos.</p>",
-        objetivos: "<ul class='list-disc'><li>Dar visibilidade do vencimento e alertas.</li></ul>",
-        metricas: "<ul class='list-disc'><li><strong>Quantidade de documentos vencidos.</strong></li></ul>",
-        tecnologias: "<p>Power Query, DAX e Power BI.</p>",
-        detalhes: "<p>Medidas DAX avançadas para cálculo temporal.</p>",
-        fontes: "<p>Dados fictícios.</p>"
-      }
+        id: "mock-1",
+        title: "Projeto 1: Controle de vencimento",
+        category: "data-analysis",
+        hidden: false,
+        thumbnailSrc: "images/relatorio_vencimentos.webp",
+        iframeSrc: "https://app.powerbi.com/view?r=eyJrIjoiMWRjOGIyMTItNTkxMS00MTYxLWFkYmQtOGU0MDdiOGQxNmJlIiwidCI6IjMyMjEyYTc5LWYzMWEtNGIwYS1hZjE0LTY4YzFjYTUyMGVmNSJ9",
+        embedTitle: "Dashboard Interativo",
+        tabsToShow: "",
+        data: {
+            descricao: "<p>Este relatório monitora o vencimento de treinamentos, NRs, exames e documentos diversos.</p>",
+            objetivos: "<ul class='list-disc'><li>Dar visibilidade do vencimento e alertas.</li></ul>",
+            metricas: "<ul class='list-disc'><li><strong>Quantidade de documentos vencidos.</strong></li></ul>",
+            tecnologias: "<p>Power Query, DAX e Power BI.</p>",
+            detalhes: "<p>Medidas DAX avançadas para cálculo temporal.</p>",
+            fontes: "<p>Dados fictícios.</p>"
+        }
     },
     {
-      id: "mock-2",
-      title: "Projeto 2: Hub de testes de desenvolvimento de projetos",
-      category: "apps", 
-      hidden: false,
-      thumbnailSrc: "images/Test-Hub.webp",
-      iframeSrc: "https://www.youtube.com/embed/o8CvaeNNycs",
-      embedTitle: "Gestão de Testes e Qualidade",
-      tabsToShow: "modal-descricao,modal-objetivos",
-      data: {
-        descricao: `
+        id: "mock-2",
+        title: "Projeto 2: Hub de testes de desenvolvimento de projetos",
+        category: "apps",
+        hidden: false,
+        thumbnailSrc: "images/Test-Hub.webp",
+        iframeSrc: "https://www.youtube.com/embed/o8CvaeNNycs",
+        embedTitle: "Gestão de Testes e Qualidade",
+        tabsToShow: "modal-descricao,modal-objetivos",
+        data: {
+            descricao: `
       <p class="mb-4">
         O <strong>Test Hub</strong> é uma solução robusta desenvolvida na <strong>Microsoft Power Platform</strong> para modernizar e centralizar o processo de Garantia de Qualidade (QA) em projetos de software.
       </p>
@@ -50,7 +50,7 @@ const MOCK_PROJECTS = [
         Criado para substituir o gerenciamento descentralizado em planilhas, o aplicativo oferece um fluxo de trabalho completo: do planejamento de casos de teste à execução, reporte de bugs e validação de correções. Ele atua como um "mini-Jira" personalizado, focado na agilidade e na rastreabilidade das entregas.
       </p>
     `,
-        objetivos: `
+            objetivos: `
       <ul class="list-disc pl-5 space-y-2">
         <li><strong>Centralizar a Gestão:</strong> Consolidar planos de teste, execuções e bugs em uma única fonte da verdade.</li>
         <li><strong>Padronizar Processos:</strong> Garantir que todos os testes sigam um padrão rigoroso com passos, pré-condições e massas de dados definidas.</li>
@@ -58,29 +58,29 @@ const MOCK_PROJECTS = [
         <li><strong>Melhorar a Colaboração:</strong> Facilitar a comunicação entre QA e Desenvolvedores através de comentários e status claros no quadro Kanban.</li>
       </ul>
     `,
-        metricas: "",
-        tecnologias: "",
-        detalhes: "<p>(WIP) Detalhes...</p>",
-        fontes: "<p>(WIP) Fontes...</p>"
-      }
+            metricas: "",
+            tecnologias: "",
+            detalhes: "<p>(WIP) Detalhes...</p>",
+            fontes: "<p>(WIP) Fontes...</p>"
+        }
     },
     {
-      id: "mock-3",
-      title: "Projeto 3: Demo de App",
-      category: "apps",
-      hidden: true, 
-      thumbnailSrc: "https://placehold.co/600x400/1A6A6C/FFFFFF?text=Demo+App",
-      iframeSrc: "https://www.youtube.com/embed/LXb3EKWsInQ", 
-      embedTitle: "Demonstração em Vídeo",
-      tabsToShow: "modal-descricao,modal-objetivos,modal-fontes",
-      data: {
-        descricao: "<p>Este é um vídeo demonstrativo de um aplicativo.</p>",
-        objetivos: "<ul class='list-disc'><li>Digitalizar processo manual.</li></ul>",
-        metricas: "",
-        tecnologias: "",
-        detalhes: "",
-        fontes: "<p>Construído com Power Apps.</p>"
-      }
+        id: "mock-3",
+        title: "Projeto 3: Demo de App",
+        category: "apps",
+        hidden: true,
+        thumbnailSrc: "https://placehold.co/600x400/1A6A6C/FFFFFF?text=Demo+App",
+        iframeSrc: "https://www.youtube.com/embed/LXb3EKWsInQ",
+        embedTitle: "Demonstração em Vídeo",
+        tabsToShow: "modal-descricao,modal-objetivos,modal-fontes",
+        data: {
+            descricao: "<p>Este é um vídeo demonstrativo de um aplicativo.</p>",
+            objetivos: "<ul class='list-disc'><li>Digitalizar processo manual.</li></ul>",
+            metricas: "",
+            tecnologias: "",
+            detalhes: "",
+            fontes: "<p>Construído com Power Apps.</p>"
+        }
     },
     {
         id: "mock-4",
@@ -88,16 +88,16 @@ const MOCK_PROJECTS = [
         category: "automation",
         hidden: true,
         thumbnailSrc: "https://placehold.co/600x400/1A6A6C/FFFFFF?text=Automação",
-        iframeSrc: "", 
+        iframeSrc: "",
         embedTitle: "Demo de Automação",
         tabsToShow: "modal-descricao,modal-objetivos",
         data: {
-          descricao: "<p>Fluxo do Power Automate que lê e-mails e extrai anexos.</p>",
-          objetivos: "<ul class='list-disc'><li>Eliminar entrada manual.</li></ul>",
-          metricas: "",
-          tecnologias: "",
-          detalhes: "",
-          fontes: ""
+            descricao: "<p>Fluxo do Power Automate que lê e-mails e extrai anexos.</p>",
+            objetivos: "<ul class='list-disc'><li>Eliminar entrada manual.</li></ul>",
+            metricas: "",
+            tecnologias: "",
+            detalhes: "",
+            fontes: ""
         }
     },
     {
@@ -110,15 +110,15 @@ const MOCK_PROJECTS = [
         embedTitle: "Dashboard Interativo",
         tabsToShow: "",
         data: {
-          descricao: "<p>Dashboard de Análise de Recursos Humanos.</p>",
-          objetivos: "<ul class='list-disc'><li>Analisar Turnover.</li></ul>",
-          metricas: "",
-          tecnologias: "",
-          detalhes: "",
-          fontes: ""
+            descricao: "<p>Dashboard de Análise de Recursos Humanos.</p>",
+            objetivos: "<ul class='list-disc'><li>Analisar Turnover.</li></ul>",
+            metricas: "",
+            tecnologias: "",
+            detalhes: "",
+            fontes: ""
         }
-      },
-      {
+    },
+    {
         id: "mock-6",
         title: "Projeto 6: App de Inspeção",
         category: "apps",
@@ -128,34 +128,48 @@ const MOCK_PROJECTS = [
         embedTitle: "Demonstração em Vídeo",
         tabsToShow: "modal-descricao,modal-objetivos",
         data: {
-          descricao: "<p>Aplicativo de inspeção de campo.</p>",
-          objetivos: "<ul class='list-disc'><li>Registrar inspeções offline.</li></ul>",
-          metricas: "",
-          tecnologias: "",
-          detalhes: "",
-          fontes: ""
+            descricao: "<p>Aplicativo de inspeção de campo.</p>",
+            objetivos: "<ul class='list-disc'><li>Registrar inspeções offline.</li></ul>",
+            metricas: "",
+            tecnologias: "",
+            detalhes: "",
+            fontes: ""
         }
-      }
-  ];
+    }
+];
 
 // =================================================================
 // CONSTANTES DA API (AWS)
 // =================================================================
+<<<<<<< Updated upstream
 const BASE_API_URL = "https://jwqiah2rvj.execute-api.us-west-2.amazonaws.com"; 
+=======
+// NOTA: Estas URLs foram deixadas como estavam no arquivo original.
+const BASE_API_URL = "https://jwqiah2rvj.execute-api.us-west-2.amazonaws.com";
+>>>>>>> Stashed changes
 
 const API_URL_GET_PROJECTS = `${BASE_API_URL}/projects`;
 const API_URL_POST_PROJECT = `${BASE_API_URL}/projects`;
 const API_URL_PUT_PROJECT = `${BASE_API_URL}/projects`;
 const API_URL_DELETE_PROJECT = `${BASE_API_URL}/projects`;
-const API_URL_CONTACT = `${BASE_API_URL}/contact`; 
+const API_URL_CONTACT = `${BASE_API_URL}/contact`;
 
 // =================================================================
 // INICIALIZAÇÃO GLOBAL
 // =================================================================
 
 document.addEventListener('DOMContentLoaded', () => {
+<<<<<<< Updated upstream
     
     const page = document.body.id || window.location.pathname;
+=======
+
+    // Inicializa o menu mobile antes de tudo
+    initMobileMenu();
+
+    // Usa window.location.pathname para determinar a página atual
+    const pathname = window.location.pathname;
+>>>>>>> Stashed changes
 
     if (page.includes('index.html') || page === '/' || page.endsWith('/')) {
         initIndexPage();
@@ -165,6 +179,7 @@ document.addEventListener('DOMContentLoaded', () => {
         initSobrePage();
     } else if (page.includes('contato.html')) {
         initContatoPage();
+<<<<<<< Updated upstream
     } else if (page.includes('login.html')) {
         initLoginPage();
     } else if (page.includes('admin.html')) {
@@ -178,20 +193,80 @@ function updateFooterYear() {
     const yearSpan = document.getElementById('current-year');
     if (yearSpan) {
         yearSpan.textContent = new Date().getFullYear();
+=======
+>>>>>>> Stashed changes
     }
     const yearSpanFooter = document.getElementById('current-year-footer');
     if (yearSpanFooter) {
         yearSpanFooter.textContent = new Date().getFullYear();
     }
+});
+
+// =================================================================
+<<<<<<< Updated upstream
+=======
+// FUNÇÃO DE MENU MOBILE (HAMBURGER)
+// =================================================================
+
+let lastActiveElementBeforeMenuOpen = null;
+
+function initMobileMenu() {
+    const menuToggle = document.querySelector('.menu-toggle');
+    const navWrapper = document.querySelector('.nav-menu-wrapper');
+
+    if (menuToggle && navWrapper) {
+        const closeMenuOnce = () => {
+            menuToggle.setAttribute('aria-expanded', 'false');
+            navWrapper.classList.remove('open');
+            document.body.style.overflow = 'auto';
+            removeCloseMenuListeners();
+        };
+
+        const removeCloseMenuListeners = () => {
+            const navLinks = navWrapper.querySelectorAll('a');
+            navLinks.forEach(link => {
+                link.removeEventListener('click', closeMenuOnce);
+            });
+        };
+
+        menuToggle.addEventListener('click', () => {
+            const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true' || false;
+
+            if (!isExpanded) {
+                lastActiveElementBeforeMenuOpen = document.activeElement;
+            }
+
+            menuToggle.setAttribute('aria-expanded', !isExpanded);
+            navWrapper.classList.toggle('open');
+            document.body.style.overflow = !isExpanded ? 'hidden' : 'auto';
+
+            if (!isExpanded) {
+                const navLinks = navWrapper.querySelectorAll('a');
+                navLinks.forEach(link => {
+                    link.addEventListener('click', closeMenuOnce);
+                });
+                setTimeout(() => {
+                    navLinks[0] && navLinks[0].focus();
+                }, 50);
+            } else {
+                removeCloseMenuListeners();
+                if (lastActiveElementBeforeMenuOpen) {
+                    lastActiveElementBeforeMenuOpen.focus();
+                    lastActiveElementBeforeMenuOpen = null;
+                }
+            }
+        });
+    }
 }
 
 // =================================================================
+>>>>>>> Stashed changes
 // PÁGINA INICIAL (index.html)
 // =================================================================
 
 function initIndexPage() {
     fetchProjectsForIndex();
-    initModalListeners(); 
+    initModalListeners();
     initClientCarousel();
 }
 
@@ -220,7 +295,12 @@ async function fetchProjectsForIndex() {
         const projects = await response.json();
         // [MODIFICADO] Filtra projetos ocultos na API real
         const visibleProjects = projects.filter(p => !p.hidden);
+<<<<<<< Updated upstream
         populateProjectGrid(gridId, visibleProjects.slice(0, 6)); 
+=======
+        // Exibe apenas 6 projetos na página inicial
+        populateProjectGrid(gridId, visibleProjects.slice(0, 6));
+>>>>>>> Stashed changes
         loader.classList.add('hidden');
     } catch (error) {
         console.warn("MODO FICTÍCIO (Index): Carregando MOCK_PROJECTS.", error.message);
@@ -228,7 +308,7 @@ async function fetchProjectsForIndex() {
         setTimeout(() => {
             // [MODIFICADO] Aplica o filtro 'hidden'
             const visibleMocks = MOCK_PROJECTS.filter(p => !p.hidden);
-            populateProjectGrid(gridId, visibleMocks.slice(0, 6)); 
+            populateProjectGrid(gridId, visibleMocks.slice(0, 6));
             loader.classList.add('hidden');
         }, 500);
     }
@@ -251,6 +331,14 @@ async function fetchProjectsForCategorization() {
         other: document.getElementById('loader-other')
     };
 
+<<<<<<< Updated upstream
+=======
+    // Exibe loaders
+    Object.values(loaders).forEach(loader => {
+        if (loader) loader.classList.remove('hidden');
+    });
+
+>>>>>>> Stashed changes
     try {
         const response = await fetch(API_URL_GET_PROJECTS);
         if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
@@ -260,7 +348,7 @@ async function fetchProjectsForCategorization() {
     } catch (error) {
         console.warn("MODO FICTÍCIO (Projetos): Carregando MOCK_PROJECTS.", error.message);
         Object.values(loaders).forEach(loader => {
-            if(loader) loader.textContent = "Carregando projetos fictícios...";
+            if (loader) loader.textContent = "Carregando projetos fictícios...";
         });
         setTimeout(() => {
             // [MODIFICADO] Aplica o filtro 'hidden'
@@ -268,7 +356,7 @@ async function fetchProjectsForCategorization() {
         }, 500);
     } finally {
         Object.values(loaders).forEach(loader => {
-            if(loader) loader.classList.add('hidden');
+            if (loader) loader.classList.add('hidden');
         });
     }
 }
@@ -292,10 +380,10 @@ function distributeProjects(projects) {
 
 function populateProjectGrid(gridElementId, projects) {
     const grid = document.getElementById(gridElementId);
-    if (!grid) return; 
-    
-    grid.innerHTML = ''; 
-    
+    if (!grid) return;
+
+    grid.innerHTML = '';
+
     // Encontra a seção pai
     const section = grid.closest('section');
 
@@ -327,7 +415,7 @@ function populateProjectGrid(gridElementId, projects) {
                 <button class="project-card-button" aria-label="Ver detalhes sobre o projeto ${project.title}">Ver Projeto</button>
             </div>
         `;
-        
+
         card.querySelector('.project-card-button').addEventListener('click', () => {
             openModal(project);
         });
@@ -344,6 +432,7 @@ function handleImageError(img, title) {
         img.parentNode.replaceChild(placeholder, img);
     }
 }
+<<<<<<< Updated upstream
 
 // =================================================================
 // PÁGINA SOBRE
@@ -353,6 +442,8 @@ function initSobrePage() {}
 
 // =================================================================
 // PÁGINA DE CONTATO
+=======
+>>>>>>> Stashed changes
 // =================================================================
 
 function initContatoPage() {
@@ -360,21 +451,32 @@ function initContatoPage() {
     if (contactForm) {
         contactForm.addEventListener('submit', handleContactSubmit);
     }
-    
+
     // Inicializa contador de caracteres da mensagem
     initContactFormCounter();
+<<<<<<< Updated upstream
     
     // [NOVO] Inicializa máscara de telefone
+=======
+
+    // Inicializa máscara de telefone
+>>>>>>> Stashed changes
     initPhoneMask();
 }
 
 function initContactFormCounter() {
     const textArea = document.getElementById('message');
+<<<<<<< Updated upstream
     const counterDisplay = document.getElementById('char-count');
     const maxLength = 2000;
+=======
+    // Renomeado para 'char-count-text' para melhor acessibilidade
+    const counterDisplay = document.getElementById('char-count-text');
+    const maxLength = 250;
+>>>>>>> Stashed changes
 
     if (textArea && counterDisplay) {
-        textArea.addEventListener('input', function() {
+        textArea.addEventListener('input', function () {
             const currentLength = this.value.length;
             counterDisplay.textContent = `${currentLength} / ${maxLength}`;
 
@@ -399,12 +501,39 @@ function initPhoneMask() {
     if (!phoneInput) return;
 
     phoneInput.addEventListener('input', function (e) {
+<<<<<<< Updated upstream
         let x = e.target.value.replace(/\D/g, '').match(/(\d{0,2})(\d{0,5})(\d{0,4})/);
         if (!x[2]) {
             e.target.value = !x[1] ? '' : '(' + x[1];
         } else {
             e.target.value = !x[3] ? '(' + x[1] + ') ' + x[2] : '(' + x[1] + ') ' + x[2] + '-' + x[3];
         }
+=======
+        // Remove tudo que não for dígito
+        let x = e.target.value.replace(/\D/g, '');
+        let output = '';
+
+        if (x.length > 0) {
+            output += '(' + x.substring(0, 2);
+        }
+        if (x.length > 2) {
+            // Verifica se é celular (9 dígitos) ou fixo (8 dígitos)
+            if (x.length > 10) {
+                // Celular com 9 dígitos
+                output += ') ' + x.substring(2, 7);
+                if (x.length > 7) {
+                    output += '-' + x.substring(7, 11);
+                }
+            } else {
+                // Fixo com 8 dígitos
+                output += ') ' + x.substring(2, 6);
+                if (x.length > 6) {
+                    output += '-' + x.substring(6, 10);
+                }
+            }
+        }
+        e.target.value = output;
+>>>>>>> Stashed changes
     });
 }
 
@@ -412,12 +541,21 @@ async function handleContactSubmit(event) {
     event.preventDefault();
     const btn = document.getElementById('contact-submit-btn');
     const msgElement = document.getElementById('form-message');
-    
-    const originalBtnText = btn.innerText; 
+
+    const originalBtnText = btn.innerText;
     btn.disabled = true;
     btn.innerText = 'Enviando...';
+<<<<<<< Updated upstream
     
     if(msgElement) msgElement.classList.add('hidden');
+=======
+
+    // Oculta a mensagem anterior e limpa o conteúdo para evitar confusão de aria-live
+    if (msgElement) {
+        msgElement.classList.add('hidden');
+        msgElement.textContent = '';
+    }
+>>>>>>> Stashed changes
 
     const formData = new FormData(event.target);
     const data = Object.fromEntries(formData.entries());
@@ -425,51 +563,66 @@ async function handleContactSubmit(event) {
     console.log("Tentando enviar contato:", data);
 
     try {
-        const response = await fetch(API_URL_CONTACT, { 
-            method: 'POST', 
+        const response = await fetch(API_URL_CONTACT, {
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'Accept': 'application/json'
             },
-            body: JSON.stringify(data) 
+            body: JSON.stringify(data)
         });
 
         console.log("Status da Resposta:", response.status);
 
         if (!response.ok) {
             const errorData = await response.json().catch(() => null);
+<<<<<<< Updated upstream
             const errorText = errorData ? JSON.stringify(errorData) : await response.text();
             
+=======
+
+>>>>>>> Stashed changes
             if (response.status === 429) {
                 let message = "Você já enviou mensagens suficientes por hoje. Recebemos seu contato e retornaremos em breve!";
                 if (errorData && errorData.message) {
-                    message = errorData.message; 
+                    message = errorData.message;
                 }
                 throw new Error(`RATE_LIMIT:${message}`);
             }
 
             throw new Error(`Falha no envio: ${response.status} - ${errorText}`);
         }
+<<<<<<< Updated upstream
         
         const result = await response.json();
         console.log("Sucesso:", result);
 
+=======
+
+        // A API deve retornar 200/201 em caso de sucesso
+>>>>>>> Stashed changes
         showFormMessage('Sua mensagem foi enviada com sucesso! Entraremos em contato em breve.', 'success');
         event.target.reset();
-        
+
         // Reseta o contador também
+<<<<<<< Updated upstream
         const counterDisplay = document.getElementById('char-count');
         if(counterDisplay) {
             counterDisplay.textContent = `0 / 2000`;
             counterDisplay.style.color = '#666';
+=======
+        const textArea = document.getElementById('message');
+        if (textArea) {
+            textArea.dispatchEvent(new Event('input'));
+>>>>>>> Stashed changes
         }
 
     } catch (error) {
         console.error("Erro Capturado:", error);
-        
+
         if (error.message.startsWith("RATE_LIMIT:")) {
             const friendlyMessage = error.message.replace("RATE_LIMIT:", "");
-            showFormMessage(friendlyMessage, "warning"); 
+            showFormMessage(friendlyMessage, "warning");
         } else if (error.message.includes("Failed to fetch")) {
             showFormMessage("Erro de conexão com o servidor. Verifique sua internet e tente novamente.", "error");
         } else {
@@ -487,8 +640,15 @@ function showFormMessage(message, type) {
     const msgElement = document.getElementById('form-message');
     if (msgElement) {
         msgElement.textContent = message;
+<<<<<<< Updated upstream
         msgElement.className = `form-message ${type}`; 
         msgElement.classList.remove('hidden');
+=======
+        // Remove todas as classes de status e adiciona a nova
+        msgElement.classList.remove('error', 'success', 'warning', 'hidden');
+        msgElement.classList.add(type);
+        // Acessibilidade: Garante que a mensagem seja anunciada e fique visível.
+>>>>>>> Stashed changes
         msgElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
     } else {
         alert(message);
@@ -515,7 +675,7 @@ async function handleLoginSubmit(event) {
     const username = document.getElementById('username').value;
     btn.disabled = true;
     btn.textContent = 'Entrando...';
-    
+
     console.warn("MODO FICTÍCIO: Bypass do Cognito ativado.");
     if (!username) {
         showLoginMessage("Por favor, insira um e-mail.", "error");
@@ -606,7 +766,7 @@ function populateAdminList(projects) {
         const listItem = document.createElement('div');
         listItem.className = 'project-list-item';
         listItem.dataset.projectId = project.id;
-        
+
         const hiddenBadge = project.hidden ? ' <span style="color:red; font-size:0.8em;">(Oculto)</span>' : '';
 
         listItem.innerHTML = `
@@ -616,7 +776,7 @@ function populateAdminList(projects) {
                 <button class="project-list-button delete" data-id="${project.id}">Excluir</button>
             </div>
         `;
-        
+
         const editBtn = listItem.querySelector('.edit');
         editBtn.onclick = () => handleEditProject(project);
 
@@ -635,7 +795,7 @@ async function handleProjectSubmit(event) {
     const projectId = document.getElementById('project-id').value;
     const project = {
         title: document.getElementById('project-title').value,
-        category: document.getElementById('project-category').value, 
+        category: document.getElementById('project-category').value,
         thumbnailSrc: document.getElementById('project-thumbnail').value,
         iframeSrc: document.getElementById('project-iframe-src').value,
         embedTitle: document.getElementById('project-embed-title').value,
@@ -649,7 +809,7 @@ async function handleProjectSubmit(event) {
             fontes: document.getElementById('tab-fontes').value
         }
     };
-    
+
     const method = projectId ? 'PUT' : 'POST';
     const url = projectId ? `${API_URL_PUT_PROJECT}/${projectId}` : API_URL_POST_PROJECT;
     const token = localStorage.getItem('authToken');
@@ -663,12 +823,17 @@ async function handleProjectSubmit(event) {
         if (!response.ok) throw new Error('Falha ao salvar.');
         showAdminMessage('Projeto salvo com sucesso!', 'success');
         resetProjectForm();
-        fetchProjectsForAdmin(); 
+        fetchProjectsForAdmin();
 
     } catch (error) {
         console.warn("MODO FICTÍCIO (Admin Submit):", error.message);
         showAdminMessage("MODO FICTÍCIO: Simulação de projeto salvo!", "success");
+<<<<<<< Updated upstream
         
+=======
+
+        // Simulação de atualização/criação no mock
+>>>>>>> Stashed changes
         if (projectId) {
             const index = MOCK_PROJECTS.findIndex(p => p.id === projectId);
             if (index !== -1) {
@@ -677,7 +842,7 @@ async function handleProjectSubmit(event) {
         } else {
             MOCK_PROJECTS.push({ ...project, id: `mock-${Date.now()}` });
         }
-        populateAdminList(MOCK_PROJECTS); 
+        populateAdminList(MOCK_PROJECTS);
         resetProjectForm();
     } finally {
         btn.disabled = false;
@@ -688,7 +853,7 @@ async function handleProjectSubmit(event) {
 function handleEditProject(project) {
     document.getElementById('project-id').value = project.id;
     document.getElementById('project-title').value = project.title;
-    document.getElementById('project-category').value = project.category || 'other'; 
+    document.getElementById('project-category').value = project.category || 'other';
     document.getElementById('project-thumbnail').value = project.thumbnailSrc;
     document.getElementById('project-iframe-src').value = project.iframeSrc;
     document.getElementById('project-embed-title').value = project.embedTitle;
@@ -718,22 +883,34 @@ async function handleDeleteProject(id, title) {
     if (!confirm(`Tem certeza que deseja excluir o projeto "${title}"?`)) {
         return;
     }
+<<<<<<< Updated upstream
+=======
+
+    // Simulação de Exclusão: Você deve criar um modal customizado para confirmação
+    console.error("AVISO: Usando simulação de confirmação. Em um ambiente real, você usaria um modal customizado no lugar de confirm().");
+
+>>>>>>> Stashed changes
     const url = `${API_URL_DELETE_PROJECT}/${id}`;
     const token = localStorage.getItem('authToken');
     try {
         const response = await fetch(url, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` } });
         if (!response.ok) throw new Error('Falha ao excluir.');
         showAdminMessage('Projeto excluído com sucesso!', 'success');
-        fetchProjectsForAdmin(); 
+        fetchProjectsForAdmin();
     } catch (error) {
         console.warn("MODO FICTÍCIO (Admin Delete):", error.message);
         showAdminMessage("MODO FICTÍCIO: Simulação de projeto excluído!", 'error');
+<<<<<<< Updated upstream
         
+=======
+
+        // Simulação de exclusão no mock
+>>>>>>> Stashed changes
         const index = MOCK_PROJECTS.findIndex(p => p.id === id);
         if (index !== -1) {
             MOCK_PROJECTS.splice(index, 1);
         }
-        populateAdminList(MOCK_PROJECTS); 
+        populateAdminList(MOCK_PROJECTS);
     }
 }
 
@@ -760,14 +937,14 @@ let lastFocusedElement;
 
 function initModalListeners() {
     modalOverlay = document.getElementById('modal-overlay');
-    if (!modalOverlay) return; 
+    if (!modalOverlay) return;
 
     modalContent = modalOverlay.querySelector('.modal-content');
     modalCloseButton = document.getElementById('modal-close-button');
     modalTitle = document.getElementById('modal-title');
     modalEmbedTitle = document.getElementById('modal-embed-title');
     modalIframe = document.getElementById('modal-iframe');
-    
+
     modalTabButtons = document.querySelectorAll('.modal-tab-button');
     modalTabPanels = document.querySelectorAll('.modal-tab-panel');
 
@@ -794,21 +971,22 @@ function initModalListeners() {
  */
 function getEmbedUrl(url) {
     if (!url) return "";
-    
+
     // Regex para capturar ID do YouTube (formatos variados)
     const youtubeRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i;
     const match = url.match(youtubeRegex);
-    
+
     if (match && match[1]) {
         // [FIX] Usa o domínio 'youtube-nocookie.com' que é mais permissivo com embeds em localhost e iframes
         return `https://www.youtube-nocookie.com/embed/${match[1]}`;
     }
-    
+
     return url;
 }
 
 function openModal(project) {
     if (!modalOverlay) return;
+<<<<<<< Updated upstream
     lastFocusedElement = document.activeElement;
     modalTitle.textContent = project.title || 'Título do Projeto';
     modalEmbedTitle.textContent = project.embedTitle || 'Conteúdo Interativo';
@@ -817,6 +995,19 @@ function openModal(project) {
     modalIframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share');
     modalIframe.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
     modalIframe.setAttribute('loading', 'lazy'); // Boa prática de performance
+=======
+
+    // Salva o elemento focado antes de abrir o modal
+    lastFocusedElement = document.activeElement;
+
+    modalTitle.textContent = project.title || 'Título do Projeto';
+    modalEmbedTitle.textContent = project.embedTitle || 'Conteúdo Interativo';
+
+    // Permissões robustas para garantir que o vídeo toque
+    modalIframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share');
+    modalIframe.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
+    modalIframe.setAttribute('loading', 'lazy');
+>>>>>>> Stashed changes
 
     // [FIX] Usa a função helper corrigida
     modalIframe.src = getEmbedUrl(project.iframeSrc) || '';
@@ -849,13 +1040,23 @@ function openModal(project) {
 
     resetTabs();
     modalOverlay.classList.remove('hidden');
+<<<<<<< Updated upstream
     document.body.style.overflow = 'hidden';
+=======
+    // Impede o scroll do body
+    document.body.style.overflow = 'hidden';
+    // Move o foco para o botão de fechar para acessibilidade
+>>>>>>> Stashed changes
     modalCloseButton.focus();
 }
 
 function closeModal() {
     if (!modalOverlay) return;
     modalOverlay.classList.add('hidden');
+<<<<<<< Updated upstream
+=======
+    // Para o vídeo/embed ao fechar
+>>>>>>> Stashed changes
     modalIframe.src = '';
     // Limpa atributos para evitar problemas ao reabrir
     modalIframe.removeAttribute('allow');
@@ -883,9 +1084,17 @@ function handleTabClick(button) {
 
 function resetTabs() {
     const firstVisibleTab = Array.from(modalTabButtons).find(tab => tab.style.display !== 'none');
+<<<<<<< Updated upstream
     modalTabButtons.forEach(button => {
         const panelId = button.dataset.tab;
         const panel = document.getElementById(panelId);
+=======
+
+    modalTabButtons.forEach(button => {
+        const panelId = button.dataset.tab;
+        const panel = document.getElementById(panelId);
+
+>>>>>>> Stashed changes
         if (panel) {
             if (firstVisibleTab && button === firstVisibleTab) {
                 button.classList.add('active');
