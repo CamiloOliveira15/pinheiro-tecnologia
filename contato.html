@@ -47,7 +47,7 @@
             <div class="contact-form-wrapper">
                 <h2 class="contact-subtitle">Envie sua mensagem</h2>
 
-                <form id="contact-form">
+                <form id="contact-form-main"> <!-- ID CORRIGIDO -->
                     <div id="form-message" class="form-message hidden" role="alert" aria-live="polite"></div>
 
                     <div class="form-group">
@@ -79,7 +79,8 @@
                             style="display: block; text-align: right; color: #666; margin-top: 0.25rem;">0 / 250</small>
                     </div>
 
-                    <button type="submit" id="contact-submit-btn" class="cta-button" style="width: 100%;">
+                    <button type="submit" id="contact-submit-btn" class="cta-button" disabled>
+                        <!-- Removido o inline style de largura, que agora é controlada pelo CSS no media query -->
                         Enviar Mensagem
                     </button>
                 </form>

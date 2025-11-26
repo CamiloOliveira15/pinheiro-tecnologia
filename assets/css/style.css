@@ -119,6 +119,8 @@ select:focus-visible {
     font-size: 1rem;
     cursor: pointer;
     font-family: var(--font-primary);
+    /* Removido o width: 100% daqui para que botões que não são do form de contato 
+       (como na home) usem a largura mínima. */
 }
 
 .cta-button:hover {
@@ -1154,6 +1156,17 @@ select:focus-visible {
     }
 }
 
+/* Estilo específico para o botão de contato em telas maiores */
+.contact-form-wrapper button[type="submit"] {
+    /* Define a largura máxima para o botão em telas maiores (Desktop/Tablet) */
+    max-width: 300px; 
+    /* Centraliza o botão dentro do formulário */
+    display: block; 
+    margin: 1.5rem auto 0 auto; 
+    /* Ajusta a margem superior para o espaçamento do form-group */
+}
+
+
 /* Telas Pequenas (Móveis) */
 @media (max-width: 767px) {
     .container {
@@ -1325,6 +1338,13 @@ select:focus-visible {
     .tab-content .tab-panel,
     .tab-content-area .tab-panel {
         padding: 1rem; /* Reduz de 1.5rem para 1rem em mobile */
+    }
+    
+    /* Botão de contato em mobile (LARGURA TOTAL) */
+    .contact-form-wrapper button[type="submit"] {
+        width: 100%;
+        margin: 1.5rem auto 0 auto;
+        max-width: none;
     }
 }
 

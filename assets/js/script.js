@@ -7,6 +7,7 @@
  * 3. Garantida a unicidade e consistência do Footer (Item 3, devido a correção em HTML/JS).
  * 4. Revisão de boas práticas (Item 4).
  * 5. Adicionado tratamento de URL para vídeos do YouTube na abertura do modal para compatibilidade (melhor prática de embed/privacidade).
+ * 6. Adicionada lógica de validação e contador de caracteres para o formulário de contato (Novo Requisito).
  */
 
 // =================================================================
@@ -101,13 +102,17 @@ document.addEventListener('DOMContentLoaded', () => {
     setActiveMenuItem();
     initMobileMenu();
     injectStructuredData();
-    setTimeout(initScrollAnimations, 100);
+    // [CORREÇÃO BOAS PRÁTICAS] Removendo setTimeout para iniciar animações
+    initScrollAnimations();
 
     const pathname = window.location.pathname;
     if (pathname === '/' || pathname.endsWith('/index.html')) {
         initIndexPage();
     } else if (pathname.endsWith('/projetos.html')) {
         initProjetosPage();
+    } else if (pathname.endsWith('/contato.html')) {
+        // [NOVO] Inicializa a lógica do formulário de contato
+        initContactForm();
     }
     
     // Inicializa listeners do modal para todas as páginas que o contém
@@ -487,4 +492,103 @@ function initScrollAnimations() {
         // Fallback: mostra todos se a API não estiver disponível
         elementsToAnimate.forEach(el => el.classList.add('is-visible'));
     }
+}
+
+/**
+ * [NOVO] Lógica para inicializar a validação e o contador do formulário de contato.
+ */
+function initContactForm() {
+    const form = document.getElementById('contact-form-main');
+    const messageTextarea = document.getElementById('message');
+    const charCountDisplay = document.getElementById('char-count-text');
+    const submitButton = document.getElementById('contact-submit-btn');
+    
+    if (!form || !messageTextarea || !charCountDisplay || !submitButton) {
+        // Sai se os elementos não existirem (não estamos na página de contato)
+        return;
+    }
+
+    const MAX_LENGTH = parseInt(messageTextarea.getAttribute('maxlength'), 10) || 250;
+    
+    /**
+     * Atualiza o contador de caracteres e garante que não exceda o limite.
+     */
+    function updateCharCount() {
+        let currentLength = messageTextarea.value.length;
+        
+        // Garante que o texto não exceda o limite definido no HTML
+        if (currentLength > MAX_LENGTH) {
+            messageTextarea.value = messageTextarea.value.substring(0, MAX_LENGTH);
+            currentLength = MAX_LENGTH;
+        }
+
+        charCountDisplay.textContent = `${currentLength} / ${MAX_LENGTH}`;
+        
+        // Altera a cor do contador se estiver no limite (melhoria visual)
+        if (currentLength === MAX_LENGTH) {
+            charCountDisplay.style.color = '#D93025'; // Cor de erro
+        } else {
+            charCountDisplay.style.color = '#666'; 
+        }
+
+        checkFormValidity();
+    }
+
+    /**
+     * Verifica se todos os campos requeridos (com 'required') estão preenchidos.
+     */
+    function checkFormValidity() {
+        const requiredFields = form.querySelectorAll('[required]');
+        let isFormValid = true;
+
+        requiredFields.forEach(field => {
+            if (!field.value.trim()) {
+                isFormValid = false;
+            }
+        });
+        
+        // O botão é habilitado APENAS se todos os campos requeridos forem válidos
+        submitButton.disabled = !isFormValid;
+    }
+    
+    // Inicializa o contador e a validação na carga da página
+    updateCharCount();
+
+    // Adiciona listeners para contagem e validação em tempo real
+    messageTextarea.addEventListener('input', updateCharCount);
+    
+    // Ouve mudanças em todos os campos do formulário para habilitar/desabilitar o botão
+    form.addEventListener('input', checkFormValidity);
+
+    // Placeholder para o evento de submit (A API de envio deve ser implementada aqui)
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        
+        if (submitButton.disabled) {
+            // Se o botão estiver desabilitado, impede o envio (redundante, mas seguro)
+            return;
+        }
+
+        // Simula o envio
+        submitButton.textContent = 'Enviando...';
+        submitButton.disabled = true;
+        
+        // Log dos dados para visualização (em um ambiente real, faria a chamada à API)
+        console.log('Formulário Enviado (Simulação). Dados:', new FormData(form));
+
+        // Simulação de sucesso após 2 segundos
+        setTimeout(() => {
+            // Exibe mensagem de sucesso (melhoria de UX)
+            const messageDiv = document.getElementById('form-message');
+            messageDiv.classList.remove('hidden', 'error', 'warning');
+            messageDiv.classList.add('success');
+            messageDiv.textContent = 'Sua mensagem foi enviada com sucesso! Em breve entraremos em contato.';
+            
+            // Reseta o formulário
+            form.reset();
+            updateCharCount(); // Reseta o contador
+            
+            submitButton.textContent = 'Enviar Mensagem';
+        }, 2000);
+    });
 }
