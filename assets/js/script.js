@@ -66,7 +66,7 @@ const MOCK_PROJECTS = [
             objetivos: "<ul class='list-disc'><li>Dar visibilidade do vencimento e alertas automáticos.</li><li>Reduzir o risco de multas e não conformidade.</li></ul>",
             metricas: "<ul class='list-disc'><li><strong>Documentos Vencidos:</strong> Quantidade total de itens expirados.</li><li><strong>Próximos Vencimentos:</strong> Contagem de itens a vencer em 30/60 dias.</li></ul>",
             tecnologias: "<p>Microsoft Power BI, Power Query (M), DAX.</p>",
-            detalhes: "<p>Medidas DAX avançadas para cálculo temporal e uso de Tabela Calendário. Este é o texto que antes não aparecia!</p>",
+            detalhes: "<p>Medidas DAX avançadas para cálculo temporal e uso de Tabela Calendário.</p>",
             fontes: "<p>Dados fictícios usados para demonstração.</p>"
         }
     },
