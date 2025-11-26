@@ -54,7 +54,7 @@ jobs:
             *.txt
             *.xml
             .gitignore
-          # Salva a lista de arquivos alterados como uma string delimitada por vírgula
+          # O output 'modified_files' já é um JSON array, vamos usá-lo.
           json: true
           
       # 3. Configuração das Credenciais AWS
@@ -76,26 +76,32 @@ jobs:
             --exclude ".github/*"
           echo "Deploy para S3 concluído com sucesso. (Apenas arquivos modificados foram realmente enviados)"
           
-      # 5. Invalidação do Cache CloudFront (AGORA SELETIVA)
+      # 5. Invalidação Seletiva do CloudFront
+      # Condição de execução: SUCESSO na etapa anterior, ID da distribuição presente E arquivos modificados.
       - name: Invalidação Seletiva do CloudFront
-        # O passo só será executado se o CLOUDFRONT_DISTRIBUTION_ID for fornecido E se houver arquivos modificados.
-        if: success() && env.CLOUDFRONT_DISTRIBUTION_ID != '' && steps.get_changed_files.outputs.files_modified
+        if: success() && env.CLOUDFRONT_DISTRIBUTION_ID != '' && steps.get_changed_files.outputs.modified_files != '[]'
         env:
           MODIFIED_FILES_JSON: ${{ steps.get_changed_files.outputs.modified_files }}
         run: |
-          # 1. Converte o JSON de arquivos alterados em uma lista de caminhos do CloudFront.
-          #    Garante que o caminho comece com / e substitui o separador de nova linha por vírgula.
-          MODIFIED_PATHS=$(echo "$MODIFIED_FILES_JSON" | jq -r 'join(" ")' | tr ' ' '\n' | sed 's/^/\//g' | tr '\n' ' ')
+          # O tj-actions/changed-files retorna um array JSON, e precisamos transformá-lo em uma string de caminhos.
+          # 1. Usa jq para iterar sobre o array, prefixar cada item com '/' (caminho absoluto do CloudFront) e unir com espaços.
+          #    O `jq` garante a formatação correta do JSON array para o shell.
+          MODIFIED_PATHS=$(echo "${{ env.MODIFIED_FILES_JSON }}" | jq -r '.[] | "/" + .')
+          
+          # 2. Converte a saída multi-linha do jq em uma única string separada por espaços (necessário para a CLI)
+          MODIFIED_PATHS_STRING=$(echo "$MODIFIED_PATHS" | tr '\n' ' ')
 
-          if [ -z "$MODIFIED_PATHS" ]; then
+          if [ -z "$MODIFIED_PATHS_STRING" ]; then
             echo "Nenhum arquivo de conteúdo alterado. Invalidação de cache ignorada."
           else
-            echo "Arquivos a serem invalidados: $MODIFIED_PATHS"
-            # 2. Realiza a invalidação de cache APENAS para os caminhos alterados.
+            echo "Arquivos a serem invalidados: $MODIFIED_PATHS_STRING"
+            
+            # 3. Realiza a invalidação de cache APENAS para os caminhos alterados.
             aws cloudfront create-invalidation \
               --distribution-id ${{ env.CLOUDFRONT_DISTRIBUTION_ID }} \
-              --paths $MODIFIED_PATHS
-            echo "Invalidação Seletiva do CloudFront solicitada para $MODIFIED_PATHS."
+              --paths $MODIFIED_PATHS_STRING
+              
+            echo "Invalidação Seletiva do CloudFront solicitada para os caminhos listados."
           fi
 
       # 6. Feedback de Sucesso
