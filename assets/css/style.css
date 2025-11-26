@@ -1,13 +1,13 @@
-/* * =========================================
+﻿/* * =========================================
  * ARQUIVO: style.css
- * DESCRIÇÃO: Folha de estilos principal para o site Pinheiro Tecnologia.
- * ARQUITETURA: Site empresarial (Versão Estática - Sem Admin).
- * OTIMIZAÇÃO: Revisão de performance, acessibilidade e mobile.
+ * DESCRIÃ‡ÃƒO: Folha de estilos principal para o site Pinheiro Tecnologia.
+ * ARQUITETURA: Site empresarial (VersÃ£o EstÃ¡tica - Sem Admin).
+ * OTIMIZAÃ‡ÃƒO: RevisÃ£o de performance, acessibilidade e mobile.
  * =========================================
  */
 
 /* * =========================================
- * VARIÁVEIS GLOBAIS (RAIZ)
+ * VARIÃVEIS GLOBAIS (RAIZ)
  * =========================================
  */
 :root {
@@ -34,14 +34,14 @@
     --shadow-md: 0 10px 15px rgba(0, 0, 0, 0.1);
 }
 
-/* [CORREÇÃO SOLICITADA] Ocultar a seção de clientes no CSS principal */
+/* [CORREÃ‡ÃƒO SOLICITADA] Ocultar a seÃ§Ã£o de clientes no CSS principal */
 .clients-section {
     display: none !important;
 }
 
 
 /* * =========================================
- * RESET BÁSICO E PADRÕES GLOBAIS
+ * RESET BÃSICO E PADRÃ•ES GLOBAIS
  * =========================================
  */
 * {
@@ -90,12 +90,12 @@ select:focus-visible {
 input:focus-visible,
 textarea:focus-visible,
 select:focus-visible {
-    /* Oculta o outline padrão e usa o box-shadow customizado para foco */
+    /* Oculta o outline padrÃ£o e usa o box-shadow customizado para foco */
     outline: none;
     border-color: var(--primary-color-accessible);
 }
 
-/* Título Padrão de Seção */
+/* TÃ­tulo PadrÃ£o de SeÃ§Ã£o */
 .section-title {
     font-size: 2.0rem;
     font-weight: 600;
@@ -104,7 +104,7 @@ select:focus-visible {
     color: #1a202c;
 }
 
-/* Botão de Ação Padrão (CTA) */
+/* BotÃ£o de AÃ§Ã£o PadrÃ£o (CTA) */
 .cta-button {
     background-color: var(--primary-color-accessible);
     color: #ffffff;
@@ -131,7 +131,7 @@ select:focus-visible {
     transform: none;
 }
 
-/* Botão Secundário (ex: Ver Todos) */
+/* BotÃ£o SecundÃ¡rio (ex: Ver Todos) */
 .cta-button.secondary-button {
     background-color: var(--surface-color);
     color: var(--primary-color-accessible);
@@ -145,7 +145,7 @@ select:focus-visible {
 
 
 /* * =========================================
- * BARRA DE NAVEGAÇÃO (NAV)
+ * BARRA DE NAVEGAÃ‡ÃƒO (NAV)
  * =========================================
  */
 .main-nav {
@@ -168,10 +168,10 @@ select:focus-visible {
 }
 
 .nav-logo {
-    /* [CORREÇÃO] Define altura fixa e largura automática para manter proporção */
+    /* [CORREÃ‡ÃƒO] Define altura fixa e largura automÃ¡tica para manter proporÃ§Ã£o */
     height: 30px;
     width: auto;
-    /* object-fit garante que a imagem não distorça se houver restrições externas */
+    /* object-fit garante que a imagem nÃ£o distorÃ§a se houver restriÃ§Ãµes externas */
     object-fit: contain;
     display: block;
 }
@@ -218,7 +218,7 @@ select:focus-visible {
     font-weight: 600;
 }
 
-/* Botão do Menu Sanduíche (Oculto por padrão em Desktop) */
+/* BotÃ£o do Menu SanduÃ­che (Oculto por padrÃ£o em Desktop) */
 .menu-toggle {
     display: none;
     background: none;
@@ -239,26 +239,38 @@ select:focus-visible {
 
 
 /* * =========================================
- * SEÇÃO "HERO" (INDEX)
+ * SEÃ‡ÃƒO "HERO" (INDEX) - CORRIGIDA COM DEGRADÃŠ
  * =========================================
  */
 .hero-section {
-    background: var(--surface-color);
-    padding: 4rem 0;
+    /* MISTURA DO ORIGINAL COM O DEGRADÃŠ SUAVE */
+    background: linear-gradient(135deg, var(--surface-color) 0%, #EDF7F6 100%);
+    padding: 6rem 0 5rem;
     border-bottom: 1px solid var(--border-color);
+    position: relative;
+    overflow: hidden;
 }
 
-.hero-container {
-    display: grid;
-    grid-template-columns: 1fr;
-    align-items: center;
-    gap: 2rem;
+/* Elemento decorativo (CÃ­rculo difuso) */
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: -100px;
+    right: -100px;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(26, 106, 108, 0.08) 0%, rgba(26, 106, 108, 0) 70%);
+    border-radius: 50%;
+    z-index: 0;
+    pointer-events: none;
 }
 
 .hero-content {
     text-align: center;
     max-width: 800px;
     margin: 0 auto;
+    position: relative;
+    z-index: 1;
 }
 
 .hero-content h1 {
@@ -281,11 +293,13 @@ select:focus-visible {
 .hero-cta {
     padding: 0.85rem 2rem;
     font-size: 1.1rem;
+    /* Estilos extras do hero para destaque */
+    box-shadow: 0 4px 15px rgba(26, 106, 108, 0.3);
 }
 
 
 /* * =========================================
- * SEÇÃO "SERVIÇOS" (INDEX)
+ * SEÃ‡ÃƒO "SERVIÃ‡OS" (INDEX) - CORRIGIDA COM ANIMAÃ‡ÃƒO DE ÃCONE
  * =========================================
  */
 .services-section {
@@ -295,7 +309,6 @@ select:focus-visible {
 
 .services-grid {
     display: grid;
-    /* Reduzido o minmax para 280px para melhor adaptação em tablets menores */
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
     gap: 2rem;
 }
@@ -307,18 +320,18 @@ select:focus-visible {
     padding: 2rem;
     text-align: left;
     box-shadow: var(--shadow-sm);
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    /* TransiÃ§Ã£o para Hover e Bouncy Effect */
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    /* Alinhamento dos itens internos à esquerda */
     min-height: 250px;
-    /* Garante altura mínima para estabilidade visual */
 }
 
 .service-card:hover {
-    transform: translateY(-5px);
+    transform: translateY(-8px);
     box-shadow: var(--shadow-md);
+    border-color: rgba(26, 106, 108, 0.2);
 }
 
 .service-icon {
@@ -332,6 +345,14 @@ select:focus-visible {
     color: var(--text-color-inverse);
     margin-bottom: 1.5rem;
     box-shadow: 0 4px 6px rgba(26, 106, 108, 0.2);
+    /* TransiÃ§Ã£o para a animaÃ§Ã£o de hover */
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), background-color 0.3s ease;
+}
+
+/* ANIMAÃ‡ÃƒO DE ROTAÃ‡ÃƒO E ESCALA DO ÃCONE */
+.service-card:hover .service-icon {
+    transform: scale(1.15) rotate(5deg);
+    background-color: var(--primary-color-hover);
 }
 
 .service-icon svg {
@@ -356,7 +377,7 @@ select:focus-visible {
 
 
 /* * =========================================
- * SEÇÃO DE PROJETOS (INDEX e PROJETOS)
+ * SEÃ‡ÃƒO DE PROJETOS (INDEX e PROJETOS)
  * =========================================
  */
 .project-category {
@@ -378,41 +399,42 @@ select:focus-visible {
 /* Wrapper para o grid de projetos na Index (REMOVIDO SCROLL HORIZONTAL) */
 .project-grid-index-wrapper {
     /* Removemos o overflow-x: auto */
-    overflow: hidden; 
+    overflow: hidden;
 }
 
 
 /* Grid de Projetos */
 .project-grid {
     display: flex;
-    /* NOVO: Permite quebra de linha em telas pequenas/médias */
-    flex-wrap: wrap; 
+    /* NOVO: Permite quebra de linha em telas pequenas/mÃ©dias */
+    flex-wrap: wrap;
     justify-content: center;
     gap: 2rem;
 }
 
-/* Estilo para o grid na página Index (forçando linha única em desktop) */
+/* Estilo para o grid na pÃ¡gina Index (forÃ§ando linha Ãºnica em desktop) */
 @media (min-width: 1024px) {
     #project-grid-dynamic {
-        /* Permite quebra de linha para truncação */
-        flex-wrap: wrap; 
-        justify-content: center; /* Centraliza a grade */
-        /* NOVO: Ajusta o grid para 4 colunas no máximo, se couber. */
+        /* Permite quebra de linha para truncaÃ§Ã£o */
+        flex-wrap: wrap;
+        justify-content: center;
+        /* Centraliza a grade */
+        /* NOVO: Ajusta o grid para 4 colunas no mÃ¡ximo, se couber. */
         grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-        display: grid; 
-        max-width: 1200px; 
+        display: grid;
+        max-width: 1200px;
     }
 }
 
 
-/* Estilo para o botão "Ver Todos" */
+/* Estilo para o botÃ£o "Ver Todos" */
 .see-all-container {
     text-align: center;
     margin-top: 2.5rem;
 }
 
 /* * =========================================
- * CARTÃO DE PROJETO
+ * CARTÃƒO DE PROJETO
  * =========================================
  */
 .project-card {
@@ -425,8 +447,8 @@ select:focus-visible {
     flex-direction: column;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     width: 100%;
-    /* Ajustado para ser flexível em grid */
-    max-width: 340px; 
+    /* Ajustado para ser flexÃ­vel em grid */
+    max-width: 340px;
     /* Removido flex-shrink: 0 para que o grid funcione */
 }
 
@@ -438,7 +460,7 @@ select:focus-visible {
 .project-thumbnail {
     width: 100%;
     height: 200px;
-    /* Usar 'cover' em vez de 'contain' pode ser melhor para UX em portfólio */
+    /* Usar 'cover' em vez de 'contain' pode ser melhor para UX em portfÃ³lio */
     object-fit: cover;
     display: block;
     background-color: #f0f0f0;
@@ -495,14 +517,9 @@ select:focus-visible {
 
 
 /* * =========================================
- * SEÇÃO DE CLIENTES (CARROSSEL)
+ * SEÃ‡ÃƒO DE CLIENTES (CARROSSEL)
  * =========================================
  */
-/* [CORREÇÃO SOLICITADA] A seção de clientes está oculta por padrão no CSS principal.
-   Removido o bloco de CSS para `.clients-section` para forçar a visibilidade,
-   mas a classe `.clients-section` no seletor principal agora garante o display:none.
-*/
-
 .client-carousel-container {
     width: 100%;
     overflow: hidden;
@@ -543,7 +560,7 @@ select:focus-visible {
 
 @keyframes scroll {
 
-    /* O JS duplica o conteúdo, o 50% garante que o loop seja perfeito */
+    /* O JS duplica o conteÃºdo, o 50% garante que o loop seja perfeito */
     0% {
         transform: translateX(0);
     }
@@ -555,7 +572,7 @@ select:focus-visible {
 
 
 /* * =========================================
- * PÁGINA "SOBRE NÓS"
+ * PÃGINA "SOBRE NÃ“S"
  * =========================================
  */
 .about-container {
@@ -568,7 +585,7 @@ select:focus-visible {
 }
 
 .about-container h1,
-/* H2 incluído devido à correção da hierarquia no HTML */
+/* H2 incluÃ­do devido Ã  correÃ§Ã£o da hierarquia no HTML */
 .about-container h2 {
     font-size: 2rem;
     color: #1a202c;
@@ -576,7 +593,7 @@ select:focus-visible {
 }
 
 .about-container .about-subtitle {
-    /* Estilo de H3/H2 secundário */
+    /* Estilo de H3/H2 secundÃ¡rio */
     font-size: 1.5rem;
     color: var(--text-color);
     margin-top: 2rem;
@@ -619,7 +636,7 @@ select:focus-visible {
 }
 
 /* * =========================================
- * PÁGINA DE PROJETOS (projetos.html)
+ * PÃGINA DE PROJETOS (projetos.html)
  * =========================================
  */
 .project-category-page {
@@ -631,7 +648,7 @@ select:focus-visible {
     padding-top: 0;
 }
 
-/* Título da Categoria */
+/* TÃ­tulo da Categoria */
 .category-title {
     font-size: 1.75rem;
     font-weight: 600;
@@ -652,7 +669,7 @@ select:focus-visible {
 
 
 /* * =========================================
- * PÁGINA "CONTATO"
+ * PÃGINA "CONTATO"
  * =========================================
  */
 .contact-page-container {
@@ -687,7 +704,7 @@ select:focus-visible {
     text-align: center;
 }
 
-/* Formulário (Estilos Limpos) */
+/* FormulÃ¡rio (Estilos Limpos) */
 .form-group {
     margin-bottom: 1.5rem;
 }
@@ -790,7 +807,7 @@ select:focus-visible {
 .contact-card-icon {
     color: var(--primary-color-accessible);
     flex-shrink: 0;
-    /* Transição para suavizar a mudança de cor no hover */
+    /* TransiÃ§Ã£o para suavizar a mudanÃ§a de cor no hover */
     transition: color 0.3s ease;
 }
 
@@ -805,7 +822,7 @@ select:focus-visible {
     font-weight: 600;
     margin-bottom: 0.25rem;
     color: #1a202c;
-    /* Transição para suavizar a mudança de cor no hover */
+    /* TransiÃ§Ã£o para suavizar a mudanÃ§a de cor no hover */
     transition: color 0.3s ease;
 }
 
@@ -821,13 +838,16 @@ select:focus-visible {
 
 
 /* * =========================================
- * RODAPÉ
+ * RODAPÃ‰
  * =========================================
  */
 .main-footer {
     text-align: center;
-    padding: 1.5rem 0;
+    /* Reduzindo o espaÃ§amento superior e o padding vertical para deixar o rodapÃ© mais compacto */
+    padding: 1rem 0;
+    /* Reduzido de 1.5rem para 1rem */
     margin-top: 2rem;
+    /* Reduzido de 5rem para 2rem (ou menos, dependendo da necessidade) */
     border-top: 1px solid var(--border-color);
     color: #454545;
     background: var(--surface-color);
@@ -934,7 +954,7 @@ select:focus-visible {
     border: 0;
 }
 
-/* Seção de Abas (Tabs) */
+/* SeÃ§Ã£o de Abas (Tabs) */
 .modal-info-section {
     background: var(--surface-color);
     border-radius: var(--border-radius-md);
@@ -1053,7 +1073,7 @@ select:focus-visible {
  * =========================================
  */
 
-/* Telas Médias (Tablets) */
+/* Telas MÃ©dias (Tablets) */
 @media (min-width: 768px) and (max-width: 1023px) {
     .container {
         padding: 0 2rem;
@@ -1093,7 +1113,7 @@ select:focus-visible {
 /* Telas Grandes (Desktops) */
 @media (min-width: 1024px) {
 
-    /* [CORREÇÃO SOLICITADA] Alterado de 4 para 2 colunas em desktop para a seção de serviços */
+    /* [CORREÃ‡ÃƒO SOLICITADA] Alterado de 4 para 2 colunas em desktop para a seÃ§Ã£o de serviÃ§os */
     .services-grid {
         grid-template-columns: repeat(2, 1fr);
         max-width: 900px;
@@ -1106,7 +1126,7 @@ select:focus-visible {
     }
 }
 
-/* Telas Pequenas (Móveis) */
+/* Telas Pequenas (MÃ³veis) */
 @media (max-width: 767px) {
     .container {
         padding: 0 1rem;
@@ -1141,7 +1161,7 @@ select:focus-visible {
         pointer-events: none;
     }
 
-    /* Estilo quando o menu está aberto */
+    /* Estilo quando o menu estÃ¡ aberto */
     .nav-menu-wrapper.open {
         display: flex;
         transform: translateY(0);
@@ -1179,12 +1199,12 @@ select:focus-visible {
         border-left: 5px solid white;
     }
 
-    /* Torna o botão do menu visível em mobile */
+    /* Torna o botÃ£o do menu visÃ­vel em mobile */
     .menu-toggle {
         display: flex;
     }
 
-    /* Transformação do ícone Sanduíche para X (Acessibilidade) */
+    /* TransformaÃ§Ã£o do Ã­cone SanduÃ­che para X (Acessibilidade) */
     .menu-toggle[aria-expanded="true"] svg rect:first-child {
         transform: translateY(30px) rotate(45deg);
     }
@@ -1259,7 +1279,7 @@ select:focus-visible {
 }
 
 /* * =========================================
- * ANIMAÇÕES E INTERATIVIDADE (NOVO)
+ * ANIMAÃ‡Ã•ES E INTERATIVIDADE (NOVO)
  * =========================================
  */
 
@@ -1314,10 +1334,10 @@ select:focus-visible {
     }
 }
 
-/* Classes Utilitárias de Animação */
+/* Classes UtilitÃ¡rias de AnimaÃ§Ã£o */
 .animate-on-scroll {
     opacity: 0;
-    /* Começa invisível */
+    /* ComeÃ§a invisÃ­vel */
     will-change: opacity, transform;
 }
 
@@ -1423,6 +1443,7 @@ select:focus-visible {
     transform: translateY(-8px);
     box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
 }
+
 
 .project-thumbnail {
     transition: transform 0.5s ease;

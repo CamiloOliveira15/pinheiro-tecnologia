@@ -1,21 +1,53 @@
 /**
- * Lógica do Site - script.js (Versão Final Consolidada - Acessibilidade Otimizada v6)
- *
- * Este script gerencia:
- * 1. Carregamento dinâmico de projetos (da API AWS ou Mock local).
- * 2. Filtragem de projetos por categoria.
- * 3. Envio de formulário de contato com tratamento de erros, Rate Limit e Feedback Visual.
- * 4. Modais interativos para detalhes do projeto e embeds de vídeo.
- * 5. Acessibilidade: Correção de aria-labels para WCAG 2.5.3 e uso de aria-live.
- * 6. UX: Contador de caracteres e Máscara de Telefone.
- * 7. [REFORÇO] Funcionalidade de Menu Sanduíche (Mobile Navigation).
- * 8. Animação de elementos ao rolar (Intersection Observer).
+ * ARQUIVO: script.js
+ * DESCRIÇÃO: Motor principal do site - VERSÃO FINAL ESTÁVEL.
+ * CORREÇÕES CRÍTICAS:
+ * 1. Funcionalidade de Abas (Tabs) do Modal totalmente restaurada e funcional.
+ * 2. OCULTAR SEÇÕES DE PROJETOS VAZIAS (Nova regra para projetos.html).
  */
 
 // =================================================================
-// DADOS FICTÍCIOS (PARA DESENVOLVIMENTO / FALLBACK)
+// 1. DADOS DOS COMPONENTES (HTML Centralizado)
 // =================================================================
-// CORREÇÃO: Projetos 3, 4, 5 e 6 voltaram a ser hidden: true para testar o filtro.
+
+const COMPONENTS = {
+    header: `
+    <nav class="main-nav">
+        <div class="container nav-container">
+            <a href="/" class="nav-logo-link" aria-label="Página Inicial - Pinheiro Tecnologia">
+                <img src="images/Logo Branco - Pinheiro Tecnologia.png" alt="Pinheiro Tecnologia - Soluções em Dados" class="nav-logo" width="180" height="30">
+            </a>
+            <button class="menu-toggle" aria-expanded="false" aria-controls="mobile-menu" aria-label="Abrir Menu Principal">
+                <svg viewBox="0 0 100 80" width="25" height="20" fill="white">
+                    <rect width="100" height="15" rx="8"></rect>
+                    <rect y="30" width="100" height="15" rx="8"></rect>
+                    <rect y="60" width="100" height="15" rx="8"></rect>
+                </svg>
+            </button>
+            <div class="nav-menu-wrapper" id="mobile-menu">
+                <ul class="nav-links">
+                    <li><a href="/" data-link="home">Início</a></li>
+                    <li><a href="/projetos.html" data-link="projetos">Projetos</a></li>
+                    <li><a href="/sobre.html" data-link="sobre">Sobre Nós</a></li>
+                    <li><a href="/contato.html" data-link="contato">Contato</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    `,
+    footer: `
+    <footer class="main-footer">
+        <div class="container">
+            <p>Pinheiro Tecnologia &copy; <span id="dynamic-year"></span> - Todos os direitos reservados.</p>
+        </div>
+    </footer>
+    `
+};
+
+// =================================================================
+// 2. DADOS FICTÍCIOS (MOCK_PROJECTS) - DETALHES COMPLETOS PARA TESTE DAS ABAS
+// =================================================================
+
 const MOCK_PROJECTS = [
     {
         id: "mock-1",
@@ -24,1082 +56,338 @@ const MOCK_PROJECTS = [
         hidden: false,
         thumbnailSrc: "images/relatorio_vencimentos.webp",
         iframeSrc: "https://app.powerbi.com/view?r=eyJrIjoiMWRjOGIyMTItNTkxMS00MTYxLWFkYmQtOGU0MDdiOGQxNmJlIiwidCI6IjMyMjEyYTc5LWYzMWEtNGIwYS1hZjE0LTY4YzFjYTUyMGVmNSJ9",
-        embedTitle: "Dashboard Interativo",
-        tabsToShow: "",
+        embedTitle: "Dashboard Interativo (Power BI)",
         data: {
-            descricao: "<p>Este relatório monitora o vencimento de treinamentos, NRs, exames e documentos diversos.</p>",
-            objetivos: "<ul class='list-disc'><li>Dar visibilidade do vencimento e alertas.</li></ul>",
-            metricas: "<ul class='list-disc'><li><strong>Quantidade de documentos vencidos.</strong></li></ul>",
-            tecnologias: "<p>Power Query, DAX e Power BI.</p>",
-            detalhes: "<p>Medidas DAX avançadas para cálculo temporal.</p>",
-            fontes: "<p>Dados fictícios.</p>"
+            descricao: "<p>Este relatório monitora o vencimento de treinamentos, NRs, exames e documentos diversos, centralizando o controle de conformidade.</p>",
+            objetivos: "<ul class='list-disc'><li>Dar visibilidade do vencimento e alertas automáticos.</li><li>Reduzir o risco de multas e não conformidade.</li></ul>",
+            metricas: "<ul class='list-disc'><li><strong>Documentos Vencidos:</strong> Quantidade total de itens expirados.</li><li><strong>Próximos Vencimentos:</strong> Contagem de itens a vencer em 30/60 dias.</li></ul>",
+            tecnologias: "<p>Microsoft Power BI, Power Query (M), DAX.</p>",
+            detalhes: "<p>Medidas DAX avançadas para cálculo temporal e uso de Tabela Calendário. Este é o texto que antes não aparecia!</p>",
+            fontes: "<p>Dados fictícios usados para demonstração.</p>"
         }
     },
     {
         id: "mock-2",
-        title: "Projeto 2: Hub de testes de desenvolvimento de projetos",
+        title: "Projeto 2: Hub de testes de desenvolvimento",
         category: "apps",
         hidden: false,
         thumbnailSrc: "images/Test-Hub.webp",
         iframeSrc: "https://www.youtube.com/embed/o8CvaeNNycs",
-        embedTitle: "Gestão de Testes e Qualidade",
-        tabsToShow: "modal-descricao,modal-objetivos",
+        embedTitle: "Demonstração em Vídeo (Power Apps)",
         data: {
-            descricao: `
-      <p class="mb-4">
-        O <strong>Test Hub</strong> é uma solução robusta desenvolvida na <strong>Microsoft Power Platform</strong> para modernizar e centralizar o processo de Garantia de Qualidade (QA) em projetos de software.
-      </p>
-      <p class="mb-4">
-        Criado para substituir o gerenciamento descentralizado em planilhas, o aplicativo oferece um fluxo de trabalho completo: do planejamento de casos de teste à execução, reporte de bugs e validação de correções. Ele atua como um "mini-Jira" personalizado, focado na agilidade e na rastreabilidade das entregas.
-      </p>
-    `,
-            objetivos: `
-      <ul class="list-disc pl-5 space-y-2">
-        <li><strong>Centralizar a Gestão:</strong> Consolidar planos de teste, execuções e bugs em uma única fonte da verdade.</li>
-        <li><strong>Padronizar Processos:</strong> Garantir que todos os testes sigam um padrão rigoroso com passos, pré-condições e massas de dados definidas.</li>
-        <li><strong>Aumentar a Rastreabilidade:</strong> Vincular automaticamente bugs aos casos de teste de origem e às evidências (prints/vídeos).</li>
-        <li><strong>Melhorar a Colaboração:</strong> Facilitar a comunicação entre QA e Desenvolvedores através de comentários e status claros no quadro Kanban.</li>
-      </ul>
-    `,
-            metricas: "",
-            tecnologias: "",
-            detalhes: "<p>(WIP) Detalhes...</p>",
-            fontes: "<p>(WIP) Fontes...</p>"
-        }
-    },
-    {
-        id: "mock-3",
-        title: "Projeto 3: Demo de App",
-        category: "apps",
-        hidden: true, // Corrigido para hidden: true
-        thumbnailSrc: "https://placehold.co/600x400/1A6A6C/FFFFFF?text=Demo+App",
-        iframeSrc: "https://www.youtube.com/embed/LXb3EKWsInQ",
-        embedTitle: "Demonstração em Vídeo",
-        tabsToShow: "modal-descricao,modal-objetivos,modal-fontes",
-        data: {
-            descricao: "<p>Este é um vídeo demonstrativo de um aplicativo.</p>",
-            objetivos: "<ul class='list-disc'><li>Digitalizar processo manual.</li></ul>",
-            metricas: "",
-            tecnologias: "",
-            detalhes: "",
-            fontes: "<p>Construído com Power Apps.</p>"
-        }
-    },
-    {
-        id: "mock-4",
-        title: "Projeto 4: Automação de Faturas",
-        category: "automation",
-        hidden: true, // Corrigido para hidden: true
-        thumbnailSrc: "https://placehold.co/600x400/1A6A6C/FFFFFF?text=Automação",
-        iframeSrc: "",
-        embedTitle: "Demo de Automação",
-        tabsToShow: "modal-descricao,modal-objetivos",
-        data: {
-            descricao: "<p>Fluxo do Power Automate que lê e-mails e extrai anexos.</p>",
-            objetivos: "<ul class='list-disc'><li>Eliminar entrada manual.</li></ul>",
-            metricas: "",
-            tecnologias: "",
-            detalhes: "",
-            fontes: ""
-        }
-    },
-    {
-        id: "mock-5",
-        title: "Projeto 5: Análise de RH",
-        category: "data-analysis",
-        hidden: true, // Corrigido para hidden: true
-        thumbnailSrc: "https://placehold.co/600x400/1A6A6C/FFFFFF?text=Dashboard+RH",
-        iframeSrc: "",
-        embedTitle: "Dashboard Interativo",
-        tabsToShow: "",
-        data: {
-            descricao: "<p>Dashboard de Análise de Recursos Humanos.</p>",
-            objetivos: "<ul class='list-disc'><li>Analisar Turnover.</li></ul>",
-            metricas: "",
-            tecnologias: "",
-            detalhes: "",
-            fontes: ""
-        }
-    },
-    {
-        id: "mock-6",
-        title: "Projeto 6: App de Inspeção",
-        category: "apps",
-        hidden: true, // Corrigido para hidden: true
-        thumbnailSrc: "https://placehold.co/600x400/1A6A6C/FFFFFF?text=App+Inspeção",
-        iframeSrc: "",
-        embedTitle: "Demonstração em Vídeo",
-        tabsToShow: "modal-descricao,modal-objetivos",
-        data: {
-            descricao: "<p>Aplicativo de inspeção de campo.</p>",
-            objetivos: "<ul class='list-disc'><li>Registrar inspeções offline.</li></ul>",
-            metricas: "",
-            tecnologias: "",
-            detalhes: "",
-            fontes: ""
+            descricao: `<p class="mb-4">O <strong>Test Hub</strong> é uma solução robusta desenvolvida na <strong>Microsoft Power Platform</strong> para modernizar e centralizar o processo de Garantia de Qualidade (QA).</p>`,
+            objetivos: `<ul class="list-disc"><li><strong>Centralizar a Gestão:</strong> Consolidar planos de teste, execuções e bugs em uma única fonte.</li><li><strong>Padronizar Processos.</strong></li></ul>`,
+            metricas: `<ul class="list-disc"><li><strong>Cobertura de Testes:</strong> % de funcionalidades testadas.</li><li><strong>Tempo de Resolução de Bugs (SLA).</strong></li></ul>`,
+            tecnologias: "<p>Microsoft Power Apps, Dataverse (ou SharePoint), Power Automate para notificações.</p>",
+            detalhes: "<p>Usa coleções aninhadas e delegação de dados complexa no Power Apps.</p>",
+            fontes: "<p>Disponível sob consulta.</p>"
         }
     }
 ];
 
-// =================================================================
-// CONSTANTES DA API (AWS)
-// =================================================================
-// NOTA: Estas URLs foram deixadas como estavam no arquivo original.
-const BASE_API_URL = "https://jwqiah2rvj.execute-api.us-west-2.amazonaws.com";
-
-const API_URL_GET_PROJECTS = `${BASE_API_URL}/projects`;
-const API_URL_POST_PROJECT = `${BASE_API_URL}/projects`;
-const API_URL_PUT_PROJECT = `${BASE_API_URL}/projects`;
-const API_URL_DELETE_PROJECT = `${BASE_API_URL}/projects`;
-const API_URL_CONTACT = `${BASE_API_URL}/contact`;
+const API_URL_GET_PROJECTS = "https://jwqiah2rvj.execute-api.us-west-2.amazonaws.com/projects";
 
 // =================================================================
-// INICIALIZAÇÃO GLOBAL
+// 3. INICIALIZAÇÃO GLOBAL E ROTEAMENTO
 // =================================================================
+
+let scrollObserver;
 
 document.addEventListener('DOMContentLoaded', () => {
-
-    // Inicializa o menu mobile antes de tudo
+    renderComponents();
+    setActiveMenuItem();
     initMobileMenu();
+    injectStructuredData();
+    setTimeout(initScrollAnimations, 100);
 
-    // Usa window.location.pathname para determinar a página atual
     const pathname = window.location.pathname;
-
     if (pathname === '/' || pathname.endsWith('/index.html')) {
         initIndexPage();
-        // ** NOVO: Inicializa o Intersection Observer para animações **
-        initScrollAnimations();
     } else if (pathname.endsWith('/projetos.html')) {
         initProjetosPage();
-        // ** NOVO: Inicializa o Intersection Observer para animações em Projetos **
-        initScrollAnimations();
-    } else if (pathname.endsWith('/sobre.html')) {
-        // Nada de especial, mas mantém o fluxo
-        // ** NOVO: Inicializa o Intersection Observer para animações em Sobre **
-        initScrollAnimations();
-    } else if (pathname.endsWith('/contato.html')) {
-        initContatoPage();
-    }
-    
-    // CORREÇÃO: A função updateFooterYear não existe mais no JS, mas a chamada
-    // para 'current-year-footer' em outras páginas HTML ainda é necessária.
-    // Vamos corrigir a chamada do 'current-year' do index.html.
-    const yearSpan = document.getElementById('current-year');
-    if (yearSpan) {
-        yearSpan.textContent = new Date().getFullYear();
     }
 });
 
-// Variável global para armazenar o observer.
-let scrollObserver; 
 
 // =================================================================
-// NOVO: LÓGICA DE ANIMAÇÃO AO ROLAR (Intersection Observer)
+// 4. LÓGICA DE MODAL E ABAS (CORRIGIDA)
 // =================================================================
-function initScrollAnimations() {
-    
-    // Se o observer já existir, não o crie novamente, apenas adicione elementos.
-    if (scrollObserver) {
-        const elementsToObserve = document.querySelectorAll('.animate-on-scroll');
-        elementsToObserve.forEach(el => {
-            // Garante que o elemento seja observado apenas se ainda não for visível
-            if (!el.classList.contains('is-visible')) {
-                 scrollObserver.observe(el);
-            }
-        });
-        return;
-    }
 
-    const elementsToAnimate = document.querySelectorAll('.animate-on-scroll, .service-card');
+const modal = {
+    overlay: null,
+    iframe: null,
+    title: null,
+    tabs: null,
+    panels: null,
 
-    // Verifica se o IntersectionObserver é suportado
-    if (!('IntersectionObserver' in window)) {
-        // SOLUÇÃO DE FALLBACK: Se não suportar, garante que os elementos já fiquem visíveis 
-        // para não quebrar a UX e evitar que o site fique em branco.
-        elementsToAnimate.forEach(el => {
-            el.classList.add('is-visible'); // Classe que sobrescreve opacity: 0
-        });
-        console.warn("IntersectionObserver não suportado. Usando fallback de visibilidade.");
-        return;
-    }
-    
-    // CRIAÇÃO DO OBSERVER
-    scrollObserver = new IntersectionObserver((entries, observer) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                // Adiciona a classe que dispara a animação CSS (fadeInUp)
-                entry.target.classList.add('is-visible');
-                // Desconecta o observer após animar o elemento
-                observer.unobserve(entry.target);
-            }
-        });
-    }, {
-        // Configurações: O elemento é considerado visível quando 10% dele está no viewport
-        threshold: 0.1, 
-        // Adiciona um margin de 50px acima do viewport
-        rootMargin: "0px 0px -50px 0px" 
-    });
+    init() {
+        this.overlay = document.getElementById('modal-overlay');
+        if (!this.overlay) return;
+        this.iframe = document.getElementById('modal-iframe');
+        this.title = document.getElementById('modal-title');
+        this.tabs = document.querySelectorAll('.modal-tab-button');
+        this.panels = document.querySelectorAll('.tab-panel');
 
-    elementsToAnimate.forEach(el => {
-        // Garante que a classe animate-on-scroll exista para que a opacidade inicial seja 0 (no CSS)
-        if (!el.classList.contains('animate-on-scroll')) {
-             el.classList.add('animate-on-scroll');
+        document.getElementById('modal-close-button').addEventListener('click', () => this.close());
+        this.overlay.addEventListener('click', (e) => {
+            if (e.target === this.overlay) this.close();
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !this.overlay.classList.contains('hidden')) this.close();
+        });
+
+        // Configura o handler de clique para as abas
+        this.tabs.forEach(tab => {
+            tab.addEventListener('click', () => this.handleTabClick(tab));
+        });
+    },
+
+    handleTabClick(clickedTab) {
+        // 1. Remove estado ativo de todos os botões e painéis
+        this.tabs.forEach(t => t.classList.remove('active'));
+        this.panels.forEach(p => p.classList.remove('active'));
+
+        // 2. Ativa o botão clicado
+        clickedTab.classList.add('active');
+
+        // 3. Ativa o painel correspondente (USANDO data-target)
+        const targetId = clickedTab.getAttribute('data-target');
+        const targetPanel = document.getElementById(targetId);
+
+        if (targetPanel) {
+            targetPanel.classList.add('active');
         }
-        scrollObserver.observe(el);
-    });
+    },
+
+    open(project) {
+        if (!this.overlay) this.init();
+
+        // 1. Preenche Título e Embed
+        this.title.textContent = project.title || 'Detalhes do Projeto';
+        let src = project.iframeSrc || '';
+        // Helper para usar youtube-nocookie.com
+        if (src.includes('youtube.com') || src.includes('youtu.be')) {
+            const videoIdMatch = src.match(/(?:v=|youtu\.be\/|\/embed\/)([^&?\/]+)/);
+            if (videoIdMatch && videoIdMatch[1]) {
+                src = `https://www.youtube-nocookie.com/embed/${videoIdMatch[1]}`;
+            }
+        }
+        this.iframe.src = src;
+
+        // 2. Popula Abas com o Data do Projeto (CRÍTICO: Garantindo o mapeamento de dados)
+        const setData = (id, content) => {
+            const el = document.getElementById(id);
+            if (el) el.innerHTML = content || '<p style="color:#999; font-style:italic;">Conteúdo não disponível.</p>';
+        };
+
+        const d = project.data || {};
+        setData('tab-descricao', d.descricao);
+        setData('tab-objetivos', d.objetivos);
+        setData('tab-metricas', d.metricas);
+        setData('tab-tecnologias', d.tecnologias);
+        setData('tab-detalhes', d.detalhes);
+        setData('tab-fontes', d.fontes);
+
+        // 3. Reseta para a primeira aba (Descrição)
+        this.tabs.forEach(t => t.classList.remove('active'));
+        this.panels.forEach(p => p.classList.remove('active'));
+
+        if (this.tabs[0]) this.tabs[0].classList.add('active');
+        if (this.panels[0]) this.panels[0].classList.add('active');
+
+        // 4. Exibe
+        this.overlay.classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    },
+
+    close() {
+        this.overlay.classList.add('hidden');
+        this.iframe.src = '';
+        document.body.style.overflow = 'auto';
+    }
+};
+
+function initModalListeners() { modal.init(); }
+function openModal(p) { modal.open(p); }
+
+// =================================================================
+// 5. LÓGICA DE DADOS, UI E ANIMAÇÃO
+// =================================================================
+
+async function fetchProjects(filterHidden = true) {
+    try {
+        const response = await fetch(API_URL_GET_PROJECTS);
+        if (!response.ok) throw new Error('API Error');
+        let data = await response.json();
+        if (filterHidden) data = data.filter(p => !p.hidden);
+        return data;
+    } catch (e) {
+        console.warn("Usando dados locais (Fallback)", e);
+        return filterHidden ? MOCK_PROJECTS.filter(p => !p.hidden) : MOCK_PROJECTS;
+    }
 }
 
+async function initIndexPage() {
+    initModalListeners();
+    const gridId = 'project-grid-dynamic';
+    const projects = await fetchProjects();
+    const grid = document.getElementById(gridId);
 
-// =================================================================
-// FUNÇÃO DE MENU MOBILE (HAMBURGER)
-// =================================================================
-// (Mantido idêntico ao original, pois já estava otimizado)
+    if (grid) {
+        grid.innerHTML = '';
+        projects.slice(0, 4).forEach(p => createCard(p, grid));
+    }
+    const loader = document.getElementById('project-loader');
+    if (loader) loader.classList.add('hidden');
+}
 
-let lastActiveElementBeforeMenuOpen = null;
+/**
+ * NOVO: Função que agora esconde a seção inteira se não houver projetos.
+ */
+async function initProjetosPage() {
+    initModalListeners();
+    const projects = await fetchProjects();
+
+    const categories = {
+        'data-analysis': 'grid-data-analysis',
+        'apps': 'grid-apps',
+        'automation': 'grid-automation',
+        'other': 'grid-other'
+    };
+
+    // Objeto temporário para agrupar projetos
+    const groupedProjects = { 'data-analysis': [], 'apps': [], 'automation': [], 'other': [] };
+
+    // 1. Agrupar projetos
+    projects.forEach(p => {
+        const categoryKey = p.category && categories.hasOwnProperty(p.category) ? p.category : 'other';
+        groupedProjects[categoryKey].push(p);
+    });
+
+    // 2. Limpar, popular e verificar visibilidade
+    for (const key in categories) {
+        const gridId = categories[key];
+        const grid = document.getElementById(gridId);
+        const projectsInGroup = groupedProjects[key];
+        const section = grid ? grid.closest('.project-category-page') : null;
+
+        if (grid) {
+            grid.innerHTML = ''; // Limpa o grid
+        }
+
+        if (projectsInGroup.length > 0 && grid) {
+            // Se houver projetos, popular e garantir que a seção esteja visível
+            projectsInGroup.forEach(p => createCard(p, grid));
+            if (section) section.style.display = 'block';
+        } else {
+            // Se não houver projetos, garantir que a seção esteja oculta
+            if (section) section.style.display = 'none';
+        }
+    }
+
+    document.querySelectorAll('.loader-text').forEach(l => l.classList.add('hidden'));
+}
+
+function createCard(project, container) {
+    const card = document.createElement('div');
+    card.className = 'project-card animate-on-scroll';
+    card.innerHTML = `
+        <img src="${project.thumbnailSrc}" alt="Capa do projeto ${project.title}" class="project-thumbnail" loading="lazy" onerror="this.src='https://placehold.co/600x400?text=Sem+Imagem'">
+        <div class="project-card-content">
+            <h3>${project.title}</h3>
+            <button class="project-card-button" aria-label="Ver detalhes de ${project.title}">Ver Projeto</button>
+        </div>
+    `;
+    card.querySelector('button').addEventListener('click', () => openModal(project));
+    container.appendChild(card);
+
+    if (scrollObserver) scrollObserver.observe(card);
+}
+
+function renderComponents() {
+    const appHeader = document.getElementById('app-header');
+    if (appHeader) appHeader.innerHTML = COMPONENTS.header;
+
+    const appFooter = document.getElementById('app-footer');
+    if (appFooter) {
+        appFooter.innerHTML = COMPONENTS.footer;
+        const yearSpan = document.getElementById('dynamic-year');
+        if (yearSpan) yearSpan.textContent = new Date().getFullYear();
+    }
+}
+
+function setActiveMenuItem() {
+    const path = window.location.pathname;
+    const links = document.querySelectorAll('.nav-links a');
+    links.forEach(link => {
+        const href = link.getAttribute('href');
+        if (path === href || (path.endsWith('/index.html') && href === '/') || path.includes(href && href !== '/')) {
+            link.classList.add('active');
+            link.setAttribute('aria-current', 'page');
+        } else {
+            link.classList.remove('active');
+            link.removeAttribute('aria-current');
+        }
+    });
+}
 
 function initMobileMenu() {
     const menuToggle = document.querySelector('.menu-toggle');
     const navWrapper = document.querySelector('.nav-menu-wrapper');
+    if (!menuToggle || !navWrapper) return;
 
-    if (menuToggle && navWrapper) {
-        const closeMenuOnce = () => {
-            menuToggle.setAttribute('aria-expanded', 'false');
+    menuToggle.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isExpanded = navWrapper.classList.contains('open');
+        if (!isExpanded) {
+            navWrapper.classList.add('open');
+            document.body.style.overflow = 'hidden';
+            menuToggle.setAttribute('aria-expanded', 'true');
+        } else {
             navWrapper.classList.remove('open');
             document.body.style.overflow = 'auto';
-            removeCloseMenuListeners();
-        };
+            menuToggle.setAttribute('aria-expanded', 'false');
+        }
+    });
+    document.addEventListener('click', (e) => {
+        if (navWrapper.classList.contains('open') && !navWrapper.contains(e.target) && !menuToggle.contains(e.target)) {
+            navWrapper.classList.remove('open');
+            document.body.style.overflow = 'auto';
+            menuToggle.setAttribute('aria-expanded', 'false');
+        }
+    });
+}
 
-        const removeCloseMenuListeners = () => {
-            const navLinks = navWrapper.querySelectorAll('a');
-            navLinks.forEach(link => {
-                link.removeEventListener('click', closeMenuOnce);
+function injectStructuredData() {
+    const script = document.createElement('script');
+    script.type = 'application/ld+json';
+    const data = {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "Pinheiro Tecnologia",
+        "url": "https://pinheirotecnologia.com",
+        "logo": "https://pinheirotecnologia.com/images/Logo_Pinheiro_Tecnologia.png",
+        "sameAs": ["https://www.linkedin.com/in/camilo-pinheiro/"]
+    };
+    script.text = JSON.stringify(data);
+    document.head.appendChild(script);
+}
+
+function initScrollAnimations() {
+    const elementsToAnimate = document.querySelectorAll('.animate-on-scroll, .service-card, .project-card');
+    elementsToAnimate.forEach(el => el.classList.add('animate-on-scroll'));
+
+    if ('IntersectionObserver' in window) {
+        scrollObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    scrollObserver.unobserve(entry.target);
+                }
             });
-        };
-
-        menuToggle.addEventListener('click', () => {
-            const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true' || false;
-
-            if (!isExpanded) {
-                lastActiveElementBeforeMenuOpen = document.activeElement;
-            }
-
-            menuToggle.setAttribute('aria-expanded', !isExpanded);
-            navWrapper.classList.toggle('open');
-            document.body.style.overflow = !isExpanded ? 'hidden' : 'auto';
-
-            if (!isExpanded) {
-                const navLinks = navWrapper.querySelectorAll('a');
-                navLinks.forEach(link => {
-                    link.addEventListener('click', closeMenuOnce);
-                });
-                setTimeout(() => {
-                    navLinks[0] && navLinks[0].focus();
-                }, 50);
-            } else {
-                removeCloseMenuListeners();
-                if (lastActiveElementBeforeMenuOpen) {
-                    lastActiveElementBeforeMenuOpen.focus();
-                    lastActiveElementBeforeMenuOpen = null;
-                }
-            }
-        });
-    }
-}
-
-// =================================================================
-// PÁGINA INICIAL (index.html)
-// =================================================================
-
-function initIndexPage() {
-    fetchProjectsForIndex();
-    initModalListeners();
-    initClientCarousel();
-}
-
-function initClientCarousel() {
-    const track = document.getElementById('client-carousel-track');
-    if (!track) return;
-    const logos = track.querySelectorAll('.client-logo');
-    if (logos.length === 0) return;
-
-    // Duplica o conteúdo para garantir loop suave
-    logos.forEach(logo => {
-        const clone = logo.cloneNode(true);
-        clone.setAttribute('aria-hidden', 'true');
-        track.appendChild(clone);
-    });
-    // A largura deve ser ajustada via CSS para o scroll animado funcionar
-}
-
-async function fetchProjectsForIndex() {
-    const gridId = 'project-grid-dynamic';
-    const loader = document.getElementById('project-loader');
-    if (!document.getElementById(gridId) || !loader) return;
-
-    try {
-        const response = await fetch(API_URL_GET_PROJECTS);
-        if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
-        const allProjects = await response.json();
-        
-        // FILTRO CORRIGIDO: Filtra apenas projetos visíveis
-        const visibleProjects = allProjects.filter(p => !p.hidden);
-        
-        // Mantém apenas a parte de slice para o limite de 6 projetos
-        populateProjectGrid(gridId, visibleProjects.slice(0, 6)); 
-        loader.classList.add('hidden');
-    } catch (error) {
-        console.warn("MODO FICTÍCIO (Index): Carregando MOCK_PROJECTS.", error.message);
-        loader.textContent = "Carregando projetos fictícios...";
-        setTimeout(() => {
-            // FILTRO CORRIGIDO: Filtra o mock antes de exibir
-            const visibleMocks = MOCK_PROJECTS.filter(p => !p.hidden);
-            // Limite para 6 projetos no mock
-            populateProjectGrid(gridId, visibleMocks.slice(0, 6)); 
-            loader.classList.add('hidden');
-        }, 500);
-    }
-}
-
-// =================================================================
-// PÁGINA DE PROJETOS (projetos.html)
-// =================================================================
-
-function initProjetosPage() {
-    fetchProjectsForCategorization();
-    initModalListeners();
-}
-
-async function fetchProjectsForCategorization() {
-    const loaders = {
-        data: document.getElementById('loader-data-analysis'),
-        apps: document.getElementById('loader-apps'),
-        automation: document.getElementById('loader-automation'),
-        other: document.getElementById('loader-other')
-    };
-
-    // Exibe loaders
-    Object.values(loaders).forEach(loader => {
-        if (loader) loader.classList.remove('hidden');
-    });
-
-    try {
-        const response = await fetch(API_URL_GET_PROJECTS);
-        if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
-        const allProjects = await response.json();
-        
-        // FILTRO CORRIGIDO: Filtra apenas projetos visíveis
-        const visibleProjects = allProjects.filter(p => !p.hidden);
-        distributeProjects(visibleProjects);
-    } catch (error) {
-        console.warn("MODO FICTÍCIO (Projetos): Carregando MOCK_PROJECTS.", error.message);
-        Object.values(loaders).forEach(loader => {
-            if (loader) loader.textContent = "Carregando projetos fictícios...";
-        });
-        setTimeout(() => {
-            // FILTRO CORRIGIDO: Filtra o mock antes de distribuir
-            const visibleMocks = MOCK_PROJECTS.filter(p => !p.hidden);
-            distributeProjects(visibleMocks);
-        }, 500);
-    } finally {
-        // Oculta loaders
-        Object.values(loaders).forEach(loader => {
-            if (loader) loader.classList.add('hidden');
-        });
-    }
-}
-
-function distributeProjects(projects) {
-    const dataProjects = projects.filter(p => p.category === 'data-analysis');
-    const appProjects = projects.filter(p => p.category === 'apps');
-    const autoProjects = projects.filter(p => p.category === 'automation');
-    const otherProjects = projects.filter(p => !['data-analysis', 'apps', 'automation'].includes(p.category) || !p.category);
-
-    populateProjectGrid('grid-data-analysis', dataProjects);
-    populateProjectGrid('grid-apps', appProjects);
-    populateProjectGrid('grid-automation', autoProjects);
-    populateProjectGrid('grid-other', otherProjects);
-}
-
-
-// =================================================================
-// FUNÇÃO REUTILIZÁVEL DE POPULAR O GRID
-// =================================================================
-
-function populateProjectGrid(gridElementId, projects) {
-    const grid = document.getElementById(gridElementId);
-    if (!grid) return;
-
-    grid.innerHTML = '';
-
-    // Encontra a seção pai
-    const section = grid.closest('section');
-
-    if (!projects || projects.length === 0) {
-        // Se não houver projetos, oculta a seção inteira
-        if (section) {
-            section.style.display = 'none';
-        }
-        return;
-    }
-
-    // Se houver projetos, garante que a seção esteja visível
-    if (section) {
-        section.style.display = 'block';
-    }
-
-    projects.forEach((project, index) => {
-        const card = document.createElement('div');
-        // Adiciona a classe de animação
-        card.className = 'project-card animate-on-scroll'; 
-        
-        // Adiciona classes de delay baseadas no índice para animação em cascata
-        card.style.animationDelay = `${(index % 4) * 0.1}s`;
-
-        // Atributo de dado para o modal
-        card.dataset.projectData = JSON.stringify(project);
-
-        // [CORREÇÃO ACESSIBILIDADE/PERFORMANCE]
-        // Adicionado 'loading="lazy"' e 'width'/'height'
-        card.innerHTML = `
-            <img 
-                src="${project.thumbnailSrc}" 
-                alt="Imagem de capa do projeto: ${project.title}" 
-                class="project-thumbnail" 
-                onerror="handleImageError(this, '${project.title}')"
-                loading="lazy"
-                width="340"
-                height="200"
-            >
-            <div class="project-card-content">
-                <h3>${project.title}</h3>
-                <button class="project-card-button" aria-label="Ver detalhes sobre o projeto ${project.title}">Ver Projeto</button>
-            </div>
-        `;
-
-        card.querySelector('.project-card-button').addEventListener('click', () => {
-            openModal(project);
-        });
-
-        grid.appendChild(card);
-        
-        // NOVO: Adiciona o cartão dinâmico ao Intersection Observer APÓS ser adicionado ao DOM
-        if (scrollObserver && !card.classList.contains('is-visible')) {
-            scrollObserver.observe(card);
-        } else if (!('IntersectionObserver' in window)) {
-            // Garante visibilidade imediata se o Observer não for suportado
-            card.classList.add('is-visible');
-        }
-    });
-}
-
-function handleImageError(img, title) {
-    const placeholder = document.createElement('div');
-    placeholder.className = 'project-thumbnail-placeholder';
-    placeholder.textContent = title || 'Pré-visualização indisponível';
-    if (img.parentNode) {
-        img.parentNode.replaceChild(placeholder, img);
-    }
-}
-// =================================================================
-
-function initContatoPage() {
-    const contactForm = document.getElementById('contact-form');
-    if (contactForm) {
-        contactForm.addEventListener('submit', handleContactSubmit);
-    }
-
-    // Inicializa contador de caracteres da mensagem
-    initContactFormCounter();
-
-    // Inicializa máscara de telefone
-    initPhoneMask();
-}
-
-function initContactFormCounter() {
-    const textArea = document.getElementById('message');
-    // Renomeado para 'char-count-text' para melhor acessibilidade
-    const counterDisplay = document.getElementById('char-count-text');
-    const maxLength = 250;
-
-    if (textArea && counterDisplay) {
-        textArea.addEventListener('input', function () {
-            const currentLength = this.value.length;
-            counterDisplay.textContent = `${currentLength} / ${maxLength}`;
-
-            // Altera a cor conforme se aproxima do limite
-            if (currentLength >= maxLength) {
-                counterDisplay.style.color = 'red';
-                counterDisplay.style.fontWeight = 'bold';
-            } else if (currentLength >= maxLength * 0.9) {
-                counterDisplay.style.color = '#f57f17'; // Laranja/Amarelo escuro
-                counterDisplay.style.fontWeight = 'normal';
-            } else {
-                counterDisplay.style.color = '#666';
-                counterDisplay.style.fontWeight = 'normal';
-            }
-        });
-        // Dispara o evento 'input' na inicialização para exibir '0 / 2000'
-        textArea.dispatchEvent(new Event('input'));
-    }
-}
-
-// Função para aplicar máscara de telefone (celular e fixo)
-function initPhoneMask() {
-    const phoneInput = document.getElementById('phone');
-    if (!phoneInput) return;
-
-    phoneInput.addEventListener('input', function (e) {
-        // Remove tudo que não for dígito
-        let x = e.target.value.replace(/\D/g, '');
-        let output = '';
-
-        if (x.length > 0) {
-            output += '(' + x.substring(0, 2);
-        }
-        if (x.length > 2) {
-            // Verifica se é celular (9 dígitos) ou fixo (8 dígitos)
-            if (x.length > 10) {
-                // Celular com 9 dígitos
-                output += ') ' + x.substring(2, 7);
-                if (x.length > 7) {
-                    output += '-' + x.substring(7, 11);
-                }
-            } else {
-                // Fixo com 8 dígitos
-                output += ') ' + x.substring(2, 6);
-                if (x.length > 6) {
-                    output += '-' + x.substring(6, 10);
-                }
-            }
-        }
-        e.target.value = output;
-    });
-}
-
-async function handleContactSubmit(event) {
-    event.preventDefault();
-    const btn = document.getElementById('contact-submit-btn');
-    const msgElement = document.getElementById('form-message');
-
-    const originalBtnText = btn.innerText;
-    btn.disabled = true;
-    btn.innerText = 'Enviando...';
-
-    // Oculta a mensagem anterior e limpa o conteúdo para evitar confusão de aria-live
-    if (msgElement) {
-        msgElement.classList.add('hidden');
-        msgElement.textContent = '';
-    }
-
-    const formData = new FormData(event.target);
-    const data = Object.fromEntries(formData.entries());
-
-    // NOTA: A máscara de telefone adiciona parênteses/hífens que o backend pode não esperar. 
-    // É uma boa prática limpar o número antes de enviar para a API.
-    data.phone = data.phone ? data.phone.replace(/\D/g, '') : '';
-
-
-    try {
-        const response = await fetch(API_URL_CONTACT, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify(data)
-        });
-
-        if (!response.ok) {
-            const errorData = await response.json().catch(() => null);
-
-            if (response.status === 429) {
-                let message = "Você já enviou mensagens suficientes por hoje. Recebemos seu contato e retornaremos em breve!";
-                if (errorData && errorData.message) {
-                    message = errorData.message;
-                }
-                throw new Error(`RATE_LIMIT:${message}`);
-            }
-
-            const errorText = errorData ? JSON.stringify(errorData) : await response.text();
-            throw new Error(`Falha no envio: ${response.status} - ${errorText}`);
-        }
-
-        // A API deve retornar 200/201 em caso de sucesso
-        showFormMessage('Sua mensagem foi enviada com sucesso! Entraremos em contato em breve.', 'success');
-        event.target.reset();
-
-        // Reseta o contador também
-        const textArea = document.getElementById('message');
-        if (textArea) {
-            textArea.dispatchEvent(new Event('input'));
-        }
-
-    } catch (error) {
-        console.error("Erro Capturado:", error);
-
-        if (error.message.startsWith("RATE_LIMIT:")) {
-            const friendlyMessage = error.message.replace("RATE_LIMIT:", "");
-            showFormMessage(friendlyMessage, "warning");
-        } else if (error.message.includes("Failed to fetch")) {
-            showFormMessage("Erro de conexão com o servidor. Verifique sua internet e tente novamente.", "error");
-        } else {
-            showFormMessage("Não foi possível enviar sua mensagem. Por favor, tente novamente mais tarde. (Detalhes: " + error.message + ")", "error");
-        }
-    } finally {
-        setTimeout(() => {
-            btn.disabled = false;
-            btn.innerText = originalBtnText;
-        }, 500);
-    }
-}
-
-function showFormMessage(message, type) {
-    const msgElement = document.getElementById('form-message');
-    if (msgElement) {
-        msgElement.textContent = message;
-        // Remove todas as classes de status e adiciona a nova
-        msgElement.classList.remove('error', 'success', 'warning', 'hidden');
-        msgElement.classList.add(type);
-        // Acessibilidade: Garante que a mensagem seja anunciada e fique visível.
-        msgElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
+        elementsToAnimate.forEach(el => scrollObserver.observe(el));
     } else {
-        console.error("Erro: Elemento de mensagem do formulário não encontrado. Mensagem:", message);
+        elementsToAnimate.forEach(el => el.classList.add('is-visible'));
     }
-}
-
-// =================================================================
-// PÁGINA DE LOGIN e ADMIN (Lógica de bypass e correção de confirm)
-// =================================================================
-
-function initLoginPage() {
-    const loginForm = document.getElementById('login-form');
-    if (loginForm) {
-        loginForm.addEventListener('submit', handleLoginSubmit);
-    }
-    if (localStorage.getItem('authToken')) {
-        window.location.href = 'admin.html';
-    }
-}
-
-async function handleLoginSubmit(event) {
-    event.preventDefault();
-    const btn = document.getElementById('login-submit-btn');
-    const username = document.getElementById('username').value;
-    btn.disabled = true;
-    btn.textContent = 'Entrando...';
-
-    console.warn("MODO FICTÍCIO: Bypass do Cognito ativado.");
-    if (!username) {
-        showLoginMessage("Por favor, insira um e-mail.", "error");
-        btn.disabled = false;
-        btn.textContent = 'Entrar';
-        return;
-    }
-    showLoginMessage("Login fictício realizado!", "success");
-    localStorage.setItem('authToken', 'fake-dev-token');
-    localStorage.setItem('userEmail', username);
-    setTimeout(() => {
-        window.location.href = 'admin.html';
-    }, 1000);
-}
-
-function showLoginMessage(message, type) {
-    const msgElement = document.getElementById('login-message');
-    if (msgElement) {
-        msgElement.textContent = message;
-        msgElement.className = `form-message ${type}`;
-        msgElement.classList.remove('hidden');
-    }
-}
-
-function initAdminPage() {
-    checkAdminAuth();
-    const logoutBtn = document.getElementById('logout-button');
-    if (logoutBtn) {
-        logoutBtn.addEventListener('click', handleLogout);
-    }
-    const projectForm = document.getElementById('project-form');
-    if (projectForm) {
-        projectForm.addEventListener('submit', handleProjectSubmit);
-    }
-    const cancelBtn = document.getElementById('project-cancel-btn');
-    if (cancelBtn) {
-        cancelBtn.addEventListener('click', resetProjectForm);
-    }
-    fetchProjectsForAdmin();
-}
-
-function checkAdminAuth() {
-    const token = localStorage.getItem('authToken');
-    if (!token) {
-        window.location.href = 'login.html';
-        return;
-    }
-    const userEmail = localStorage.getItem('userEmail');
-    const emailSpan = document.getElementById('admin-user-email');
-    if (emailSpan && userEmail) {
-        emailSpan.textContent = userEmail;
-    }
-}
-
-function handleLogout() {
-    localStorage.removeItem('authToken');
-    localStorage.removeItem('userEmail');
-    window.location.href = 'login.html';
-}
-
-async function fetchProjectsForAdmin() {
-    const listContainer = document.getElementById('project-list-container');
-    const loader = document.getElementById('project-list-loader');
-    if (!listContainer || !loader) return;
-    try {
-        const response = await fetch(API_URL_GET_PROJECTS);
-        if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
-        const projects = await response.json();
-        populateAdminList(projects);
-    } catch (error) {
-        console.warn("MODO FICTÍCIO (Admin): Carregando projetos fictícios.", error.message);
-        loader.textContent = "Carregando projetos fictícios...";
-        setTimeout(() => {
-            populateAdminList(MOCK_PROJECTS);
-            loader.classList.add('hidden');
-        }, 500);
-    }
-}
-
-function populateAdminList(projects) {
-    const listContainer = document.getElementById('project-list-container');
-    listContainer.innerHTML = '';
-    if (!projects || projects.length === 0) {
-        listContainer.innerHTML = '<p>Nenhum projeto publicado.</p>';
-        return;
-    }
-    projects.forEach(project => {
-        const listItem = document.createElement('div');
-        listItem.className = 'project-list-item';
-        listItem.dataset.projectId = project.id;
-
-        const hiddenBadge = project.hidden ? ' <span style="color:red; font-size:0.8em;">(Oculto)</span>' : '';
-
-        listItem.innerHTML = `
-            <span class="project-list-title">${project.title} <b>(${project.category || 'N/A'})</b>${hiddenBadge}</span>
-            <div class="project-list-actions">
-                <button class="project-list-button edit" data-id="${project.id}">Editar</button>
-                <button class="project-list-button delete" data-id="${project.id}">Excluir</button>
-            </div>
-        `;
-
-        const editBtn = listItem.querySelector('.edit');
-        editBtn.onclick = () => handleEditProject(project);
-
-        const deleteBtn = listItem.querySelector('.delete');
-        deleteBtn.onclick = () => handleDeleteProject(project.id, project.title);
-
-        listContainer.appendChild(listItem);
-    });
-}
-
-async function handleProjectSubmit(event) {
-    event.preventDefault();
-    const btn = document.getElementById('project-submit-btn');
-    btn.disabled = true;
-    btn.textContent = 'Salvando...';
-
-    const projectId = document.getElementById('project-id').value;
-    const project = {
-        title: document.getElementById('project-title').value,
-        category: document.getElementById('project-category').value,
-        thumbnailSrc: document.getElementById('project-thumbnail').value,
-        iframeSrc: document.getElementById('project-iframe-src').value,
-        embedTitle: document.getElementById('project-embed-title').value,
-        tabsToShow: document.getElementById('project-tabs-to-show').value,
-        data: {
-            descricao: document.getElementById('tab-descricao').value,
-            objetivos: document.getElementById('tab-objetivos').value,
-            metricas: document.getElementById('tab-metricas').value,
-            tecnologias: document.getElementById('tab-tecnologias').value,
-            detalhes: document.getElementById('tab-detalhes').value,
-            fontes: document.getElementById('tab-fontes').value
-        }
-    };
-
-    const method = projectId ? 'PUT' : 'POST';
-    const url = projectId ? `${API_URL_PUT_PROJECT}/${projectId}` : API_URL_POST_PROJECT;
-    const token = localStorage.getItem('authToken');
-
-    try {
-        const response = await fetch(url, {
-            method: method,
-            headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-            body: JSON.stringify(project)
-        });
-        if (!response.ok) throw new Error('Falha ao salvar.');
-        showAdminMessage('Projeto salvo com sucesso!', 'success');
-        resetProjectForm();
-        fetchProjectsForAdmin();
-
-    } catch (error) {
-        console.warn("MODO FICTÍCIO (Admin Submit):", error.message);
-        showAdminMessage("MODO FICTÍCIO: Simulação de projeto salvo!", "success");
-
-        // Simulação de atualização/criação no mock
-        if (projectId) {
-            const index = MOCK_PROJECTS.findIndex(p => p.id === projectId);
-            if (index !== -1) {
-                MOCK_PROJECTS[index] = { ...MOCK_PROJECTS[index], ...project, id: projectId };
-            }
-        } else {
-            MOCK_PROJECTS.push({ ...project, id: `mock-${Date.now()}` });
-        }
-        populateAdminList(MOCK_PROJECTS);
-        resetProjectForm();
-    } finally {
-        btn.disabled = false;
-        btn.textContent = 'Salvar Projeto';
-    }
-}
-
-function handleEditProject(project) {
-    document.getElementById('project-id').value = project.id;
-    document.getElementById('project-title').value = project.title;
-    document.getElementById('project-category').value = project.category || 'other';
-    document.getElementById('project-thumbnail').value = project.thumbnailSrc;
-    document.getElementById('project-iframe-src').value = project.iframeSrc;
-    document.getElementById('project-embed-title').value = project.embedTitle;
-    document.getElementById('project-tabs-to-show').value = project.tabsToShow || '';
-
-    const data = project.data || {};
-    document.getElementById('tab-descricao').value = data.descricao || '';
-    document.getElementById('tab-objetivos').value = data.objetivos || '';
-    document.getElementById('tab-metricas').value = data.metricas || '';
-    document.getElementById('tab-tecnologias').value = data.tecnologias || '';
-    document.getElementById('tab-detalhes').value = data.detalhes || '';
-    document.getElementById('tab-fontes').value = data.fontes || '';
-
-    document.getElementById('form-title').textContent = 'Editar Projeto';
-    document.getElementById('project-cancel-btn').classList.remove('hidden');
-    // Rola para o formulário
-    window.scrollTo(0, document.getElementById('project-form').offsetTop);
-}
-
-function resetProjectForm() {
-    document.getElementById('project-form').reset();
-    document.getElementById('project-id').value = '';
-    document.getElementById('form-title').textContent = 'Adicionar Novo Projeto';
-    document.getElementById('project-cancel-btn').classList.add('hidden');
-}
-
-async function handleDeleteProject(id, title) {
-    // [CORRIGIDO] Removido o uso de window.confirm() e alert()
-    const isConfirmed = window.confirm(`Tem certeza que deseja excluir o projeto "${title}"?`);
-
-    if (!isConfirmed) {
-        console.log(`Exclusão do projeto "${title}" cancelada pelo usuário.`);
-        return;
-    }
-
-    // Simulação de Exclusão: Você deve criar um modal customizado para confirmação
-    console.error("AVISO: Usando simulação de confirmação. Em um ambiente real, você usaria um modal customizado no lugar de confirm().");
-
-    const url = `${API_URL_DELETE_PROJECT}/${id}`;
-    const token = localStorage.getItem('authToken');
-    try {
-        const response = await fetch(url, { method: 'DELETE', headers: { 'Authorization': `Bearer ${token}` } });
-        if (!response.ok) throw new Error('Falha ao excluir.');
-        showAdminMessage('Projeto excluído com sucesso!', 'success');
-        fetchProjectsForAdmin();
-    } catch (error) {
-        console.warn("MODO FICTÍCIO (Admin Delete):", error.message);
-        showAdminMessage("MODO FICTÍCIO: Simulação de projeto excluído!", 'error');
-
-        // Simulação de exclusão no mock
-        const index = MOCK_PROJECTS.findIndex(p => p.id === id);
-        if (index !== -1) {
-            MOCK_PROJECTS.splice(index, 1);
-        }
-        populateAdminList(MOCK_PROJECTS);
-    }
-}
-
-function showAdminMessage(message, type) {
-    const msgElement = document.getElementById('admin-message');
-    if (msgElement) {
-        msgElement.textContent = message;
-        msgElement.className = `form-message ${type}`;
-        msgElement.classList.remove('hidden');
-        setTimeout(() => {
-            msgElement.classList.add('hidden');
-        }, 5000);
-    }
-}
-
-
-// =================================================================
-// MODAL DE PROJETO (Lógica Global)
-// =================================================================
-
-let modalOverlay, modalContent, modalCloseButton, modalTitle, modalEmbedTitle, modalIframe;
-let modalTabButtons, modalTabPanels;
-let lastFocusedElement; // Armazena o elemento focado antes da abertura do modal
-
-function initModalListeners() {
-    modalOverlay = document.getElementById('modal-overlay');
-    if (!modalOverlay) return;
-
-    modalContent = modalOverlay.querySelector('.modal-content');
-    modalCloseButton = document.getElementById('modal-close-button');
-    modalTitle = document.getElementById('modal-title');
-    modalEmbedTitle = document.getElementById('modal-embed-title');
-    modalIframe = document.getElementById('modal-iframe');
-
-    modalTabButtons = document.querySelectorAll('.modal-tab-button');
-    modalTabPanels = document.querySelectorAll('.modal-tab-panel');
-
-    modalCloseButton.addEventListener('click', closeModal);
-    modalOverlay.addEventListener('click', (event) => {
-        // Fecha o modal apenas se clicar no overlay (fundo)
-        if (event.target === modalOverlay) {
-            closeModal();
-        }
-    });
-    // Fecha o modal ao pressionar ESC
-    document.addEventListener('keydown', (event) => {
-        if (event.key === 'Escape' && !modalOverlay.classList.contains('hidden')) {
-            closeModal();
-        }
-    });
-
-    modalTabButtons.forEach(button => {
-        button.addEventListener('click', () => handleTabClick(button));
-    });
-}
-
-/**
- * Helper para transformar links do YouTube em Embed.
- * Usa youtube-nocookie.com para evitar o erro 153 e melhorar a privacidade.
- */
-function getEmbedUrl(url) {
-    if (!url) return "";
-
-    // Regex para capturar ID do YouTube (formatos variados)
-    const youtubeRegex = /(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i;
-    const match = url.match(youtubeRegex);
-
-    if (match && match[1]) {
-        // Usa o domínio 'youtube-nocookie.com' que é mais permissivo com embeds
-        return `https://www.youtube-nocookie.com/embed/${match[1]}`;
-    }
-
-    return url;
-}
-
-function openModal(project) {
-    if (!modalOverlay) return;
-
-    // Salva o elemento focado antes de abrir o modal
-    lastFocusedElement = document.activeElement;
-
-    modalTitle.textContent = project.title || 'Título do Projeto';
-    modalEmbedTitle.textContent = project.embedTitle || 'Conteúdo Interativo';
-
-    // Permissões robustas para garantir que o vídeo toque
-    modalIframe.setAttribute('allow', 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share');
-    modalIframe.setAttribute('referrerpolicy', 'strict-origin-when-cross-origin');
-    modalIframe.setAttribute('loading', 'lazy');
-
-    // Usa a função helper corrigida
-    modalIframe.src = getEmbedUrl(project.iframeSrc) || '';
-
-    const data = project.data || {};
-    const panelMap = {
-        'modal-descricao': data.descricao || '<p>Descrição não disponível.</p>',
-        'modal-objetivos': data.objetivos || '<p>Objetivos não disponíveis.</p>',
-        'modal-metricas': data.metricas || '<p>Métricas não disponíveis.</p>',
-        'modal-tratamento': data.tecnologias || '<p>Informações não disponíveis.</p>',
-        'modal-dax': data.detalhes || '<p>Informações não disponíveis.</p>',
-        'modal-fontes': data.fontes || '<p>Fontes não disponíveis.</p>',
-    };
-
-    modalTabPanels.forEach(panel => {
-        panel.innerHTML = panelMap[panel.id] || '<p>Conteúdo indisponível.</p>';
-    });
-
-    // Controla quais abas devem ser exibidas
-    const tabsToShowAttr = project.tabsToShow;
-    if (tabsToShowAttr) {
-        const tabsToShow = tabsToShowAttr.split(',');
-        modalTabButtons.forEach(tab => {
-            tab.style.display = tabsToShow.includes(tab.dataset.tab) ? 'block' : 'none';
-        });
-    } else {
-        // Se a propriedade estiver vazia/nula, exibe todas
-        modalTabButtons.forEach(tab => {
-            tab.style.display = 'block';
-        });
-    }
-
-    resetTabs();
-    modalOverlay.classList.remove('hidden');
-    // Impede o scroll do body
-    document.body.style.overflow = 'hidden';
-    // Move o foco para o botão de fechar para acessibilidade
-    modalCloseButton.focus();
-}
-
-function closeModal() {
-    if (!modalOverlay) return;
-    modalOverlay.classList.add('hidden');
-    // Para o vídeo/embed ao fechar
-    modalIframe.src = '';
-    // Limpa atributos para evitar problemas ao reabrir
-    modalIframe.removeAttribute('allow');
-    modalIframe.removeAttribute('referrerpolicy');
-    document.body.style.overflow = 'auto';
-    // Restaura o foco para o elemento anterior
-    if (lastFocusedElement) {
-        lastFocusedElement.focus();
-    }
-}
-
-function handleTabClick(button) {
-    const targetPanelId = button.dataset.tab;
-    // Remove o estado ativo de todos os botões
-    modalTabButtons.forEach(btn => {
-        btn.classList.remove('active');
-        btn.setAttribute('aria-selected', 'false');
-    });
-    // Define o estado ativo no botão clicado
-    button.classList.add('active');
-    button.setAttribute('aria-selected', 'true');
-    // Oculta todos os painéis
-    modalTabPanels.forEach(panel => panel.classList.add('hidden'));
-    // Exibe o painel alvo
-    const targetPanel = document.getElementById(targetPanelId);
-    if (targetPanel) {
-        targetPanel.classList.remove('hidden');
-        // Move o foco para o conteúdo da aba
-        targetPanel.focus();
-    }
-}
-
-function resetTabs() {
-    // Encontra a primeira aba visível para ativá-la
-    const firstVisibleTab = Array.from(modalTabButtons).find(tab => tab.style.display !== 'none');
-
-    modalTabButtons.forEach(button => {
-        const panelId = button.dataset.tab;
-        const panel = document.getElementById(panelId);
-
-        if (panel) {
-            if (firstVisibleTab && button === firstVisibleTab) {
-                button.classList.add('active');
-                button.setAttribute('aria-selected', 'true');
-                panel.classList.remove('hidden');
-            } else {
-                button.classList.remove('active');
-                button.setAttribute('aria-selected', 'false');
-                panel.classList.add('hidden');
-            }
-        }
-    });
 }
