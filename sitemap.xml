@@ -3,7 +3,7 @@
    <!-- Home: Prioridade Máxima -->
    <url>
       <loc>https://pinheirotecnologia.com/</loc>
-      <lastmod>2025-11-26</lastmod>
+      <lastmod>2025-11-26T18:51:00-03:00</lastmod>
       <changefreq>weekly</changefreq>
       <priority>1.0</priority>
    </url>
@@ -11,7 +11,7 @@
    <!-- Projetos: Alta prioridade (Core Business) -->
    <url>
       <loc>https://pinheirotecnologia.com/projetos.html</loc>
-      <lastmod>2025-11-26</lastmod>
+      <lastmod>2025-11-26T18:51:00-03:00</lastmod>
       <changefreq>weekly</changefreq>
       <priority>0.9</priority>
    </url>
@@ -19,7 +19,7 @@
    <!-- Institucional -->
    <url>
       <loc>https://pinheirotecnologia.com/sobre.html</loc>
-      <lastmod>2025-11-26</lastmod>
+      <lastmod>2025-11-26T18:51:00-03:00</lastmod>
       <changefreq>monthly</changefreq>
       <priority>0.7</priority>
    </url>
@@ -27,7 +27,7 @@
    <!-- Conversão -->
    <url>
       <loc>https://pinheirotecnologia.com/contato.html</loc>
-      <lastmod>2025-11-26</lastmod>
+      <lastmod>2025-11-26T18:51:00-03:00</lastmod>
       <changefreq>monthly</changefreq>
       <priority>0.8</priority>
    </url>

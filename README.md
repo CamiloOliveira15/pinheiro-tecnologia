@@ -52,7 +52,7 @@ Projetada para ser serverless, escalável, segura e de baixo custo.
 
 Amazon S3: Armazena arquivos HTML, CSS, JS e imagens.
 
-Amazon CloudFront: Distribuição global com cache, compressão e HTTPS.
+Amazon CloudFront: Distribuição global com cache, compressão e HTTPS. Invalidação seletiva de cache configurada para acionar apenas em arquivos alterados.
 
 2. Backend (API e Lógica Serverless)
 
@@ -116,11 +116,9 @@ O Frontend segue as boas práticas mais rigorosas, focando em performance e incl
 
 Web Performance (Core Web Vitals):
 
-CSS Crítico: O CSS acima da dobra (Critical CSS) é inserido inline, e o restante é carregado de forma assíncrona (rel="preload") para otimizar o LCP (Largest Contentful Paint).
+JS Não Bloqueante: O JavaScript principal é carregado com o atributo defer.
 
 Otimização de Imagens: Uso de loading="lazy" e definição explícita de width/height em todas as imagens para eliminar o CLS (Cumulative Layout Shift).
-
-JS Não Bloqueante: O JavaScript principal é carregado com o atributo defer.
 
 Acessibilidade (WCAG):
 
@@ -128,7 +126,7 @@ Semântica: Uso correto de tags estruturais (<main>, <article>), e correta hiera
 
 Foco e Navegação: Estilos :focus-visible globais implementados para navegação por teclado.
 
-ARIA: Uso de aria-labels e aria-current na navegação e atributos role="status" e aria-live no formulário de contato para leitores de tela.
+ARIA: Uso de aria-labels e aria-current na navegação, atributos role="status" e aria-live no formulário de contato para leitores de tela e controle de abas no modal.
 
 SEO Técnico e Segurança:
 
@@ -136,7 +134,7 @@ Implementação de dados estruturados Schema.org (Organização) no index.html.
 
 Adoção de Content-Security-Policy (CSP) para mitigar ataques XSS.
 
-Estratégia SEO conservadora, focada em conteúdo de valor e sem keyword stuffing.
+Estrutura organizada e acessível para rastreadores (URLs canônicas e Sitemap com fuso horário UTC-3).
 
 🚀 Funcionalidades do Site
 
@@ -146,17 +144,17 @@ Listagem dinâmica de projetos via API
 
 Filtros automáticos por categoria
 
-Modal de detalhes com vídeos e embeds
+Modal de detalhes com vídeos e embeds responsivos (ajuste de proporção CSS para visualização sem scroll)
 
 Formulário de contato com:
 
-envio assíncrono
+Contador de caracteres em tempo real
 
-feedback visual
+Validação e controle do botão de envio
 
-gravação no DynamoDB
+Envio assíncrono (a ser implementado na API)
 
-notificação via SES
+Feedback visual
 
 Administrativas (Admin)
 
