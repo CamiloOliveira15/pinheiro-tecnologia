@@ -1,5 +1,5 @@
 /**
- * Lógica do Site - script.js (Versão Final Consolidada - Acessibilidade Otimizada v5)
+ * Lógica do Site - script.js (Versão Final Consolidada - Acessibilidade Otimizada v6)
  *
  * Este script gerencia:
  * 1. Carregamento dinâmico de projetos (da API AWS ou Mock local).
@@ -9,12 +9,13 @@
  * 5. Acessibilidade: Correção de aria-labels para WCAG 2.5.3 e uso de aria-live.
  * 6. UX: Contador de caracteres e Máscara de Telefone.
  * 7. [REFORÇO] Funcionalidade de Menu Sanduíche (Mobile Navigation).
- * 8. NOVO: Animação de elementos ao rolar (Intersection Observer) - AGORA COM SUPORTE A ELEMENTOS DINÂMICOS.
+ * 8. Animação de elementos ao rolar (Intersection Observer).
  */
 
 // =================================================================
 // DADOS FICTÍCIOS (PARA DESENVOLVIMENTO / FALLBACK)
 // =================================================================
+// CORREÇÃO: Projetos 3, 4, 5 e 6 voltaram a ser hidden: true para testar o filtro.
 const MOCK_PROJECTS = [
     {
         id: "mock-1",
@@ -70,7 +71,7 @@ const MOCK_PROJECTS = [
         id: "mock-3",
         title: "Projeto 3: Demo de App",
         category: "apps",
-        hidden: false, // Alterado para false para garantir a visibilidade de 6 mocks na home
+        hidden: true, // Corrigido para hidden: true
         thumbnailSrc: "https://placehold.co/600x400/1A6A6C/FFFFFF?text=Demo+App",
         iframeSrc: "https://www.youtube.com/embed/LXb3EKWsInQ",
         embedTitle: "Demonstração em Vídeo",
@@ -88,7 +89,7 @@ const MOCK_PROJECTS = [
         id: "mock-4",
         title: "Projeto 4: Automação de Faturas",
         category: "automation",
-        hidden: false, // Alterado para false
+        hidden: true, // Corrigido para hidden: true
         thumbnailSrc: "https://placehold.co/600x400/1A6A6C/FFFFFF?text=Automação",
         iframeSrc: "",
         embedTitle: "Demo de Automação",
@@ -106,7 +107,7 @@ const MOCK_PROJECTS = [
         id: "mock-5",
         title: "Projeto 5: Análise de RH",
         category: "data-analysis",
-        hidden: false, // Alterado para false
+        hidden: true, // Corrigido para hidden: true
         thumbnailSrc: "https://placehold.co/600x400/1A6A6C/FFFFFF?text=Dashboard+RH",
         iframeSrc: "",
         embedTitle: "Dashboard Interativo",
@@ -124,7 +125,7 @@ const MOCK_PROJECTS = [
         id: "mock-6",
         title: "Projeto 6: App de Inspeção",
         category: "apps",
-        hidden: false, // Alterado para false
+        hidden: true, // Corrigido para hidden: true
         thumbnailSrc: "https://placehold.co/600x400/1A6A6C/FFFFFF?text=App+Inspeção",
         iframeSrc: "",
         embedTitle: "Demonstração em Vídeo",
@@ -335,23 +336,25 @@ async function fetchProjectsForIndex() {
     const loader = document.getElementById('project-loader');
     if (!document.getElementById(gridId) || !loader) return;
 
-    // CORREÇÃO DE ERRO: Removido o filtro `.filter(p => !p.hidden)`
-    // da chamada da API, pois a API real deve fazer essa filtragem.
-    // O mock local foi corrigido acima (MOCK_PROJECTS) para ter hidden: false.
     try {
         const response = await fetch(API_URL_GET_PROJECTS);
         if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
-        const projects = await response.json();
+        const allProjects = await response.json();
+        
+        // FILTRO CORRIGIDO: Filtra apenas projetos visíveis
+        const visibleProjects = allProjects.filter(p => !p.hidden);
         
         // Mantém apenas a parte de slice para o limite de 6 projetos
-        populateProjectGrid(gridId, projects.slice(0, 6)); // Alterado para 6
+        populateProjectGrid(gridId, visibleProjects.slice(0, 6)); 
         loader.classList.add('hidden');
     } catch (error) {
         console.warn("MODO FICTÍCIO (Index): Carregando MOCK_PROJECTS.", error.message);
         loader.textContent = "Carregando projetos fictícios...";
         setTimeout(() => {
-            // Usa o mock corrigido (todos visíveis) e exibe 4
-            populateProjectGrid(gridId, MOCK_PROJECTS.slice(0, 4)); // Alterado para 4
+            // FILTRO CORRIGIDO: Filtra o mock antes de exibir
+            const visibleMocks = MOCK_PROJECTS.filter(p => !p.hidden);
+            // Limite para 6 projetos no mock
+            populateProjectGrid(gridId, visibleMocks.slice(0, 6)); 
             loader.classList.add('hidden');
         }, 500);
     }
@@ -382,17 +385,20 @@ async function fetchProjectsForCategorization() {
     try {
         const response = await fetch(API_URL_GET_PROJECTS);
         if (!response.ok) throw new Error(`Erro HTTP: ${response.status}`);
-        const projects = await response.json();
-        // Não aplica o filtro 'hidden' na chamada da API, a API deve retornar os visíveis
-        distributeProjects(projects);
+        const allProjects = await response.json();
+        
+        // FILTRO CORRIGIDO: Filtra apenas projetos visíveis
+        const visibleProjects = allProjects.filter(p => !p.hidden);
+        distributeProjects(visibleProjects);
     } catch (error) {
         console.warn("MODO FICTÍCIO (Projetos): Carregando MOCK_PROJECTS.", error.message);
         Object.values(loaders).forEach(loader => {
             if (loader) loader.textContent = "Carregando projetos fictícios...";
         });
         setTimeout(() => {
-            // Usa o mock corrigido (todos visíveis)
-            distributeProjects(MOCK_PROJECTS);
+            // FILTRO CORRIGIDO: Filtra o mock antes de distribuir
+            const visibleMocks = MOCK_PROJECTS.filter(p => !p.hidden);
+            distributeProjects(visibleMocks);
         }, 500);
     } finally {
         // Oculta loaders
