@@ -78,142 +78,62 @@
             <p id="loader-other" class="loader-text">Carregando projetos...</p>
         </section>
 
-        <!DOCTYPE html>
-        <html lang="pt-BR">
+    </main>
 
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 2. COMPONENTE FOOTER (Injetado via JS) - AGORA ÚNICO -->
+    <div id="app-footer"></div>
 
-            <!-- Título e SEO Otimizados -->
-            <title>Projetos - Portfólio Completo em Power BI, Power Apps e Automação | Pinheiro Tecnologia</title>
-            <meta name="description"
-                content="Explore nosso portfólio completo de projetos em Análise de Dados (Power BI), Aplicativos (Power Apps), Automação (Power Automate) e mais.">
-            <link rel="canonical" href="https://pinheirotecnologia.com/projetos.html">
-
-            <!-- Open Graph -->
-            <meta property="og:title" content="Projetos - Pinheiro Tecnologia">
-            <meta property="og:description"
-                content="Explore nosso portfólio completo de projetos em Análise de Dados, Aplicativos e Automação.">
-            <meta property="og:image"
-                content="https://pinheirotecnologia.com/images/Logo_Pinheiro_Tecnologia_1200x630.png">
-            <meta property="og:url" content="https://pinheirotecnologia.com/projetos.html">
-            <meta property="og:type" content="website">
-
-            <!-- Estilos e Fontes -->
-            <link rel="preconnect" href="https://fonts.googleapis.com">
-            <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-            <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
-                rel="stylesheet">
-
-            <!-- CSS Principal -->
-            <link rel="stylesheet" href="assets/css/style.css">
-
-            <!-- Favicon -->
-            <link rel="icon" type="image/png" href="images/favicon-96x96.png" sizes="96x96">
-            <link rel="apple-touch-icon" sizes="180x180" href="images/apple-touch-icon.png">
-            <link rel="manifest" href="assets/manifest/site.webmanifest">
-        </head>
-
-        <body>
-
-            <!-- 1. COMPONENTE HEADER (Injetado via JS) -->
-            <div id="app-header"></div>
-
-            <main class="container">
-
-                <h1 class="section-title animate-on-scroll" style="margin-top: 3rem;">Nosso Portfólio de Projetos</h1>
-
-                <!-- Categoria: Análise de Dados -->
-                <section class="project-category-page animate-on-scroll" aria-labelledby="data-title">
-                    <h2 class="category-title" id="data-title">Projetos de Análise de Dados (Power BI)</h2>
-                    <div class="project-grid" id="grid-data-analysis">
-                        <!-- Injetado via JS -->
+    <!-- 3. MODAL GLOBAL (Necessário para os detalhes dos projetos) - Estrutura limpa e com ARIA -->
+    <div id="modal-overlay" class="modal-overlay hidden" role="dialog" aria-modal="true"
+        aria-labelledby="modal-title">
+        <div class="modal-content">
+            <header class="modal-header">
+                <h2 id="modal-title">Título do Projeto</h2>
+                <button id="modal-close-button" aria-label="Fechar modal" class="modal-close-button">&times;</button>
+            </header>
+            <div class="modal-body">
+                <div class="modal-dashboard-section">
+                    <h3 class="modal-section-title">Visualização do Projeto</h3>
+                    <div class="iframe-container">
+                        <iframe id="modal-iframe" title="Conteúdo do Projeto" allowfullscreen></iframe>
                     </div>
-                    <p id="loader-data-analysis" class="loader-text">Carregando projetos...</p>
-                </section>
+                </div>
 
-                <!-- Categoria: Aplicativos -->
-                <section class="project-category-page animate-on-scroll" aria-labelledby="apps-title">
-                    <h2 class="category-title" id="apps-title">Projetos de Aplicativos (Power Apps)</h2>
-                    <div class="project-grid" id="grid-apps">
-                        <!-- Injetado via JS -->
+                <div class="modal-info-section">
+                    <div class="tab-navigation" role="tablist">
+                        <!-- Os atributos ARIA e 'active' serão gerenciados pelo JS -->
+                        <button class="modal-tab-button" data-target="tab-descricao" role="tab"
+                            aria-selected="true" tabindex="0">Descrição</button>
+                        <button class="modal-tab-button" data-target="tab-objetivos" role="tab"
+                            aria-selected="false" tabindex="-1">Objetivos</button>
+                        <button class="modal-tab-button" data-target="tab-metricas" role="tab"
+                            aria-selected="false" tabindex="-1">Métricas</button>
+                        <button class="modal-tab-button" data-target="tab-tecnologias" role="tab"
+                            aria-selected="false" tabindex="-1">Tecnologias</button>
+                        <button class="modal-tab-button" data-target="tab-detalhes" role="tab"
+                            aria-selected="false" tabindex="-1">Detalhes Técnicos</button>
+                        <button class="modal-tab-button" data-target="tab-fontes" role="tab"
+                            aria-selected="false" tabindex="-1">Fontes de Dados</button>
                     </div>
-                    <p id="loader-apps" class="loader-text">Carregando projetos...</p>
-                </section>
 
-                <!-- Categoria: Automação -->
-                <section class="project-category-page animate-on-scroll" aria-labelledby="automation-title">
-                    <h2 class="category-title" id="automation-title">Projetos de Automação (Power Automate)</h2>
-                    <div class="project-grid" id="grid-automation">
-                        <!-- Injetado via JS -->
-                    </div>
-                    <p id="loader-automation" class="loader-text">Carregando projetos...</p>
-                </section>
-
-                <!-- Categoria: Outros -->
-                <section class="project-category-page animate-on-scroll" aria-labelledby="other-title">
-                    <h2 class="category-title" id="other-title">Outros Projetos</h2>
-                    <div class="project-grid" id="grid-other">
-                        <!-- Injetado via JS -->
-                    </div>
-                    <p id="loader-other" class="loader-text">Carregando projetos...</p>
-                </section>
-
-            </main>
-
-            <!-- 2. COMPONENTE FOOTER (Injetado via JS) -->
-            <div id="app-footer"></div>
-
-            <!-- 3. MODAL GLOBAL (Necessário para os detalhes dos projetos) -->
-            <div id="modal-overlay" class="modal-overlay hidden" role="dialog" aria-modal="true"
-                aria-labelledby="modal-title">
-                <div class="modal-content">
-                    <header class="modal-header">
-                        <h2 id="modal-title">Título do Projeto</h2>
-                        <button id="modal-close-button" aria-label="Fechar modal"
-                            style="border:none; background:none; font-size:1.5rem; cursor:pointer;">&times;</button>
-                    </header>
-                    <div class="modal-body">
-                        <div class="modal-dashboard-section">
-                            <h3 class="modal-section-title">Visualização do Projeto</h3>
-                            <div class="iframe-container">
-                                <iframe id="modal-iframe" title="Conteúdo do Projeto" allowfullscreen></iframe>
-                            </div>
-                        </div>
-
-                        <div class="modal-info-section">
-                            <div class="tab-navigation" role="tablist">
-                                <button class="modal-tab-button active" data-target="tab-descricao" role="tab"
-                                    aria-selected="true">Descrição</button>
-                                <button class="modal-tab-button" data-target="tab-objetivos" role="tab"
-                                    aria-selected="false">Objetivos</button>
-                                <button class="modal-tab-button" data-target="tab-metricas" role="tab"
-                                    aria-selected="false">Métricas</button>
-                                <button class="modal-tab-button" data-target="tab-tecnologias" role="tab"
-                                    aria-selected="false">Tecnologias</button>
-                                <button class="modal-tab-button" data-target="tab-detalhes" role="tab"
-                                    aria-selected="false">Detalhes Técnicos</button>
-                                <button class="modal-tab-button" data-target="tab-fontes" role="tab"
-                                    aria-selected="false">Fontes de Dados</button>
-                            </div>
-
-                            <div class="tab-content">
-                                <div id="tab-descricao" class="tab-panel active" role="tabpanel"></div>
-                                <div id="tab-objetivos" class="tab-panel" role="tabpanel"></div>
-                                <div id="tab-metricas" class="tab-panel" role="tabpanel"></div>
-                                <div id="tab-tecnologias" class="tab-panel" role="tabpanel"></div>
-                                <div id="tab-detalhes" class="tab-panel" role="tabpanel"></div>
-                                <div id="tab-fontes" class="tab-panel" role="tabpanel"></div>
-                            </div>
-                        </div>
+                    <!-- Usando 'tab-content' para agrupar o conteúdo das abas (uniforme) -->
+                    <div class="tab-content">
+                        <!-- O conteúdo do painel é injetado dinamicamente via JS -->
+                        <div id="tab-descricao" class="tab-panel" role="tabpanel" aria-labelledby="Descrição"></div>
+                        <div id="tab-objetivos" class="tab-panel" role="tabpanel" aria-labelledby="Objetivos"></div>
+                        <div id="tab-metricas" class="tab-panel" role="tabpanel" aria-labelledby="Métricas"></div>
+                        <div id="tab-tecnologias" class="tab-panel" role="tabpanel" aria-labelledby="Tecnologias"></div>
+                        <div id="tab-detalhes" class="tab-panel" role="tabpanel" aria-labelledby="Detalhes Técnicos"></div>
+                        <div id="tab-fontes" class="tab-panel" role="tabpanel" aria-labelledby="Fontes de Dados"></div>
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
 
-            <!-- Script Principal -->
-            <script src="assets/js/script.js" defer></script>
+    <!-- Script Principal -->
+    <script src="assets/js/script.js" defer></script>
 
-        </body>
+</body>
 
-        </html>
+</html>

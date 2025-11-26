@@ -102,6 +102,7 @@
         <!-- Seção Projetos -->
         <section class="container" style="padding: 2rem 0 4rem;">
             <h2 class="section-title animate-on-scroll">Nossos Cases de Sucesso</h2>
+            <!-- O contêiner de projetos utiliza o .project-grid atualizado no CSS -->
             <div class="project-grid" id="project-grid-dynamic"></div>
             <div style="text-align: center; margin-top: 3rem;">
                 <a href="/projetos.html" class="cta-button secondary animate-on-scroll">Ver Todos os Projetos</a>
@@ -120,38 +121,47 @@
     <!-- 2. FOOTER -->
     <div id="app-footer"></div>
 
-    <!-- 3. MODAL COM ABAS (RESTAURADO) -->
-    <div id="modal-overlay" class="modal-overlay hidden">
+    <!-- 3. MODAL COM ABAS (Corrigido para consistência e ARIA) -->
+    <div id="modal-overlay" class="modal-overlay hidden" role="dialog" aria-modal="true"
+        aria-labelledby="modal-title">
         <div class="modal-content">
             <header class="modal-header">
                 <h2 id="modal-title">Título do Projeto</h2>
-                <button id="modal-close-button"
-                    style="border:none; background:none; font-size:2rem; cursor:pointer; line-height:1;">&times;</button>
+                <button id="modal-close-button" aria-label="Fechar modal" class="modal-close-button">&times;</button>
             </header>
             <div class="modal-body">
-                <!-- Área de Embed -->
-                <div class="iframe-container">
-                    <iframe id="modal-iframe" allowfullscreen></iframe>
+                <div class="modal-dashboard-section">
+                    <h3 class="modal-section-title">Visualização do Projeto</h3>
+                    <div class="iframe-container">
+                        <iframe id="modal-iframe" title="Conteúdo do Projeto" allowfullscreen></iframe>
+                    </div>
                 </div>
 
-                <!-- Navegação de Abas -->
-                <nav class="tab-navigation">
-                    <button class="modal-tab-button active" data-target="tab-descricao">Descrição</button>
-                    <button class="modal-tab-button" data-target="tab-objetivos">Objetivos</button>
-                    <button class="modal-tab-button" data-target="tab-metricas">Métricas</button>
-                    <button class="modal-tab-button" data-target="tab-tecnologias">Tecnologias</button>
-                    <button class="modal-tab-button" data-target="tab-detalhes">Detalhes Técnicos</button>
-                    <button class="modal-tab-button" data-target="tab-fontes">Fontes e Links</button>
-                </nav>
+                <div class="modal-info-section">
+                    <div class="tab-navigation" role="tablist">
+                        <!-- Os atributos ARIA e 'active' serão gerenciados pelo JS -->
+                        <button class="modal-tab-button" data-target="tab-descricao" role="tab"
+                            aria-selected="true" tabindex="0">Descrição</button>
+                        <button class="modal-tab-button" data-target="tab-objetivos" role="tab"
+                            aria-selected="false" tabindex="-1">Objetivos</button>
+                        <button class="modal-tab-button" data-target="tab-metricas" role="tab"
+                            aria-selected="false" tabindex="-1">Métricas</button>
+                        <button class="modal-tab-button" data-target="tab-tecnologias" role="tab"
+                            aria-selected="false" tabindex="-1">Tecnologias</button>
+                        <button class="modal-tab-button" data-target="tab-detalhes" role="tab"
+                            aria-selected="false" tabindex="-1">Detalhes Técnicos</button>
+                        <button class="modal-tab-button" data-target="tab-fontes" role="tab"
+                            aria-selected="false" tabindex="-1">Fontes e Links</button>
+                    </div>
 
-                <!-- Conteúdo das Abas -->
-                <div class="tab-content-area">
-                    <div id="tab-descricao" class="tab-panel active"></div>
-                    <div id="tab-objetivos" class="tab-panel"></div>
-                    <div id="tab-metricas" class="tab-panel"></div>
-                    <div id="tab-tecnologias" class="tab-panel"></div>
-                    <div id="tab-detalhes" class="tab-panel"></div>
-                    <div id="tab-fontes" class="tab-panel"></div>
+                    <div class="tab-content">
+                        <div id="tab-descricao" class="tab-panel" role="tabpanel" aria-labelledby="Descrição"></div>
+                        <div id="tab-objetivos" class="tab-panel" role="tabpanel" aria-labelledby="Objetivos"></div>
+                        <div id="tab-metricas" class="tab-panel" role="tabpanel" aria-labelledby="Métricas"></div>
+                        <div id="tab-tecnologias" class="tab-panel" role="tabpanel" aria-labelledby="Tecnologias"></div>
+                        <div id="tab-detalhes" class="tab-panel" role="tabpanel" aria-labelledby="Detalhes Técnicos"></div>
+                        <div id="tab-fontes" class="tab-panel" role="tabpanel" aria-labelledby="Fontes e Links"></div>
+                    </div>
                 </div>
             </div>
         </div>
