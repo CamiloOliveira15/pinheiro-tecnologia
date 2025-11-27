@@ -1,13 +1,10 @@
 /**
  * ARQUIVO: script.js
  * DESCRIÇÃO: Motor principal do site - VERSÃO FINAL ESTÁVEL.
- * CORREÇÕES CRÍTICAS (Item 1, 2, 3 e 4):
- * 1. Funcionalidade de Abas (Tabs) do Modal totalmente restaurada e funcional (Item 2).
- * 2. Funcionalidade de ocultar seções de projetos vazias (Item 1) confirmada e melhorada.
- * 3. Garantida a unicidade e consistência do Footer (Item 3, devido a correção em HTML/JS).
- * 4. Revisão de boas práticas (Item 4).
- * 5. Adicionado tratamento de URL para vídeos do YouTube na abertura do modal para compatibilidade (melhor prática de embed/privacidade).
- * 6. Adicionada lógica de validação e contador de caracteres para o formulário de contato (Novo Requisito).
+ * CORREÇÕES CRÍTICAS NO MODAL:
+ * 1. Garantida a exibição do conteúdo da primeira aba ao abrir o modal.
+ * 2. Lógica de ativação/desativação de abas (Tabs) totalmente funcional.
+ * 3. Tratamento de URLs de vídeo (YouTube) para modo de privacidade e compatibilidade.
  */
 
 // =================================================================
@@ -62,12 +59,12 @@ const MOCK_PROJECTS = [
         iframeSrc: "https://app.powerbi.com/view?r=eyJrIjoiMWRjOGIyMTItNTkxMS00MTYxLWFkYmQtOGU0MDdiOGQxNmJlIiwidCI6IjMyMjEyYTc5LWYzMWEtNGIwYS1hZjE0LTY4YzFjYTUyMGVmNSJ9",
         embedTitle: "Dashboard Interativo (Power BI)",
         data: {
-            descricao: "<p>Este relatório monitora o vencimento de treinamentos, NRs, exames e documentos diversos, centralizando o controle de conformidade.</p>",
-            objetivos: "<ul class='list-disc'><li>Dar visibilidade do vencimento e alertas automáticos.</li><li>Reduzir o risco de multas e não conformidade.</li></ul>",
-            metricas: "<ul class='list-disc'><li><strong>Documentos Vencidos:</strong> Quantidade total de itens expirados.</li><li><strong>Próximos Vencimentos:</strong> Contagem de itens a vencer em 30/60 dias.</li></ul>",
-            tecnologias: "<p>Microsoft Power BI, Power Query (M), DAX.</p>",
-            detalhes: "<p>Medidas DAX avançadas para cálculo temporal e uso de Tabela Calendário.</p>",
-            fontes: "<p>Dados fictícios usados para demonstração.</p>"
+            descricao: "<p>Este relatório monitora o vencimento de treinamentos, NRs, exames e documentos diversos, centralizando o controle de conformidade.</p><p>O Power BI permite filtros por colaborador, requisito e status, facilitando a gestão proativa de vencimentos e a redução de riscos regulatórios.</p>",
+            objetivos: "<ul class='list-disc'><li>Dar visibilidade do vencimento e alertas automáticos.</li><li>Reduzir o risco de multas e não conformidade, assegurando que todos os requisitos estejam sempre em dia.</li><li>Centralizar informações dispersas em um único painel acessível.</li></ul>",
+            metricas: "<ul class='list-disc'><li><strong>Documentos Vencidos:</strong> Quantidade total de itens expirados.</li><li><strong>Próximos Vencimentos:</strong> Contagem de itens a vencer em 30/60 dias.</li><li><strong>Taxa de Conformidade:</strong> Percentual de colaboradores com todos os documentos válidos.</li></ul>",
+            tecnologias: "<p>Microsoft Power BI, Power Query (M), DAX (Data Analysis Expressions).</p>",
+            detalhes: "<p>Medidas DAX avançadas para cálculo temporal e uso de Tabela Calendário. Implementação de segurança em nível de linha (RLS) para restrição de acesso por gerente.</p>",
+            fontes: "<p>Conexão a dados em nuvem (SharePoint Online). Dados fictícios usados para demonstração.</p>"
         }
     },
     {
@@ -79,12 +76,12 @@ const MOCK_PROJECTS = [
         iframeSrc: "https://www.youtube.com/embed/o8CvaeNNycs",
         embedTitle: "Demonstração em Vídeo (Power Apps)",
         data: {
-            descricao: `<p class="mb-4">O <strong>Test Hub</strong> é uma solução robusta desenvolvida na <strong>Microsoft Power Platform</strong> para modernizar e centralizar o processo de Garantia de Qualidade (QA).</p>`,
-            objetivos: `<ul class="list-disc"><li><strong>Centralizar a Gestão:</strong> Consolidar planos de teste, execuções e bugs em uma única fonte.</li><li><strong>Padronizar Processos.</strong></li></ul>`,
-            metricas: `<ul class="list-disc"><li><strong>Cobertura de Testes:</strong> % de funcionalidades testadas.</li><li><strong>Tempo de Resolução de Bugs (SLA).</strong></li></ul>`,
-            tecnologias: "<p>Microsoft Power Apps, Dataverse (ou SharePoint), Power Automate para notificações.</p>",
-            detalhes: "<p>Usa coleções aninhadas e delegação de dados complexa no Power Apps.</p>",
-            fontes: "<p>Disponível sob consulta.</p>"
+            descricao: `<p class="mb-4">O <strong>Test Hub</strong> é uma solução robusta desenvolvida na <strong>Microsoft Power Platform</strong> para modernizar e centralizar o processo de Garantia de Qualidade (QA).</p><p>Permite que desenvolvedores e analistas gerenciem planos de teste, executem casos e registrem bugs de forma eficiente, melhorando a rastreabilidade do processo.</p>`,
+            objetivos: `<ul class="list-disc"><li><strong>Centralizar a Gestão:</strong> Consolidar planos de teste, execuções e bugs em uma única fonte.</li><li><strong>Padronizar Processos:</strong> Impor uma metodologia de testes consistente entre equipes.</li><li><strong>Agilizar a Comunicação:</strong> Notificações automáticas para bugs reportados e resoluções.</li></ul>`,
+            metricas: `<ul class="list-disc"><li><strong>Cobertura de Testes:</strong> % de funcionalidades testadas por versão.</li><li><strong>Tempo de Resolução de Bugs (SLA).</strong></li><li><strong>Taxa de Sucesso dos Testes.</strong></li></ul>`,
+            tecnologias: "<p>Microsoft Power Apps (Canvas App), Dataverse (ou SharePoint), Power Automate para notificações e integrações.</p>",
+            detalhes: "<p>Usa coleções aninhadas e delegação de dados complexa no Power Apps para otimizar o desempenho. Integração com Azure DevOps para sincronização de itens de trabalho (work items).</p>",
+            fontes: "<p>Disponível sob consulta. Demonstração em vídeo. Fonte de dados principal é o Dataverse.</p>"
         }
     }
 ];
@@ -102,7 +99,6 @@ document.addEventListener('DOMContentLoaded', () => {
     setActiveMenuItem();
     initMobileMenu();
     injectStructuredData();
-    // [CORREÇÃO BOAS PRÁTICAS] Removendo setTimeout para iniciar animações
     initScrollAnimations();
 
     const pathname = window.location.pathname;
@@ -111,7 +107,6 @@ document.addEventListener('DOMContentLoaded', () => {
     } else if (pathname.endsWith('/projetos.html')) {
         initProjetosPage();
     } else if (pathname.endsWith('/contato.html')) {
-        // [NOVO] Inicializa a lógica do formulário de contato
         initContactForm();
     }
     
@@ -139,8 +134,12 @@ const modal = {
         
         // Seletores unificados para compatibilidade com index.html e projetos.html
         this.tabs = document.querySelectorAll('.modal-tab-button');
-        // Painéis podem estar dentro de .tab-content OU .tab-content-area (mantendo compatibilidade)
-        this.panels = document.querySelectorAll('.tab-content > .tab-panel, .tab-content-area > .tab-panel');
+        // Seleção robusta dos painéis de conteúdo
+        this.panels = document.querySelectorAll('.tab-content > .tab-panel'); // Apenas o seletor mais limpo
+        
+        // Desativa a classe 'active' de todos os painéis na inicialização
+        this.panels.forEach(p => p.classList.remove('active'));
+
 
         const closeButton = document.getElementById('modal-close-button');
         if (closeButton) {
@@ -148,10 +147,11 @@ const modal = {
         }
         
         this.overlay.addEventListener('click', (e) => {
-            // Verifica se o clique foi no overlay, não no conteúdo
+            // Fecha se o clique foi no overlay
             if (e.target === this.overlay) this.close();
         });
         document.addEventListener('keydown', (e) => {
+            // Fecha com a tecla Escape
             if (e.key === 'Escape' && !this.overlay.classList.contains('hidden')) this.close();
         });
 
@@ -172,7 +172,7 @@ const modal = {
 
         // Seleciona todas as abas e painéis dentro deste container
         const allTabs = parentContainer.querySelectorAll('.modal-tab-button');
-        const allPanels = parentContainer.querySelectorAll('.tab-content > .tab-panel, .tab-content-area > .tab-panel');
+        const allPanels = parentContainer.querySelectorAll('.tab-content > .tab-panel');
 
         // 1. Desativa todos os botões e painéis
         allTabs.forEach(t => {
@@ -193,7 +193,7 @@ const modal = {
         const targetPanel = parentContainer.querySelector(`#${targetId}`);
 
         if (targetPanel) {
-            targetPanel.classList.add('active');
+            targetPanel.classList.add('active'); // O CSS usa esta classe para 'display: block'
         }
     },
 
@@ -208,7 +208,7 @@ const modal = {
         if (src.includes('youtube.com') || src.includes('youtu.be')) {
             const videoIdMatch = src.match(/(?:v=|youtu\.be\/|\/embed\/)([^&?\/]+)/);
             if (videoIdMatch && videoIdMatch[1]) {
-                src = `https://www.youtube-nocookie.com/embed/${videoIdMatch[1]}`;
+                src = `https://www.youtube-nocookie.com/embed/${videoIdMatch[1]}?rel=0`; // rel=0 para evitar vídeos relacionados
             }
         }
         
@@ -229,16 +229,16 @@ const modal = {
         setData('tab-detalhes', d.detalhes);
         setData('tab-fontes', d.fontes);
 
-        // 3. Reseta para a primeira aba (Descrição) e aplica a correção ARIA/active
+        // 3. Ativa a primeira aba (Descrição)
         const firstTab = this.tabs[0];
         if (firstTab) {
-            // Usa handleTabClick para garantir que a primeira aba esteja visível
+            // Usa handleTabClick para garantir que a primeira aba esteja visível e ARIA atualizado
             this.handleTabClick(firstTab); 
         }
 
         // 4. Exibe
         this.overlay.classList.remove('hidden');
-        // Boa prática: bloqueia o scroll do body principal
+        // Boa prática: bloqueia o scroll do body principal para melhor foco no modal
         document.body.style.overflow = 'hidden'; 
     },
 
@@ -284,13 +284,12 @@ async function initIndexPage() {
         // Exibe apenas os primeiros 4 projetos na página inicial
         projects.slice(0, 4).forEach(p => createCard(p, grid));
     }
-    // Remove o loader (se existir, no código atual da index não está presente, mas é boa prática)
     const loader = document.getElementById('project-loader');
     if (loader) loader.classList.add('hidden');
 }
 
 /**
- * Corrigido: Garante que blocos sem projetos sejam totalmente removidos.
+ * Garante que blocos sem projetos sejam totalmente removidos na página projetos.html.
  */
 async function initProjetosPage() {
     const projects = await fetchProjects();
@@ -302,12 +301,10 @@ async function initProjetosPage() {
         'other': 'grid-other'
     };
 
-    // Objeto temporário para agrupar projetos
     const groupedProjects = { 'data-analysis': [], 'apps': [], 'automation': [], 'other': [] };
 
     // 1. Agrupar projetos (aprimorado para evitar categorias undefined)
     projects.forEach(p => {
-        // Usa 'other' se a categoria estiver faltando ou for inválida
         const categoryKey = p.category && categories.hasOwnProperty(p.category) ? p.category : 'other';
         groupedProjects[categoryKey].push(p);
     });
@@ -338,10 +335,12 @@ async function initProjetosPage() {
     document.querySelectorAll('.loader-text').forEach(l => l.classList.add('hidden'));
 }
 
+/**
+ * Cria um card de projeto e anexa o listener para abrir o modal.
+ */
 function createCard(project, container) {
     const card = document.createElement('div');
     card.className = 'project-card animate-on-scroll';
-    // Adicionado aria-labelledby para acessibilidade
     card.setAttribute('role', 'article');
     card.setAttribute('aria-labelledby', `project-title-${project.id}`);
 
@@ -357,7 +356,11 @@ function createCard(project, container) {
             <button class="project-card-button" aria-label="Ver detalhes de ${project.title}">Ver Projeto</button>
         </div>
     `;
-    card.querySelector('button').addEventListener('click', () => openModal(project));
+    // Listener de clique no botão para abrir o modal
+    card.querySelector('button').addEventListener('click', (e) => {
+        e.stopPropagation(); // Evita o clique acidental no card se ele tiver outro listener
+        openModal(project);
+    });
     
     // Adiciona o card ao container
     container.appendChild(card);
@@ -379,7 +382,7 @@ function renderComponents() {
 }
 
 /**
- * Melhoria no setActiveMenuItem para lidar melhor com a raiz e subpáginas
+ * Atualiza o item ativo na barra de navegação com base na URL.
  */
 function setActiveMenuItem() {
     // Normaliza o caminho: remove trailing slash e '.html' (exceto na raiz)
@@ -414,12 +417,14 @@ function setActiveMenuItem() {
     });
 }
 
+/**
+ * Inicializa a funcionalidade do menu sanduíche para dispositivos móveis.
+ */
 function initMobileMenu() {
     const menuToggle = document.querySelector('.menu-toggle');
     const navWrapper = document.querySelector('.nav-menu-wrapper');
     if (!menuToggle || !navWrapper) return;
 
-    // Garante que o menuToggle use a classe correta para fechar/abrir 
     const toggleMenu = (expand) => {
         if (expand) {
             navWrapper.classList.add('open');
@@ -448,7 +453,6 @@ function initMobileMenu() {
     // Fecha o menu se um link for clicado (apenas em mobile)
     document.querySelectorAll('.nav-links a').forEach(link => {
         link.addEventListener('click', () => {
-             // Verifica se é mobile (usando uma media query simples em JS para simular)
             if (window.innerWidth < 768) {
                 toggleMenu(false);
             }
@@ -456,8 +460,10 @@ function initMobileMenu() {
     });
 }
 
+/**
+ * Injeta dados estruturados no cabeçalho para otimização SEO.
+ */
 function injectStructuredData() {
-    // Adiciona o script de dados estruturados apenas se ainda não existir
     if (document.querySelector('script[type="application/ld+json"]')) return;
     
     const script = document.createElement('script');
@@ -474,6 +480,9 @@ function injectStructuredData() {
     document.head.appendChild(script);
 }
 
+/**
+ * Inicializa as animações de rolagem (Intersection Observer).
+ */
 function initScrollAnimations() {
     const elementsToAnimate = document.querySelectorAll('.animate-on-scroll, .service-card, .project-card');
     elementsToAnimate.forEach(el => el.classList.add('animate-on-scroll'));
@@ -495,7 +504,7 @@ function initScrollAnimations() {
 }
 
 /**
- * [NOVO] Lógica para inicializar a validação e o contador do formulário de contato.
+ * Lógica para inicializar a validação e o contador do formulário de contato.
  */
 function initContactForm() {
     const form = document.getElementById('contact-form-main');
@@ -504,7 +513,6 @@ function initContactForm() {
     const submitButton = document.getElementById('contact-submit-btn');
     
     if (!form || !messageTextarea || !charCountDisplay || !submitButton) {
-        // Sai se os elementos não existirem (não estamos na página de contato)
         return;
     }
 
@@ -516,7 +524,6 @@ function initContactForm() {
     function updateCharCount() {
         let currentLength = messageTextarea.value.length;
         
-        // Garante que o texto não exceda o limite definido no HTML
         if (currentLength > MAX_LENGTH) {
             messageTextarea.value = messageTextarea.value.substring(0, MAX_LENGTH);
             currentLength = MAX_LENGTH;
@@ -524,7 +531,6 @@ function initContactForm() {
 
         charCountDisplay.textContent = `${currentLength} / ${MAX_LENGTH}`;
         
-        // Altera a cor do contador se estiver no limite (melhoria visual)
         if (currentLength === MAX_LENGTH) {
             charCountDisplay.style.color = '#D93025'; // Cor de erro
         } else {
@@ -535,7 +541,7 @@ function initContactForm() {
     }
 
     /**
-     * Verifica se todos os campos requeridos (com 'required') estão preenchidos.
+     * Verifica se todos os campos requeridos estão preenchidos.
      */
     function checkFormValidity() {
         const requiredFields = form.querySelectorAll('[required]');
@@ -551,42 +557,32 @@ function initContactForm() {
         submitButton.disabled = !isFormValid;
     }
     
-    // Inicializa o contador e a validação na carga da página
     updateCharCount();
 
-    // Adiciona listeners para contagem e validação em tempo real
     messageTextarea.addEventListener('input', updateCharCount);
-    
-    // Ouve mudanças em todos os campos do formulário para habilitar/desabilitar o botão
     form.addEventListener('input', checkFormValidity);
 
-    // Placeholder para o evento de submit (A API de envio deve ser implementada aqui)
+    // Lógica de simulação de envio do formulário
     form.addEventListener('submit', (e) => {
         e.preventDefault();
         
         if (submitButton.disabled) {
-            // Se o botão estiver desabilitado, impede o envio (redundante, mas seguro)
             return;
         }
 
-        // Simula o envio
         submitButton.textContent = 'Enviando...';
         submitButton.disabled = true;
         
-        // Log dos dados para visualização (em um ambiente real, faria a chamada à API)
         console.log('Formulário Enviado (Simulação). Dados:', new FormData(form));
 
-        // Simulação de sucesso após 2 segundos
         setTimeout(() => {
-            // Exibe mensagem de sucesso (melhoria de UX)
             const messageDiv = document.getElementById('form-message');
             messageDiv.classList.remove('hidden', 'error', 'warning');
             messageDiv.classList.add('success');
             messageDiv.textContent = 'Sua mensagem foi enviada com sucesso! Em breve entraremos em contato.';
             
-            // Reseta o formulário
             form.reset();
-            updateCharCount(); // Reseta o contador
+            updateCharCount();
             
             submitButton.textContent = 'Enviar Mensagem';
         }, 2000);

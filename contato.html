@@ -40,14 +40,14 @@
             <h1 id="contact-title" class="section-title">Fale Conosco</h1>
             <p class="contact-intro">
                 Estamos prontos para entender seu desafio e propor a melhor solução em dados.
-                Preencha o formulário abaixo ou escolha um dos nossos canais de atendimento.
+                Preencha o formulário abaixo para iniciarmos uma conversa.
             </p>
 
             <!-- Wrapper do Formulário -->
             <div class="contact-form-wrapper">
                 <h2 class="contact-subtitle">Envie sua mensagem</h2>
 
-                <form id="contact-form-main"> <!-- ID CORRIGIDO -->
+                <form id="contact-form-main">
                     <div id="form-message" class="form-message hidden" role="alert" aria-live="polite"></div>
 
                     <div class="form-group">
@@ -61,26 +61,25 @@
                     </div>
 
                     <div class="form-group">
-                        <label for="phone">Celular / WhatsApp</label>
+                        <label for="phone">Celular / WhatsApp (Opcional)</label>
                         <input type="tel" id="phone" name="phone" class="form-input" placeholder="(11) 99999-9999"
                             maxlength="15" autocomplete="tel">
                     </div>
 
                     <div class="form-group">
-                        <label for="subject">Assunto</label>
+                        <label for="subject">Assunto (Ex: Consultoria em Power BI)</label>
                         <input type="text" id="subject" name="subject" class="form-input" required autocomplete="off">
                     </div>
 
                     <div class="form-group">
-                        <label for="message">Mensagem</label>
+                        <label for="message">Mensagem (Descreva seu desafio)</label>
                         <textarea id="message" name="message" class="form-textarea" rows="5" maxlength="250" required
                             aria-describedby="char-count-text"></textarea>
-                        <small id="char-count-text" role="status" aria-live="polite"
-                            style="display: block; text-align: right; color: #666; margin-top: 0.25rem;">0 / 250</small>
+                        <small id="char-count-text" class="char-count-text" role="status" aria-live="polite"
+                            style="display: block; text-align: right; margin-top: 0.25rem;">0 / 250</small>
                     </div>
 
                     <button type="submit" id="contact-submit-btn" class="cta-button" disabled>
-                        <!-- Removido o inline style de largura, que agora é controlada pelo CSS no media query -->
                         Enviar Mensagem
                     </button>
                 </form>
@@ -88,13 +87,14 @@
 
             <!-- Outros Canais -->
             <section class="contact-channels-section">
-                <h2 class="section-title" style="margin-bottom: 1.5rem; font-size: 1.5rem;">Outros Canais</h2>
+                <h2 class="section-title" style="margin-bottom: 2rem; font-size: 1.75rem; font-weight: 700;">Conecte-se Diretamente</h2>
 
                 <div class="contact-card-grid">
 
                     <a href="https://www.linkedin.com/in/camilo-pinheiro/" target="_blank" rel="noopener noreferrer"
                         class="contact-card">
                         <div class="contact-card-icon">
+                            <!-- Ícone LinkedIn -->
                             <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24"
                                 fill="currentColor">
                                 <path
@@ -102,7 +102,7 @@
                                 </path>
                             </svg>
                         </div>
-                        <div>
+                        <div class="contact-card-info">
                             <h3 class="contact-card-title">LinkedIn</h3>
                             <p class="contact-card-detail">/in/camilo-pinheiro</p>
                         </div>
@@ -110,6 +110,7 @@
 
                     <a href="mailto:camilo@pinheirotecnologia.com" class="contact-card">
                         <div class="contact-card-icon">
+                            <!-- Ícone E-mail -->
                             <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24"
                                 fill="currentColor">
                                 <path
@@ -117,7 +118,7 @@
                                 </path>
                             </svg>
                         </div>
-                        <div>
+                        <div class="contact-card-info">
                             <h3 class="contact-card-title">E-mail</h3>
                             <p class="contact-card-detail">camilo@pinheirotecnologia.com</p>
                         </div>
@@ -126,6 +127,7 @@
                     <a href="https://api.whatsapp.com/send?phone=5511986777281" target="_blank"
                         rel="noopener noreferrer" class="contact-card">
                         <div class="contact-card-icon">
+                            <!-- Ícone WhatsApp -->
                             <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24"
                                 fill="currentColor">
                                 <path
@@ -133,7 +135,7 @@
                                 </path>
                             </svg>
                         </div>
-                        <div>
+                        <div class="contact-card-info">
                             <h3 class="contact-card-title">WhatsApp</h3>
                             <p class="contact-card-detail">+55 11 98677-7281</p>
                         </div>

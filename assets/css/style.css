@@ -2,21 +2,24 @@
  * ARQUIVO: style.css
  * DESCRIÇÃO: Folha de estilos principal para o site Pinheiro Tecnologia.
  * ARQUITETURA: Site empresarial (Versão Estática - Sem Admin).
- * OTIMIZAÇÃO: Revisão de performance, acessibilidade e mobile.
+ * OTIMIZAÇÃO: Revisão de performance, acessibilidade, mobile e UI/UX (Refatorado 2025).
  * =========================================
  */
 
 /* * =========================================
- * VARIÁVEIS GLOBAIS (RAIZ)
+ * VARIÁVEIS GLOBAIS (RAIZ) - NOVAS CORES E SOMBREAMENTO
  * =========================================
  */
 :root {
     /* Paleta de Cores */
-    --primary-color-accessible: #1A6A6C;
+    --primary-color-accessible: #1A6A6C; /* Ciano Pinheiro */
     --primary-color-hover: #218c8f;
     --primary-color-active: #15585a;
+    
+    --accent-color: #0078D4; /* Azul Microsoft original (mantido para evitar conflitos na navegação/foco global) */
+    --accent-color-light: #e6f7ff; /* Fundo leve para destaque */
 
-    --background-color: #f4f7f6;
+    --background-color: #F8F9FA; /* Fundo levemente mais cinza */
     --surface-color: #ffffff;
     --text-color: #333333;
     --text-color-light: #555555;
@@ -33,6 +36,9 @@
     --border-radius-lg: 16px;
     --shadow-sm: 0 4px 6px rgba(0, 0, 0, 0.05);
     --shadow-md: 0 10px 15px rgba(0, 0, 0, 0.1);
+    
+    /* Novo: Sombra mais suave para cards */
+    --shadow-card-hover: 0 10px 20px rgba(0, 0, 0, 0.07), 0 0 0 2px rgba(0, 120, 212, 0); /* Adicionado Brilho */
 }
 
 /* [CORREÇÃO SOLICITADA] Ocultar a seção de clientes no CSS principal */
@@ -75,31 +81,33 @@ body {
     display: none !important;
 }
 
-/* Estilo de Foco (Acessibilidade) */
+/* Estilo de Foco (Acessibilidade) - Usando ACCENT COLOR para destaque (Geral: Botões, Links) */
 a:focus-visible,
 button:focus-visible,
 [tabindex="0"]:focus-visible,
 input:focus-visible,
 textarea:focus-visible,
 select:focus-visible {
-    outline: 3px solid var(--primary-color-accessible);
+    /* MANTIDO no ACCENT COLOR (Azul) - para elementos de navegação/botões */
+    outline: 3px solid var(--accent-color); 
     outline-offset: 3px;
     border-radius: var(--border-radius-sm);
-    box-shadow: 0 0 0 3px rgba(26, 106, 108, 0.3);
+    box-shadow: 0 0 0 3px rgba(0, 120, 212, 0.3);
 }
 
 input:focus-visible,
 textarea:focus-visible,
 select:focus-visible {
-    /* Oculta o outline padrão e usa o box-shadow customizado para foco */
+    /* CORREÇÃO CRÍTICA 1: Sobrescreve a cor de foco global para usar o Ciano Pinheiro nos inputs */
     outline: none;
-    border-color: var(--primary-color-accessible);
+    border-color: var(--primary-color-accessible); 
+    box-shadow: 0 0 0 3px rgba(26, 106, 108, 0.3);
 }
 
 /* Título Padrão de Seção */
 .section-title {
     font-size: 2.0rem;
-    font-weight: 600;
+    font-weight: 700; /* Aumentado para 700 para mais destaque */
     text-align: center;
     margin-bottom: 2.5rem;
     color: #1a202c;
@@ -113,37 +121,49 @@ select:focus-visible {
     border-radius: 50px;
     text-decoration: none;
     font-weight: 600;
-    transition: background-color 0.2s ease, transform 0.2s ease;
+    transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.3s ease;
     display: inline-block;
     border: none;
     font-size: 1rem;
     cursor: pointer;
     font-family: var(--font-primary);
-    /* Removido o width: 100% daqui para que botões que não são do form de contato 
-       (como na home) usem a largura mínima. */
 }
 
-.cta-button:hover {
+/* CORREÇÃO: Usar a cor primária no hover do CTA principal */
+.cta-button:hover,
+.cta-button.hero-cta:hover,
+.project-card-button:hover { 
     background-color: var(--primary-color-hover);
     transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.cta-button.hero-cta:hover {
+    transform: translateY(-4px); 
+    box-shadow: 0 10px 25px rgba(26, 106, 108, 0.4);
 }
 
 .cta-button:disabled {
     background-color: #ccc;
     cursor: not-allowed;
     transform: none;
+    box-shadow: none;
 }
 
-/* Botão Secundário (ex: Ver Todos) */
-.cta-button.secondary-button {
+/* Botão Secundário (ex: Ver Todos) - Ajustado para visual mais integrado */
+.cta-button.secondary {
     background-color: var(--surface-color);
-    color: var(--primary-color-accessible);
-    border: 2px solid var(--primary-color-accessible);
+    color: var(--primary-color-accessible); /* Usando cor primária no texto */
+    border: 2px solid var(--primary-color-accessible); /* Usando cor primária na borda */
+    padding: calc(0.75rem - 2px) calc(1.75rem - 2px); 
+    transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.3s ease;
 }
 
-.cta-button.secondary-button:hover {
-    background-color: #f0fafa;
+.cta-button.secondary:hover {
+    background-color: #f0fafa; /* Um hover muito suave na cor primária */
+    color: var(--primary-color-accessible);
     transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
 
@@ -171,17 +191,13 @@ select:focus-visible {
 }
 
 .nav-logo {
-    /* [CORREÇÃO] Define altura fixa e largura automática para manter proporção */
     height: 30px;
     width: auto;
-    /* object-fit garante que a imagem não distorça se houver restrições externas */
     object-fit: contain;
     display: block;
 }
 
-/* Estilos para o Wrapper do Menu (para controle mobile) */
 .nav-menu-wrapper {
-    /* Em desktop, este wrapper se comporta como um container flex para os links */
     display: flex;
     align-items: center;
     flex-grow: 1;
@@ -221,7 +237,6 @@ select:focus-visible {
     font-weight: 600;
 }
 
-/* Botão do Menu Sanduíche (Oculto por padrão em Desktop) */
 .menu-toggle {
     display: none;
     background: none;
@@ -232,7 +247,6 @@ select:focus-visible {
     justify-content: center;
     z-index: 101;
     width: 40px;
-    /* Garante tamanho de toque/clique adequado */
     height: 40px;
 }
 
@@ -242,19 +256,22 @@ select:focus-visible {
 
 
 /* * =========================================
- * SEÇÃO "HERO" (INDEX) - CORRIGIDA COM DEGRADÊ
+ * SEÇÃO "HERO" (INDEX) - REFORÇADA PARA DESTAQUE VISUAL
  * =========================================
  */
 .hero-section {
-    /* MISTURA DO ORIGINAL COM O DEGRADÊ SUAVE */
-    background: linear-gradient(135deg, var(--surface-color) 0%, #EDF7F6 100%);
-    padding: 6rem 0 5rem;
+    background: linear-gradient(135deg, #ffffff 0%, #f0fafa 100%);
+    /* Gradiente sutil */
+    padding: 5rem 0 3rem; /* Reduzido o padding vertical para centralizar melhor */
     border-bottom: 1px solid var(--border-color);
     position: relative;
     overflow: hidden;
+    /* Novo: Layout em duas colunas para desktop */
+    display: flex; 
+    align-items: center;
+    justify-content: center;
 }
 
-/* Elemento decorativo (Círculo difuso) */
 .hero-section::before {
     content: '';
     position: absolute;
@@ -269,40 +286,61 @@ select:focus-visible {
 }
 
 .hero-content {
-    text-align: center;
-    max-width: 800px;
-    margin: 0 auto;
+    /* Removido max-width e centralização para usar layout de 2 colunas */
+    text-align: left; /* Alinhamento à esquerda na coluna */
+    max-width: 600px;
     position: relative;
     z-index: 1;
 }
 
+.hero-visual {
+    /* NOVO: Div para o Mockup/Imagem */
+    display: none; /* Oculto por padrão, visível em desktop */
+    align-items: center;
+    justify-content: center;
+    max-width: 450px;
+    height: auto;
+    padding-left: 2rem;
+    position: relative;
+    z-index: 1;
+}
+
+.hero-mockup {
+    width: 100%;
+    height: auto;
+    border-radius: var(--border-radius-lg);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15); /* Sombra 3D suave */
+    animation: float 4s ease-in-out infinite; /* Efeito flutuante */
+}
+
+
 .hero-content h1 {
-    font-size: 2.75rem;
-    font-weight: 700;
-    color: #1a202c;
+    font-size: 2.8rem; /* Ligeiramente maior */
+    font-weight: 800; /* Mais ousado */
+    color: #1a202c; 
     margin-bottom: 1rem;
     line-height: 1.2;
+    /* Gradient no texto (melhoria visual) */
+    background: linear-gradient(90deg, var(--primary-color-accessible), #1a202c);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
 .hero-subheading {
-    font-size: 1.25rem;
+    font-size: 1.3rem;
     color: var(--text-color-light);
     margin-bottom: 2rem;
-    max-width: 650px;
-    margin-left: auto;
-    margin-right: auto;
 }
 
 .hero-cta {
-    padding: 0.85rem 2rem;
+    padding: 0.9rem 2rem; /* Ligeiramente maior */
     font-size: 1.1rem;
-    /* Estilos extras do hero para destaque */
     box-shadow: 0 4px 15px rgba(26, 106, 108, 0.3);
 }
 
-
 /* * =========================================
- * SEÇÃO "SERVIÇOS" (INDEX) - CORRIGIDA COM ANIMAÇÃO DE ÍCONE
+ * SEÇÃO "SERVIÇOS" (INDEX) - COM BRILHO NO HOVER
  * =========================================
  */
 .services-section {
@@ -323,8 +361,8 @@ select:focus-visible {
     padding: 2rem;
     text-align: left;
     box-shadow: var(--shadow-sm);
-    /* Transição para Hover e Bouncy Effect */
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    /* TRANSITION: Adicionado shadow para o efeito de brilho */
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.3s ease;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
@@ -333,8 +371,9 @@ select:focus-visible {
 
 .service-card:hover {
     transform: translateY(-8px);
-    box-shadow: var(--shadow-md);
-    border-color: rgba(26, 106, 108, 0.2);
+    /* Removida a borda azul, mantendo a sombra suave e o glow na cor primária */
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1), 0 0 0 3px rgba(26, 106, 108, 0.1); 
+    border-color: var(--border-color); /* Mantém a cor original da borda ou transparente */
 }
 
 .service-icon {
@@ -348,14 +387,13 @@ select:focus-visible {
     color: var(--text-color-inverse);
     margin-bottom: 1.5rem;
     box-shadow: 0 4px 6px rgba(26, 106, 108, 0.2);
-    /* Transição para a animação de hover */
     transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), background-color 0.3s ease;
 }
 
 /* ANIMAÇÃO DE ROTAÇÃO E ESCALA DO ÍCONE */
 .service-card:hover .service-icon {
     transform: scale(1.15) rotate(5deg);
-    background-color: var(--primary-color-hover);
+    background-color: var(--primary-color-hover); /* Usando primary-color-hover no ícone */
 }
 
 .service-icon svg {
@@ -364,8 +402,8 @@ select:focus-visible {
 }
 
 .service-title {
-    font-size: 1.35rem;
-    font-weight: 600;
+    font-size: 1.45rem; /* Ligeiramente maior */
+    font-weight: 700; /* Mais destaque */
     color: #1a202c;
     margin-bottom: 0.75rem;
     width: 100%;
@@ -380,7 +418,7 @@ select:focus-visible {
 
 
 /* * =========================================
- * SEÇÃO DE PROJETOS (INDEX e PROJETOS)
+ * SEÇÃO DE PROJETOS (INDEX e PROJETOS) - ADICIONADO GLOW E INFO
  * =========================================
  */
 .project-category {
@@ -399,36 +437,17 @@ select:focus-visible {
     font-style: italic;
 }
 
-/* Wrapper para o grid de projetos na Index (REMOVIDO SCROLL HORIZONTAL) */
-.project-grid-index-wrapper {
-    /* Removemos o overflow-x: auto */
-    overflow: hidden;
-}
-
-
-/* Grid de Projetos */
 .project-grid {
     display: flex;
-    /* NOVO: Permite quebra de linha em telas pequenas/médias */
     flex-wrap: wrap;
-    /* Adiciona margem lateral automática para centralizar o contêiner do grid */
     margin: 0 auto;
-    /* Adiciona espaçamento entre os cards */
     gap: 2rem;
-    /* Centraliza o conteúdo dentro do flex container */
     justify-content: center;
-    /* Garante que o grid não ocupe mais do que um certo limite */
     max-width: 1200px;
 }
 
-/* Estilo para o botão "Ver Todos" */
-.see-all-container {
-    text-align: center;
-    margin-top: 2.5rem;
-}
-
 /* * =========================================
- * CARTÃO DE PROJETO
+ * CARTÃO DE PROJETO - NOVO ESTILO
  * =========================================
  */
 .project-card {
@@ -439,24 +458,31 @@ select:focus-visible {
     overflow: hidden;
     display: flex;
     flex-direction: column;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    /* Transição para hover + glow */
+    transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease; 
     width: 100%;
-    /* Mantém o max-width do card individual */
     max-width: 340px;
+    cursor: pointer;
 }
 
 .project-card:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--shadow-md);
+    transform: translateY(-8px); /* Ligeiramente mais alto */
+    /* Removida a borda azul, mantendo a sombra suave e o glow na cor primária */
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1), 0 0 0 3px rgba(26, 106, 108, 0.1); 
+    border-color: var(--border-color); /* Mantém a cor original da borda ou transparente */
 }
 
 .project-thumbnail {
     width: 100%;
     height: 200px;
-    /* Usar 'cover' em vez de 'contain' pode ser melhor para UX em portfólio */
     object-fit: cover;
     display: block;
     background-color: #f0f0f0;
+    transition: transform 0.5s ease;
+}
+
+.project-card:hover .project-thumbnail {
+    transform: scale(1.05); /* Zoom suave */
 }
 
 .project-thumbnail-placeholder {
@@ -483,13 +509,41 @@ select:focus-visible {
 }
 
 .project-card-content h3 {
-    font-size: 1.15rem;
-    font-weight: 600;
-    margin-bottom: 1rem;
+    font-size: 1.25rem; /* Ligeiramente maior */
+    font-weight: 700; /* Mais destaque */
+    margin-bottom: 0.5rem;
     color: #1a202c;
 }
 
+/* NOVO: Classe para as informações de tecnologia e KPI */
+.project-meta-info {
+    font-size: 0.9rem;
+    color: var(--text-color-light);
+    margin-bottom: 1.2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.project-tag {
+    font-weight: 600;
+    /* MANTÉM ACCENT COLOR para destaque da tecnologia */
+    color: var(--accent-color); 
+    background-color: var(--accent-color-light);
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    white-space: nowrap;
+}
+
+.project-kpi {
+    font-weight: 500;
+    color: var(--primary-color-accessible);
+}
+
+/* O botão dentro do card foi alterado para um link com texto mais discreto */
 .project-card-button {
+    /* Manter estilos de botão para consistência visual */
     background-color: var(--primary-color-accessible);
     color: #ffffff;
     border: none;
@@ -504,68 +558,13 @@ select:focus-visible {
 }
 
 .project-card-button:hover {
-    background-color: var(--primary-color-hover);
+    background-color: var(--primary-color-hover); /* Usando a cor primária no hover */
     transform: scale(1.02);
 }
 
 
 /* * =========================================
- * SEÇÃO DE CLIENTES (CARROSSEL)
- * =========================================
- */
-.client-carousel-container {
-    width: 100%;
-    overflow: hidden;
-    -webkit-mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
-    mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
-}
-
-.client-carousel-track {
-    display: flex;
-    gap: 2rem;
-    /* Ajustado para um valor que funcione com o JS clonando os itens */
-    animation: scroll 40s linear infinite;
-    min-width: fit-content;
-}
-
-.client-logo {
-    flex-shrink: 0;
-    width: 150px;
-    height: 60px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.client-logo img {
-    max-width: 100%;
-    max-height: 100%;
-    object-fit: contain;
-    opacity: 0.7;
-    filter: grayscale(100%);
-    transition: opacity 0.3s ease, filter 0.3s ease;
-}
-
-.client-logo:hover img {
-    opacity: 1;
-    filter: grayscale(0%);
-}
-
-@keyframes scroll {
-
-    /* O JS duplica o conteúdo, o 50% garante que o loop seja perfeito */
-    0% {
-        transform: translateX(0);
-    }
-
-    100% {
-        transform: translateX(-50%);
-    }
-}
-
-
-/* * =========================================
- * PÁGINA "SOBRE NÓS"
+ * PÁGINA "SOBRE NÓS" (Melhoria de Hierarquia)
  * =========================================
  */
 .about-container {
@@ -578,20 +577,23 @@ select:focus-visible {
 }
 
 .about-container h1,
-/* H2 incluído devido à correção da hierarquia no HTML */
 .about-container h2 {
     font-size: 2rem;
     color: #1a202c;
     margin-bottom: 1.5rem;
 }
 
-.about-container .about-subtitle {
+.about-container .about-subtitle,
+/* A class "service-card" usada no sobre.html também usa esta regra */
+.about-container h2[style] {
     /* Estilo de H3/H2 secundário */
     font-size: 1.5rem;
+    font-weight: 600;
     color: var(--text-color);
     margin-top: 2rem;
     margin-bottom: 1rem;
-    border-bottom: 3px solid var(--primary-color-accessible);
+    /* CORREÇÃO: Usando PRIMARY COLOR na borda (volta para a cor principal do site) */
+    border-bottom: 3px solid var(--primary-color-accessible); 
     padding-bottom: 0.5rem;
     display: inline-block;
 }
@@ -628,46 +630,32 @@ select:focus-visible {
     border-bottom-color: var(--primary-color-accessible);
 }
 
+
 /* * =========================================
  * PÁGINA DE PROJETOS (projetos.html)
  * =========================================
  */
-.project-category-page {
-    padding: 2rem 0;
-    margin-bottom: 2rem;
-}
-
-.project-category-page:first-of-type {
-    padding-top: 0;
-}
 
 /* Título da Categoria */
 .category-title {
     font-size: 1.75rem;
-    font-weight: 600;
+    font-weight: 700; /* Mais ousado */
     color: #1a202c;
-    border-bottom: 3px solid var(--primary-color-accessible);
+    /* CORREÇÃO: Usando PRIMARY COLOR na borda (volta para a cor principal do site) */
+    border-bottom: 3px solid var(--primary-color-accessible); 
     padding-bottom: 0.5rem;
     margin-bottom: 2.5rem;
     display: inline-block;
 }
 
-/* Mensagem de grade vazia */
-.empty-grid-message {
-    font-style: italic;
-    color: var(--text-color-light);
-    text-align: center;
-    padding: 2rem;
-}
-
-
 /* * =========================================
- * PÁGINA "CONTATO"
+ * PÁGINA "CONTATO" - MELHORIAS DE DESIGN
  * =========================================
  */
+
 .contact-page-container {
     padding: 3rem 0;
-    max-width: 800px;
+    max-width: 900px; /* Aumentado max-width */
     margin: 0 auto;
 }
 
@@ -683,90 +671,68 @@ select:focus-visible {
 
 .contact-form-wrapper {
     background: var(--surface-color);
-    padding: 2.5rem;
+    padding: 3rem; /* Aumentado padding */
     border-radius: var(--border-radius-lg);
-    box-shadow: var(--shadow-sm);
+    /* Aplicando uma sombra mais robusta para destacar o formulário */
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08); 
     margin-bottom: 3rem;
+    border-left: 5px solid var(--primary-color-accessible); /* Adiciona um toque de cor */
 }
 
 .contact-subtitle {
-    font-size: 1.5rem;
-    font-weight: 600;
-    color: #1a202c;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--primary-color-accessible);
     margin-bottom: 1.5rem;
     text-align: center;
 }
 
 /* Formulário (Estilos Limpos) */
 .form-group {
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.75rem; /* Mais espaçamento */
 }
 
 .form-group label {
-    display: block;
     font-weight: 600;
-    margin-bottom: 0.5rem;
-    color: var(--text-color);
+    color: #1a202c;
 }
 
 .form-input,
 .form-textarea {
     width: 100%;
-    padding: 0.75rem;
+    padding: 0.85rem; /* Aumentado padding */
     font-size: 1rem;
-    font-family: var(--font-primary);
     border: 1px solid var(--border-color);
     border-radius: var(--border-radius-sm);
-    background: #f9f9f9;
-    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    background: #ffffff; /* Fundo branco puro */
+    transition: border-color 0.2s ease, box-shadow 0.2s ease; 
 }
 
-.form-textarea {
-    min-height: 120px;
-    resize: vertical;
-}
-
-/* Estado de foco unificado */
+/* Sobrescreve a regra global de :focus-visible apenas para inputs/textareas */
+.form-input:focus-visible,
+.form-textarea:focus-visible,
 .form-input:focus,
 .form-textarea:focus {
-    border-color: var(--primary-color-accessible);
-    box-shadow: 0 0 0 1px var(--primary-color-accessible);
+    /* CORREÇÃO 1: Garante que a cor de foco do campo seja a PRIMARY (Ciano Pinheiro) */
+    outline: none;
+    border-color: var(--primary-color-accessible); 
+    box-shadow: 0 0 0 3px rgba(26, 106, 108, 0.3);
 }
 
-.form-message {
-    padding: 1rem;
-    border-radius: var(--border-radius-sm);
-    margin-bottom: 1rem;
-    font-weight: 500;
-    border: 1px solid transparent;
-}
-
-.form-message.error {
-    background: #fbe9e7;
-    color: #D93025;
-    border-color: #D93025;
-}
-
-.form-message.success {
-    background: #e6f4ea;
-    color: #1E8E3E;
-    border-color: #1E8E3E;
-}
-
-.form-message.warning {
-    background: #fff8e1;
-    color: #f57f17;
-    border-color: #ffb300;
+.char-count-text {
+    font-size: 0.85rem;
+    color: var(--text-color-light);
 }
 
 .contact-channels-section {
     padding-top: 2rem;
-    border-top: 1px solid var(--border-color);
+    border-top: none; /* Removendo a borda de topo para visual mais limpo */
 }
 
 .contact-card-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    /* CORREÇÃO 3: Garante 3 colunas iguais em desktop */
+    grid-template-columns: repeat(3, 1fr);
     gap: 1.5rem;
     max-width: 1000px;
     margin: 0 auto;
@@ -776,56 +742,91 @@ select:focus-visible {
     background: var(--surface-color);
     border: 1px solid var(--border-color);
     border-radius: var(--border-radius-lg);
-    padding: 1.5rem 2rem;
+    padding: 2rem; /* Aumentado padding */
     text-decoration: none;
     color: var(--text-color);
     box-shadow: var(--shadow-sm);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    /* CORREÇÃO 2: Layout semelhante ao card de serviço: Ícone em cima, Texto embaixo */
     display: flex;
-    align-items: center;
-    gap: 1.5rem;
+    flex-direction: column;
+    align-items: flex-start; /* Alinha o ícone e o texto à esquerda */
+    gap: 1rem; /* Reduzido o gap para 1rem */
+    /* CORREÇÃO 3: Define uma altura mínima para uniformidade */
+    min-height: 160px; 
+    position: relative;
+    overflow: hidden;
+}
+
+.contact-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    /* CORREÇÃO: Usando a cor primária no hover suave */
+    background-color: rgba(26, 106, 108, 0.1); 
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.contact-card:hover::before {
+    opacity: 1; /* Revela o fundo suave */
 }
 
 .contact-card:hover {
-    transform: translateY(-5px);
-    box-shadow: var(--shadow-md);
-    color: var(--primary-color-accessible);
-}
-
-/* Acessibilidade: Garante que os filhos de contact-card herdem a cor no hover */
-.contact-card:hover .contact-card-icon {
-    color: var(--primary-color-accessible);
+    transform: translateY(-8px); /* Elevação maior */
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    color: var(--text-color); /* Mantém a cor do texto padrão */
+    /* CORREÇÃO: Usando a cor primária na borda do hover */
+    border-color: var(--primary-color-accessible); 
 }
 
 .contact-card-icon {
+    /* CORREÇÃO: Usando a cor primária no ícone */
     color: var(--primary-color-accessible);
     flex-shrink: 0;
-    /* Transição para suavizar a mudança de cor no hover */
     transition: color 0.3s ease;
+    z-index: 1; /* Garante que o ícone fique acima do efeito ::before */
+    /* NOVO: Ajuste de margem para espaçar do texto (como nos cards de serviço) */
+    margin-bottom: 0.5rem; 
 }
 
-.contact-card-icon svg {
-    width: 32px;
-    height: 32px;
-    display: block;
+/* CORREÇÃO: Força a cor primária no hover do ícone */
+.contact-card:hover .contact-card-icon {
+    color: var(--primary-color-hover);
+}
+
+.contact-card-info {
+    z-index: 1; /* Garante que o texto fique acima do efeito ::before */
+    /* CORREÇÃO 2: Permite quebra de linha normal. Se o texto for grande, o min-height vai segurar o layout. */
+    display: flex;
+    flex-direction: column;
+    /* Removido white-space: nowrap */
+    word-break: break-word; /* Permite a quebra de palavras longas (e-mail) */
 }
 
 .contact-card-title {
-    font-size: 1.15rem;
-    font-weight: 600;
+    font-size: 1.25rem;
+    font-weight: 700;
     color: #1a202c;
-    /* Transição para suavizar a mudança de cor no hover */
     transition: color 0.3s ease;
+    margin-bottom: 0.25rem; /* Ajuste fino de espaçamento */
 }
 
+/* CORREÇÃO: Força a cor primária no hover do título */
 .contact-card:hover .contact-card-title {
     color: var(--primary-color-accessible);
 }
 
 .contact-card-detail {
     color: var(--text-color-light);
-    font-size: 0.95rem;
-    word-break: break-word;
+    font-size: 1rem;
+    line-height: 1.4;
+    /* CORREÇÃO CRÍTICA: Força a quebra de linha em qualquer lugar da palavra (e-mail) */
+    word-break: break-all; 
+    /* OU: overflow-wrap: break-word; (mais moderno, mas break-all é mais universal para URLs/E-mails) */
 }
 
 
@@ -835,18 +836,15 @@ select:focus-visible {
  */
 .main-footer {
     text-align: center;
-    /* Reduzindo o espaçamento superior e o padding vertical para deixar o rodapé mais compacto */
     padding: 1rem 0;
-    /* Reduzido de 1.5rem para 1rem */
     margin-top: 2rem;
-    /* Reduzido de 5rem para 2rem (ou menos, dependendo da necessidade) */
     border-top: 1px solid var(--border-color);
     color: #454545;
     background: var(--surface-color);
 }
 
 /* * =========================================
- * MODAL (POP-UP) - CORREÇÕES DE TABS
+ * MODAL (POP-UP) - CORREÇÕES DE TABS E RESPONSIVIDADE
  * =========================================
  */
 .modal-overlay {
@@ -855,7 +853,7 @@ select:focus-visible {
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.65); /* Fundo mais escuro */
     backdrop-filter: blur(5px);
     -webkit-backdrop-filter: blur(5px);
     z-index: 1000;
@@ -863,6 +861,8 @@ select:focus-visible {
     align-items: center;
     justify-content: center;
     padding: 1rem;
+    /* CORREÇÃO: Permite rolagem do overlay em telas muito pequenas */
+    overflow-y: auto; 
 }
 
 .modal-content {
@@ -871,7 +871,9 @@ select:focus-visible {
     border-radius: var(--border-radius-lg);
     width: 100%;
     max-width: 1300px;
-    height: 95vh;
+    /* CORREÇÃO: Permite que a altura se ajuste ao conteúdo, mas garante um mínimo */
+    min-height: 50vh; 
+    max-height: 95vh;
     box-shadow: var(--shadow-md);
     display: flex;
     flex-direction: column;
@@ -890,7 +892,7 @@ select:focus-visible {
 .modal-header h2 {
     font-size: 1.5rem;
     color: #1a202c;
-    font-weight: 600;
+    font-weight: 700;
 }
 
 .modal-close-button {
@@ -914,57 +916,45 @@ select:focus-visible {
     padding: 1.5rem;
     overflow-y: auto;
     flex-grow: 1;
-    background-color: #f9f9f9;
+    background-color: var(--background-color); /* Usando a cor de fundo leve do site */
 }
 
 .modal-dashboard-section {
     margin-bottom: 2rem;
 }
 
+/* AJUSTE CRÍTICO: SEÇÃO VISUALIZAÇÃO DO PROJETO */
 .modal-section-title {
     font-size: 1.25rem;
-    font-weight: 600;
-    color: var(--primary-color-accessible);
+    font-weight: 700;
+    /* CORREÇÃO: Usando PRIMARY COLOR (Pinheiro) */
+    color: var(--primary-color-accessible); 
     margin-bottom: 1rem;
-    border-bottom: 2px solid var(--primary-color-accessible);
+    /* CORREÇÃO: Usando PRIMARY COLOR (Pinheiro) */
+    border-bottom: 2px solid var(--primary-color-accessible); 
     padding-bottom: 0.5rem;
     display: inline-block;
 }
 
-/* CORREÇÃO FINAL DO VISUALIZADOR DE VÍDEO E EMBEDS (Sem scroll horizontal) */
+/* Visor de Embed (iframe) */
 .iframe-container {
-    /* MANTÉM: A técnica de Aspect Ratio Box para VÍDEOS YouTube 16:9 */
-    height: 0; 
-    padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+    /* CORREÇÃO: Aspect Ratio Box 16:9 para Power BI/Youtube. Garante que não haja scroll */
     position: relative;
-    /* Remove o overflow aqui para não mostrar barras de rolagem no container */
+    width: 100%;
+    padding-bottom: 56.25%; /* 16:9 */
     overflow: hidden; 
-    
     background: #f0f0f0;
     border-radius: var(--border-radius-sm);
     box-shadow: var(--shadow-sm);
-    width: 100%;
-    
-    display: block; 
-    justify-content: none;
-    align-items: none;
 }
 
 .iframe-container iframe {
-    /* Ocupa 100% do Aspect Ratio Box criado */
     width: 100%; 
     height: 100%;
-    
     border: 0;
-    /* Posicionamento ABSOLUTO para preencher o Aspect Ratio Box */
     position: absolute; 
     top: 0;
     left: 0;
-
-    /* REMOÇÃO CRÍTICA: Impedir o scroll X/Y interno no iframe. 
-       Isso força o conteúdo interno (Power BI/Apps) a ser espremido,
-       mas garante que NENHUMA barra de rolagem horizontal apareça. */
-    overflow: hidden; 
 }
 
 /* Seção de Abas (Tabs) */
@@ -973,29 +963,16 @@ select:focus-visible {
     border-radius: var(--border-radius-md);
     box-shadow: var(--shadow-sm);
     overflow: hidden;
-    margin-bottom: 2rem;
+    margin-bottom: 0; /* Última seção do body, não precisa de margem inferior */
 }
 
 .tab-navigation {
     display: flex;
     border-bottom: 1px solid #ddd;
-    background-color: #f0f0f0;
+    background-color: #f7f7f7; /* Fundo mais claro para a navegação */
     overflow-x: auto;
     scrollbar-width: thin;
-    scrollbar-color: #ccc #f0f0f0;
-}
-
-.tab-navigation::-webkit-scrollbar {
-    height: 8px;
-}
-
-.tab-navigation::-webkit-scrollbar-track {
-    background: #f0f0f0;
-}
-
-.tab-navigation::-webkit-scrollbar-thumb {
-    background-color: #ccc;
-    border-radius: 4px;
+    scrollbar-color: #ccc #f7f7f7;
 }
 
 .modal-tab-button {
@@ -1012,348 +989,58 @@ select:focus-visible {
 }
 
 .modal-tab-button:hover {
-    color: #111;
+    color: var(--text-color);
 }
 
+/* AJUSTE CRÍTICO: ABA ATIVA */
 .modal-tab-button.active,
 .modal-tab-button[aria-selected="true"] {
-    color: var(--primary-color-accessible);
+    /* CORREÇÃO: Usando PRIMARY COLOR (Pinheiro) */
+    color: var(--primary-color-accessible); 
+    /* CORREÇÃO: Usando PRIMARY COLOR (Pinheiro) na barra inferior */
     border-bottom-color: var(--primary-color-accessible);
     font-weight: 600;
 }
 
 /* Container do conteúdo da aba */
-.tab-content,
-.tab-content-area { 
+.tab-content { 
     padding: 0; 
     color: var(--text-color);
 }
 
-/* CORREÇÃO APLICADA AQUI (Espaçamento interno das abas) */
-.tab-content .tab-panel,
-.tab-content-area .tab-panel {
+/* Painel de Conteúdo (A CORREÇÃO DE EXIBIÇÃO ESTÁ AQUI) */
+.tab-content .tab-panel {
     display: none;
-    /* Adiciona padding interno para o conteúdo de cada aba */
-    padding: 1.5rem; 
+    padding: 1.5rem; /* Padding interno */
+    line-height: 1.7;
+    font-size: 1.05rem;
 }
 
-.tab-content .tab-panel.active,
-.tab-content-area .tab-panel.active {
+.tab-content .tab-panel.active {
     display: block;
 }
 
-/* Os estilos abaixo são para o conteúdo INJETADO, não para o container, 
-   mas foram renomeados aqui por consistência com a estrutura HTML */
-.modal-tab-panel p {
+/* Estilos para listas e parágrafos dentro dos painéis */
+.tab-panel p,
+.tab-panel ul,
+.tab-panel ol {
     margin-bottom: 1rem;
-    color: var(--text-color);
 }
 
-.modal-tab-panel ul,
-.modal-tab-panel ol {
+.tab-panel ul {
+    list-style-type: disc;
     margin-left: 1.5rem;
-    margin-bottom: 1.5rem;
-    padding-left: 1rem;
+    padding-left: 0.5rem;
 }
 
-.modal-tab-panel li {
+.tab-panel li {
     margin-bottom: 0.5rem;
 }
 
-.code-block {
-    background-color: #f4f4f4;
-    color: #333;
-    padding: 1rem;
-    border-radius: var(--border-radius-sm);
-    overflow-x: auto;
-    font-family: 'Courier New', Courier, monospace;
-    font-size: 0.9rem;
-    border: 1px solid #ddd;
-    white-space: pre;
-}
-
-.source-container {
-    padding-top: 0.5rem;
-}
-
-.modal-subtitle {
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: #1a202c;
-    margin-top: 1.5rem;
-    margin-bottom: 0.75rem;
-}
-
-.source-container .modal-subtitle:first-child {
-    margin-top: 0;
-}
-
-.link-externo {
-    color: var(--primary-color-accessible);
-    text-decoration: none;
-    font-weight: 500;
-}
-
-.link-externo:hover {
-    text-decoration: underline;
-}
-
 /* * =========================================
- * RESPONSIVIDADE
+ * ANIMAÇÕES
  * =========================================
  */
-
-/* Telas Médias (Tablets) */
-@media (min-width: 768px) and (max-width: 1023px) {
-    .container {
-        padding: 0 2rem;
-    }
-
-    .section-title {
-        font-size: 2rem;
-    }
-
-    .hero-content h1 {
-        font-size: 2.5rem;
-    }
-
-    .services-grid {
-        /* Permite 2 colunas em tablet */
-        grid-template-columns: repeat(2, 1fr);
-    }
-
-    .project-grid {
-        gap: 1.5rem;
-    }
-
-    .contact-card-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .nav-links a {
-        padding: 0.75rem 1rem;
-        font-size: 0.95rem;
-    }
-
-    .nav-logo {
-        max-width: 100px;
-    }
-}
-
-/* Telas Grandes (Desktops) */
-@media (min-width: 1024px) {
-
-    /* [CORREÇÃO SOLICITADA] Alterado de 4 para 2 colunas em desktop para a seção de serviços */
-    .services-grid {
-        grid-template-columns: repeat(2, 1fr);
-        max-width: 900px;
-        /* Limita a largura do grid para centralizar 2 itens */
-        margin: 0 auto;
-    }
-
-    .contact-card-grid {
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    }
-}
-
-/* Estilo específico para o botão de contato em telas maiores */
-.contact-form-wrapper button[type="submit"] {
-    /* Define a largura máxima para o botão em telas maiores (Desktop/Tablet) */
-    max-width: 300px; 
-    /* Centraliza o botão dentro do formulário */
-    display: block; 
-    margin: 1.5rem auto 0 auto; 
-    /* Ajusta a margem superior para o espaçamento do form-group */
-}
-
-
-/* Telas Pequenas (Móveis) */
-@media (max-width: 767px) {
-    .container {
-        padding: 0 1rem;
-    }
-
-    .section-title {
-        font-size: 1.75rem;
-        margin-bottom: 1.5rem;
-    }
-
-    /* === MOBILE NAV === */
-    .nav-container {
-        justify-content: space-between;
-        align-items: center;
-        width: 100%;
-    }
-
-    .nav-menu-wrapper {
-        display: none;
-        position: absolute;
-        top: 45px;
-        left: 0;
-        width: 100%;
-        background-color: var(--primary-color-accessible);
-        box-shadow: 0 4px 5px rgba(0, 0, 0, 0.2);
-        flex-direction: column;
-        justify-content: flex-start;
-        padding-bottom: 1rem;
-        transition: transform 0.3s ease-out, opacity 0.3s ease-out;
-        transform: translateY(-10px);
-        opacity: 0;
-        pointer-events: none;
-    }
-
-    /* Estilo quando o menu está aberto */
-    .nav-menu-wrapper.open {
-        display: flex;
-        transform: translateY(0);
-        opacity: 1;
-        pointer-events: auto;
-    }
-
-    .nav-links {
-        flex-direction: column;
-        align-items: stretch;
-        width: 100%;
-        gap: 0;
-        padding: 0 1rem;
-    }
-
-    .nav-links li {
-        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    }
-
-    .nav-links li:last-child {
-        border-bottom: none;
-    }
-
-    .nav-links a {
-        padding: 1rem 1rem;
-        font-size: 1rem;
-        text-align: left;
-        border-radius: 0;
-        width: 100%;
-    }
-
-    .nav-links a.active,
-    .nav-links a[aria-current="page"] {
-        background-color: var(--primary-color-active);
-        border-left: 5px solid white;
-    }
-
-    /* Torna o botão do menu visível em mobile */
-    .menu-toggle {
-        display: flex;
-    }
-
-    /* Transformação do ícone Sanduíche para X (Acessibilidade) */
-    .menu-toggle[aria-expanded="true"] svg rect:first-child {
-        transform: translateY(30px) rotate(45deg);
-    }
-
-    .menu-toggle[aria-expanded="true"] svg rect:nth-child(2) {
-        opacity: 0;
-    }
-
-    .menu-toggle[aria-expanded="true"] svg rect:last-child {
-        transform: translateY(-30px) rotate(-45deg);
-    }
-
-    /* === FIM MOBILE NAV === */
-
-
-    .nav-logo {
-        max-width: 130px;
-    }
-
-    .hero-content h1 {
-        font-size: 2rem;
-    }
-
-    .hero-subheading {
-        font-size: 1.1rem;
-    }
-
-    .services-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .project-grid {
-        gap: 1.5rem;
-        flex-wrap: wrap;
-        justify-content: center;
-    }
-
-    .project-card {
-        max-width: 100%;
-        flex-shrink: 1;
-    }
-
-    .contact-card-grid {
-        grid-template-columns: 1fr;
-    }
-
-    .contact-card {
-        padding: 1.5rem;
-        gap: 1rem;
-        flex-direction: column;
-        align-items: flex-start;
-    }
-
-    .about-container {
-        margin-top: 1rem;
-        margin-bottom: 1rem;
-        padding: 1.5rem;
-    }
-
-    /* Reduz o padding do corpo do modal em mobile para dar mais espaço ao iframe */
-    .modal-body {
-        padding: 0.75rem; 
-    }
-    
-    /* NOVO: Regra para dar mais espaço ao modal em telas pequenas */
-    .modal-overlay {
-        /* Reduz o padding vertical e horizontal para maximizar o tamanho do modal */
-        padding: 0.5rem; 
-    }
-    
-    /* CORREÇÃO CRÍTICA PARA O TAMANHO DO MODAL EM MOBILE */
-    .modal-content {
-        /* Garante que o modal use quase toda a largura da tela */
-        width: 98vw;
-        max-width: 98vw;
-        /* Mantém a altura flexível */
-        height: 98vh;
-        /* AQUI ESTÁ A CORREÇÃO FINAL: Força qualquer conteúdo que não couber a ser escondido,
-           eliminando a barra de rolagem horizontal que estava aparecendo no modal. */
-        overflow-x: hidden; 
-        overflow-y: auto;
-    }
-    
-    .modal-tab-button {
-        padding: 0.75rem 1rem;
-        font-size: 0.9rem;
-    }
-
-    /* Reduz o padding do conteúdo da aba em mobile */
-    .tab-content .tab-panel,
-    .tab-content-area .tab-panel {
-        padding: 1rem; /* Reduz de 1.5rem para 1rem em mobile */
-    }
-    
-    /* Botão de contato em mobile (LARGURA TOTAL) */
-    .contact-form-wrapper button[type="submit"] {
-        width: 100%;
-        margin: 1.5rem auto 0 auto;
-        max-width: none;
-    }
-}
-
-/* * =========================================
- * ANIMAÇÕES E INTERATIVIDADE (NOVO)
- * =========================================
- */
-
-/* Keyframes */
 @keyframes fadeInUp {
     from {
         opacity: 0;
@@ -1363,16 +1050,6 @@ select:focus-visible {
     to {
         opacity: 1;
         transform: translate3d(0, 0, 0);
-    }
-}
-
-@keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 1;
     }
 }
 
@@ -1390,136 +1067,149 @@ select:focus-visible {
     }
 }
 
-@keyframes pulse-soft {
-    0% {
-        box-shadow: 0 0 0 0 rgba(26, 106, 108, 0.4);
-    }
-
-    70% {
-        box-shadow: 0 0 0 10px rgba(26, 106, 108, 0);
-    }
-
-    100% {
-        box-shadow: 0 0 0 0 rgba(26, 106, 108, 0);
-    }
-}
-
-/* Classes Utilitárias de Animação */
-.animate-on-scroll {
-    opacity: 0;
-    /* Começa invisível */
-    will-change: opacity, transform;
-}
-
-.animate-on-scroll.is-visible {
-    animation: fadeInUp 0.8s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
-}
-
-.delay-100 {
-    animation-delay: 0.1s;
-}
-
-.delay-200 {
-    animation-delay: 0.2s;
-}
-
-.delay-300 {
-    animation-delay: 0.3s;
-}
-
-.delay-400 {
-    animation-delay: 0.4s;
-}
 
 /* * =========================================
- * MELHORIAS VISUAIS (HERO, CARDS, ETC)
+ * RESPONSIVIDADE
  * =========================================
  */
 
-/* Hero Section - Mais vibrante */
-.hero-section {
-    background: linear-gradient(135deg, #ffffff 0%, #f0fafa 100%);
-    /* Gradiente sutil */
-    position: relative;
-    overflow: hidden;
-}
+/* Telas Grandes (Desktops) */
+@media (min-width: 1024px) {
+    
+    /* Layout Hero em Duas Colunas (Invertido na ordem do código) */
+    .hero-section .container {
+        display: flex;
+        flex-direction: row;
+        gap: 4rem;
+        align-items: center;
+        padding-top: 6rem;
+        padding-bottom: 6rem;
+    }
+    
+    .hero-content {
+        /* Aumenta a prioridade do conteúdo principal */
+        order: 1; 
+        text-align: left;
+        flex: 1;
+    }
+    
+    .hero-visual {
+        /* Torna o visual visível */
+        display: flex; 
+        order: 2;
+        flex: 1;
+        max-width: 50%;
+    }
 
-/* Elemento decorativo de fundo (opcional) */
-.hero-section::before {
-    content: '';
-    position: absolute;
-    top: -50px;
-    right: -50px;
-    width: 300px;
-    height: 300px;
-    background: rgba(26, 106, 108, 0.05);
-    border-radius: 50%;
-    z-index: 0;
-}
-
-.hero-content {
-    position: relative;
-    z-index: 1;
-}
-
-.hero-content h1 {
-    /* Gradiente no texto para destaque */
-    background: linear-gradient(90deg, #1a202c, #1A6A6C);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    margin-bottom: 1.5rem;
-}
-
-.cta-button.hero-cta {
-    box-shadow: 0 4px 15px rgba(26, 106, 108, 0.3);
-    transition: all 0.3s ease;
-}
-
-.cta-button.hero-cta:hover {
-    transform: translateY(-3px) scale(1.02);
-    box-shadow: 0 8px 20px rgba(26, 106, 108, 0.4);
-}
-
-/* Service Cards - Mais interativos */
-.service-card {
-    border: 1px solid transparent;
-    /* Prepara para hover */
-    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-    /* Efeito "bouncy" sutil */
-}
-
-.service-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 20px 30px rgba(0, 0, 0, 0.08);
-    border-color: rgba(26, 106, 108, 0.2);
-}
-
-.service-card:hover .service-icon {
-    transform: scale(1.1) rotate(5deg);
-    background-color: var(--primary-color-hover);
-}
-
-.service-icon {
-    transition: transform 0.3s ease, background-color 0.3s ease;
-}
-
-/* Project Cards */
-.project-card {
-    transition: all 0.3s ease;
-}
-
-.project-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+    .services-grid {
+        grid-template-columns: repeat(2, 1fr);
+        max-width: 900px;
+        margin: 0 auto;
+    }
+    
+    /* CORREÇÃO 3: Garante 3 colunas iguais em desktop */
+    .contact-card-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
 }
 
 
-.project-thumbnail {
-    transition: transform 0.5s ease;
-}
+/* Telas Pequenas (Móveis) - Reverter Hero para coluna única */
+@media (max-width: 767px) {
+    
+    .hero-section {
+        padding: 3rem 0;
+    }
+    
+    /* Hero em mobile volta a ser coluna única e centralizado */
+    .hero-section .container {
+        display: block;
+        text-align: center;
+        padding-top: 3rem;
+        padding-bottom: 3rem;
+    }
 
-.project-card:hover .project-thumbnail {
-    transform: scale(1.05);
-    /* Zoom suave na imagem */
+    .hero-content {
+        text-align: center;
+        /* Garante que o CTA em mobile ocupe a largura total */
+        margin: 0 auto; 
+    }
+    
+    .hero-content h1 {
+        font-size: 2rem;
+    }
+
+    .hero-subheading {
+        font-size: 1.1rem;
+    }
+    
+    .hero-visual {
+        display: none;
+    }
+    
+    /* O botão de contato volta à largura total */
+    .contact-form-wrapper button[type="submit"] {
+        width: 100%;
+        max-width: none;
+    }
+
+    .contact-form-wrapper {
+        padding: 1.5rem; /* Reduz padding em mobile */
+    }
+
+    .contact-card-grid {
+        /* Em mobile, volta para 1 coluna */
+        grid-template-columns: 1fr;
+    }
+
+    .contact-card {
+        /* Reverte para layout de linha em mobile para melhor aproveitamento vertical */
+        flex-direction: row; 
+        align-items: center;
+        text-align: left;
+        min-height: auto; 
+        gap: 1.5rem;
+    }
+    
+    .contact-card-info {
+        /* Alinhamento de volta para o padrão em mobile */
+        display: flex; 
+        flex-direction: column;
+        white-space: normal; /* Permite quebra de linha normal em mobile */
+        text-align: left;
+    }
+    
+    .contact-card-icon {
+        margin-bottom: 0;
+    }
+    
+    /* CORREÇÃO CRÍTICA PARA O TAMANHO DO MODAL EM MOBILE */
+    .modal-content {
+        /* Garante que o modal use quase toda a largura da tela */
+        width: 98vw;
+        max-width: 98vw;
+        /* Limita a altura e permite a rolagem interna no próprio modal-content */
+        min-height: 90vh;
+        max-height: 98vh; 
+        overflow-y: auto;
+    }
+
+    .modal-body {
+        padding: 1rem; /* Reduz o padding do corpo do modal em mobile */
+    }
+
+    .modal-tab-button {
+        padding: 0.75rem 1rem;
+        font-size: 0.9rem;
+    }
+
+    /* Reduz o padding do conteúdo da aba em mobile */
+    .tab-content .tab-panel {
+        padding: 1rem; 
+        font-size: 1rem;
+    }
 }
+/* * =========================================
+ * FIM DA RESPONSIVIDADE
+ * =========================================
+ */

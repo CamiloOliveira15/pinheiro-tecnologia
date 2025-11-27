@@ -32,15 +32,32 @@
     <div id="app-header"></div>
 
     <main>
-        <!-- Seção Hero -->
+        <!-- Seção Hero (Refatorada para 2 Colunas no Desktop) -->
         <section class="hero-section">
-            <div class="container hero-content animate-on-scroll">
-                <h1>Transformamos seus desafios em soluções escaláveis</h1>
-                <p class="hero-subheading">
-                    Somos especialistas em Microsoft Power Platform. Criamos soluções de Business Intelligence,
-                    automação e aplicativos que geram resultados reais para o seu negócio.
-                </p>
-                <a href="/contato.html" class="cta-button">Solicite uma Consultoria</a>
+            <div class="container hero-container">
+                <!-- Conteúdo de Texto e CTA -->
+                <div class="hero-content animate-on-scroll">
+                    <!-- Título de impacto: focado em resultado -->
+                    <h1>Transformamos seus desafios em Soluções Escaláveis</h1>
+                    <p class="hero-subheading">
+                        Somos especialistas em Microsoft Power Platform. Criamos soluções de Business Intelligence,
+                        automação e aplicativos que geram resultados reais e impulsionam seu negócio.
+                    </p>
+                    <a href="/contato.html" class="cta-button hero-cta">Solicite uma Consultoria Gratuita</a>
+                </div>
+
+                <!-- Novo Elemento Visual (Mockup) -->
+                <div class="hero-visual animate-on-scroll delay-200">
+                    <!-- Placeholder para um Mockup de Power BI ou Power App -->
+                    <img src="images/relatorio_vencimentos.webp" 
+                         alt="Mockup de Power BI Dashboard em destaque" 
+                         class="hero-mockup" 
+                         loading="eager" 
+                         width="400" 
+                         height="267"
+                         onerror="this.onerror=null;this.src='https://placehold.co/400x267/0078D4/ffffff?text=Power+Platform+Solution';"
+                    >
+                </div>
             </div>
         </section>
 
@@ -51,6 +68,7 @@
                 <!-- Card 1 -->
                 <article class="service-card animate-on-scroll delay-100">
                     <div class="service-icon">
+                        <!-- Ícone Power BI (Exemplo de ajuste para visual mais moderno) -->
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                             <path
                                 d="M3 11h8V3H3v8zm2-6h4v4H5V5zm8 14h8v-8h-8v8zm2-6h4v4h-4v-4zM3 21h8v-8H3v8zm2-6h4v4H5v-4zm13-2l-5-4-5 4v-4l5-4 5 4z" />
@@ -63,6 +81,7 @@
                 <!-- Card 2 -->
                 <article class="service-card animate-on-scroll delay-200">
                     <div class="service-icon">
+                        <!-- Ícone Power Apps (Exemplo de ajuste para visual mais moderno) -->
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                             <path
                                 d="M16.5 2h-9C6.67 2 6 2.67 6 3.5v17c0 .83.67 1.5 1.5 1.5h9c.83 0 1.5-.67 1.5-1.5v-17c0-.83-.67-1.5-1.5-1.5zM12 20c-.55 0-1-.45-1-1s.45-1 1-1 1 .45 1 1-.45 1-1 1zm3-3H9V5h6v12z" />
@@ -75,6 +94,7 @@
                 <!-- Card 3 -->
                 <article class="service-card animate-on-scroll delay-300">
                     <div class="service-icon">
+                        <!-- Ícone Power Automate (Exemplo de ajuste para visual mais moderno) -->
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                             <path
                                 d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z" />
@@ -87,6 +107,7 @@
                 <!-- Card 4 -->
                 <article class="service-card animate-on-scroll delay-400">
                     <div class="service-icon">
+                        <!-- Ícone Treinamento (Exemplo de ajuste para visual mais moderno) -->
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
                             <path
                                 d="M20 3H4c-1.1 0-2 .9-2 2v11c0 1.1.9 2 2 2h6l-2 2v1h8v-1l-2-2h6c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-1 12H5V5h14v10zM8 10h8v2H8zm0-4h8v2H8z" />
@@ -99,11 +120,12 @@
             </div>
         </section>
 
-        <!-- Seção Projetos -->
+        <!-- Seção Projetos (Será populada com o novo estilo de Card via JS) -->
         <section class="container" style="padding: 2rem 0 4rem;">
             <h2 class="section-title animate-on-scroll">Nossos Cases de Sucesso</h2>
-            <!-- O contêiner de projetos utiliza o .project-grid atualizado no CSS -->
-            <div class="project-grid" id="project-grid-dynamic"></div>
+            <div class="project-grid" id="project-grid-dynamic">
+                <!-- Cards de projeto injetados pelo script.js -->
+            </div>
             <div style="text-align: center; margin-top: 3rem;">
                 <a href="/projetos.html" class="cta-button secondary animate-on-scroll">Ver Todos os Projetos</a>
             </div>
@@ -121,7 +143,7 @@
     <!-- 2. FOOTER -->
     <div id="app-footer"></div>
 
-    <!-- 3. MODAL COM ABAS (Corrigido para consistência e ARIA) -->
+    <!-- 3. MODAL COM ABAS -->
     <div id="modal-overlay" class="modal-overlay hidden" role="dialog" aria-modal="true"
         aria-labelledby="modal-title">
         <div class="modal-content">
