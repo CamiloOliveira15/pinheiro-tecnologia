@@ -656,6 +656,7 @@ function initContactPage() {
         contactForm.addEventListener('submit', handleContactSubmit);
     }
     
+    // Inicializa as funções de controle do formulário
     initContactFormCounter();
     initPhoneMask();
     initMessageModal(); // Inicializa o modal de mensagens
@@ -695,49 +696,59 @@ function initPhoneMask() {
     });
 }
 
-// CONTADOR DE CARACTERES (Adaptado para novos IDs e lógica atualizada)
+// CONTADOR DE CARACTERES E VALIDAÇÃO DO BOTÃO
 function initContactFormCounter() {
     const textArea = document.getElementById('message');
-    const counterDisplay = document.getElementById('char-count-text'); // ID correto
+    const counterDisplay = document.getElementById('char-count-text'); 
+    
+    const form = document.getElementById('contact-form-main');
+    const submitButton = document.getElementById('contact-submit-btn');
+    
+    if (!form || !submitButton) return;
+
     const maxLength = parseInt(textArea?.getAttribute('maxlength'), 10) || 250;
 
-    if (textArea && counterDisplay) {
-        // Funções internas para gerenciar o estado da contagem e do botão
-        const updateCharCount = () => {
-            const currentLength = textArea.value.length;
-            
-            counterDisplay.textContent = `${currentLength} / ${maxLength}`;
-            
-            if (currentLength >= maxLength) {
-                counterDisplay.style.color = 'var(--color-error)';
-            } else {
-                counterDisplay.style.color = '#666';
+    // Funções internas para gerenciar o estado da contagem e do botão
+    const checkFormValidity = () => {
+        const requiredFields = form.querySelectorAll('[required]');
+        let isFormValid = true;
+
+        requiredFields.forEach(field => {
+            // A validação verifica se o campo é requerido e se está vazio
+            if (field.hasAttribute('required') && !field.value.trim()) {
+                isFormValid = false;
             }
-            checkFormValidity();
-        };
-
-        const checkFormValidity = () => {
-            const form = document.getElementById('contact-form-main');
-            const submitButton = document.getElementById('contact-submit-btn');
-            if (!form || !submitButton) return;
-            
-            const requiredFields = form.querySelectorAll('[required]');
-            let isFormValid = true;
+        });
+        // Habilita o botão se for válido
+        submitButton.disabled = !isFormValid;
+    };
     
-            requiredFields.forEach(field => {
-                // A validação verifica se o campo é requerido e se está vazio
-                if (field.hasAttribute('required') && !field.value.trim()) {
-                    isFormValid = false;
-                }
-            });
-            // Habilita o botão se for válido
-            submitButton.disabled = !isFormValid;
-        };
+    const updateCharCount = () => {
+        if (!textArea || !counterDisplay) return;
 
+        const currentLength = textArea.value.length;
+        
+        counterDisplay.textContent = `${currentLength} / ${maxLength}`;
+        
+        if (currentLength >= maxLength) {
+            counterDisplay.style.color = 'var(--color-error)';
+        } else {
+            counterDisplay.style.color = '#666';
+        }
+        checkFormValidity();
+    };
+
+
+    // Garante que os listeners sejam adicionados apenas se o formulário existir
+    // O evento 'input' no formulário pega mudanças em todos os campos
+    form.addEventListener('input', updateCharCount); 
+    if (textArea) {
+        // Se a textarea existir, o listener é adicionado
         textArea.addEventListener('input', updateCharCount);
-        document.getElementById('contact-form-main').addEventListener('input', checkFormValidity);
-        updateCharCount(); // Inicializa o contador e o botão
     }
+    
+    // CORREÇÃO CRÍTICA: Chama a validação no final para setar o estado inicial do botão.
+    checkFormValidity(); 
 }
 
 
@@ -807,7 +818,7 @@ async function handleContactSubmit(event) {
         
         // 2. Limpa o formulário e reseta o contador
         event.target.reset();
-        initContactFormCounter(); // Re-inicializa para resetar o contador e revalidar o botão
+        initContactFormCounter(); // Re-inicializa para resetar o contador e revalidar o botão (desabilitado)
 
     } catch (error) {
         // ERRO CRÍTICO (Falha de Rede/CORS) - Usa o Modal de Erro Sutil
