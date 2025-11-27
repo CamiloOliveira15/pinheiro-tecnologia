@@ -129,12 +129,142 @@ document.addEventListener('DOMContentLoaded', () => {
 // 4. LÓGICA DE MODAL DE PROJETOS (Mantida)
 // =================================================================
 
-const modal = { /* ... Lógica do Modal de Projetos ... */ }; // Mantida
+const modal = { 
+    overlay: null,
+    iframe: null,
+    title: null,
+    tabs: [],
+    panels: [],
+
+    init() {
+        this.overlay = document.getElementById('modal-overlay');
+        if (!this.overlay) return;
+        this.iframe = document.getElementById('modal-iframe');
+        this.title = document.getElementById('modal-title');
+        
+        // Seletores unificados para compatibilidade com index.html e projetos.html
+        this.tabs = document.querySelectorAll('.modal-tab-button');
+        // Seleção robusta dos painéis de conteúdo
+        this.panels = document.querySelectorAll('.tab-content > .tab-panel'); // Apenas o seletor mais limpo
+        
+        // Desativa a classe 'active' de todos os painéis na inicialização
+        this.panels.forEach(p => p.classList.remove('active'));
+
+
+        const closeButton = document.getElementById('modal-close-button');
+        if (closeButton) {
+            closeButton.addEventListener('click', () => this.close());
+        }
+        
+        this.overlay.addEventListener('click', (e) => {
+            // Fecha se o clique foi no overlay
+            if (e.target === this.overlay) this.close();
+        });
+        document.addEventListener('keydown', (e) => {
+            // Fecha com a tecla Escape
+            if (e.key === 'Escape' && !this.overlay.classList.contains('hidden')) this.close();
+        });
+
+        // Configura o handler de clique para as abas
+        this.tabs.forEach(tab => {
+            tab.addEventListener('click', () => this.handleTabClick(tab));
+        });
+    },
+
+    /**
+     * @description Gerencia o clique da aba, ativando o conteúdo e atualizando ARIA/tabindex.
+     * @param {HTMLElement} clickedTab O botão da aba que foi clicado.
+     */
+    handleTabClick(clickedTab) {
+        // Encontra o container pai para garantir que só as abas deste modal sejam afetadas
+        const parentContainer = clickedTab.closest('.modal-info-section');
+        if (!parentContainer) return;
+
+        // Seleciona todas as abas e painéis dentro deste container
+        const allTabs = parentContainer.querySelectorAll('.modal-tab-button');
+        const allPanels = parentContainer.querySelectorAll('.tab-content > .tab-panel');
+
+        // 1. Desativa todos os botões e painéis
+        allTabs.forEach(t => {
+            t.classList.remove('active');
+            t.setAttribute('aria-selected', 'false');
+            t.setAttribute('tabindex', '-1'); 
+        });
+
+        allPanels.forEach(p => p.classList.remove('active'));
+
+        // 2. Ativa o botão clicado
+        clickedTab.classList.add('active');
+        clickedTab.setAttribute('aria-selected', 'true');
+        clickedTab.setAttribute('tabindex', '0'); // Torna o botão ativo navegável por teclado
+
+        // 3. Ativa o painel correspondente (USANDO data-target)
+        const targetId = clickedTab.getAttribute('data-target');
+        const targetPanel = parentContainer.querySelector(`#${targetId}`);
+
+        if (targetPanel) {
+            targetPanel.classList.add('active'); // O CSS usa esta classe para 'display: block'
+        }
+    },
+
+    open(project) {
+        if (!this.overlay) this.init();
+
+        // 1. Preenche Título e Embed
+        this.title.textContent = project.title || 'Detalhes do Projeto';
+        let src = project.iframeSrc || '';
+        
+        // CORREÇÃO DE BOAS PRÁTICAS: Helper para usar youtube-nocookie.com
+        if (src.includes('youtube.com') || src.includes('youtu.be')) {
+            const videoIdMatch = src.match(/(?:v=|youtu\.be\/|\/embed\/)([^&?\/]+)/);
+            if (videoIdMatch && videoIdMatch[1]) {
+                src = `https://www.youtube-nocookie.com/embed/${videoIdMatch[1]}?rel=0`; // rel=0 para evitar vídeos relacionados
+            }
+        }
+        
+        this.iframe.src = src;
+
+        // 2. Popula Abas com o Data do Projeto 
+        const setData = (id, content) => {
+            const el = document.getElementById(id);
+            // Verifica se o elemento existe antes de tentar atribuir
+            if (el) el.innerHTML = content || '<p style="color:#999; font-style:italic;">Conteúdo não disponível.</p>';
+        };
+
+        const d = project.data || {};
+        setData('tab-descricao', d.descricao);
+        setData('tab-objetivos', d.objetivos);
+        setData('tab-metricas', d.metricas);
+        setData('tab-tecnologias', d.tecnologias);
+        setData('tab-detalhes', d.detalhes);
+        setData('tab-fontes', d.fontes);
+
+        // 3. Ativa a primeira aba (Descrição)
+        const firstTab = this.tabs[0];
+        if (firstTab) {
+            // Usa handleTabClick para garantir que a primeira aba esteja visível e ARIA atualizado
+            this.handleTabClick(firstTab); 
+        }
+
+        // 4. Exibe
+        this.overlay.classList.remove('hidden');
+        // Boa prática: bloqueia o scroll do body principal para melhor foco no modal
+        document.body.style.overflow = 'hidden'; 
+    },
+
+    close() {
+        this.overlay.classList.add('hidden');
+        // BOA PRÁTICA: Limpa o src do iframe para parar a execução (vídeo, áudio, Power Apps em segundo plano)
+        if (this.iframe) {
+            this.iframe.src = '';
+        }
+        // Restaura o scroll do body
+        document.body.style.overflow = 'auto'; 
+    }
+};
+
 function initModalListeners() { modal.init(); }
 function openModal(p) { modal.open(p); }
-
-// ... Funções de inicialização de páginas (initIndexPage, initProjetosPage, etc.) ...
-// ... Funções auxiliares (fetchProjects, createCard, renderComponents, setActiveMenuItem, initMobileMenu, injectStructuredData, initScrollAnimations) ...
 
 // =================================================================
 // 5. LÓGICA DE DADOS, UI E ANIMAÇÃO (Mantida, exceto nome das funções)
@@ -595,10 +725,12 @@ function initContactFormCounter() {
             let isFormValid = true;
     
             requiredFields.forEach(field => {
-                if (!field.value.trim()) {
+                // A validação verifica se o campo é requerido e se está vazio
+                if (field.hasAttribute('required') && !field.value.trim()) {
                     isFormValid = false;
                 }
             });
+            // Habilita o botão se for válido
             submitButton.disabled = !isFormValid;
         };
 
@@ -621,6 +753,8 @@ async function handleContactSubmit(event) {
     // Texto original do botão é 'Enviar Mensagem' (do HTML)
     const originalBtnText = 'Enviar Mensagem'; 
     
+    // O botão deve estar desabilitado se a validação inicial falhar,
+    // mas aqui desabilitamos visualmente para o estado de "Enviando..."
     btn.disabled = true;
     btn.innerText = 'Enviando...';
     
@@ -688,9 +822,9 @@ async function handleContactSubmit(event) {
     } finally {
         // Restaura o botão após um pequeno delay para evitar cliques acidentais
         setTimeout(() => {
-            btn.disabled = false;
             btn.innerText = originalBtnText;
-            // A chamada a initContactFormCounter() no sucesso já garante que o botão fique desabilitado (limpo)
+            // GARANTIA: Chama a lógica de validação novamente. Se o formulário estiver preenchido/corrigido, ele será reabilitado.
+            initContactFormCounter(); 
         }, 500);
     }
 }
@@ -956,19 +1090,3 @@ function showAdminMessage(message, type) {
         }, 5000);
     }
 }
-
-// ... Código Modal de Projetos ...
-// ... Código de Login e Admin ...
-
-// REGRAS DE ESTILO E LÓGICA DO MODAL DE PROJETOS SÃO OMITIDAS AQUI PARA BREVIDADE, MAS ESTÃO NO CÓDIGO FINAL ACIMA.
-// O CÓDIGO DA FUNÇÃO messageModal FOI MANTIDO.
-// O CÓDIGO DA FUNÇÃO initContactFormCounter E initPhoneMask FORAM REESCRITOS PARA USAR OS NOVOS IDS E REGRAS.
-
-// FUNÇÕES QUE FORAM REVERTIDAS PARA A LÓGICA CONSOLIDADA (AGORA USAM OS NOVOS MODAIS)
-// * initIndexPage, fetchProjectsForIndex
-// * initProjetosPage, fetchProjectsForCategorization, distributeProjects
-// * populateProjectGrid, handleImageError
-// * initSobrePage (vazio)
-
-// O restante do código, incluindo as funções de login e admin (handleLoginSubmit, initAdminPage, etc.)
-// foi mantido exatamente como na sua versão anterior, pois não tinha relação com o modal.
