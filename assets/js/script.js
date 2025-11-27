@@ -101,8 +101,10 @@ const API_URL_CONTACT = "https://jwqiah2rvj.execute-api.us-west-2.amazonaws.com/
 let scrollObserver;
 
 document.addEventListener('DOMContentLoaded', () => {
+    // CORREÇÃO CRÍTICA: Reinstala o Header e Footer no DOM
+    renderComponents(); 
+    
     // FUNÇÕES INICIAIS (Mantidas)
-    renderComponents();
     setActiveMenuItem();
     initMobileMenu();
     injectStructuredData();
@@ -255,9 +257,17 @@ function renderComponents() {
     const appFooter = document.getElementById('app-footer');
     if (appFooter) {
         appFooter.innerHTML = COMPONENTS.footer;
-        const yearSpan = document.getElementById('dynamic-year');
-        if (yearSpan) yearSpan.textContent = new Date().getFullYear();
+        // Chama a função auxiliar para setar o ano, garantindo que o span exista
+        updateFooterYear(); 
     }
+}
+
+/**
+ * Nova função auxiliar para setar o ano no footer
+ */
+function updateFooterYear() {
+    const yearSpan = document.getElementById('dynamic-year');
+    if (yearSpan) yearSpan.textContent = new Date().getFullYear();
 }
 
 /**
@@ -955,12 +965,10 @@ function showAdminMessage(message, type) {
 // O CÓDIGO DA FUNÇÃO initContactFormCounter E initPhoneMask FORAM REESCRITOS PARA USAR OS NOVOS IDS E REGRAS.
 
 // FUNÇÕES QUE FORAM REVERTIDAS PARA A LÓGICA CONSOLIDADA (AGORA USAM OS NOVOS MODAIS)
-// * updateFooterYear
 // * initIndexPage, fetchProjectsForIndex
 // * initProjetosPage, fetchProjectsForCategorization, distributeProjects
 // * populateProjectGrid, handleImageError
 // * initSobrePage (vazio)
-// * initContatoPage (renomeado para initContactPage, que chama a nova lógica)
 
 // O restante do código, incluindo as funções de login e admin (handleLoginSubmit, initAdminPage, etc.)
 // foi mantido exatamente como na sua versão anterior, pois não tinha relação com o modal.
