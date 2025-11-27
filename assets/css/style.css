@@ -19,9 +19,10 @@
     --accent-color: #0078D4; /* Azul Microsoft original (mantido para evitar conflitos na navegação/foco global) */
     --accent-color-light: #e6f7ff; /* Fundo leve para destaque */
 
-    --color-success: #198754; /* NOVO: Verde para sucesso */
-    --color-error: #D93025; /* NOVO: Vermelho para erro */
-    --color-warning: #FFC107; /* NOVO: Amarelo para aviso */
+    /* CORES DE ALERTA ATUALIZADAS PARA SEREM MENOS AGRESSIVAS */
+    --color-success: #198754; /* Verde para sucesso (Mantido) */
+    --color-error: #E74C3C; /* Novo: Coral suave para Erro Crítico/Geral (Menos agressivo que o vermelho puro) */
+    --color-warning: #FFC107; /* Amarelo para aviso (Mantido) */
 
     --background-color: #F8F9FA; /* Fundo levemente mais cinza */
     --surface-color: #ffffff;
@@ -950,12 +951,15 @@ textarea:focus-visible,
 
 /* NOVO ESTILO: Cor da borda do Header para o modal de sucesso */
 .success-content .modal-header {
-    border-bottom: 1px solid var(--color-success);
+    /* Usa a cor dinâmica da função JS */
+    border-bottom: 1px solid var(--color-success); 
 }
 .success-content .modal-header h2 {
+    /* Usa a cor dinâmica da função JS */
     color: var(--color-success);
 }
 .success-body svg {
+    /* Usa a cor dinâmica da função JS */
     color: var(--color-success);
 }
 
