@@ -63,8 +63,8 @@ const MOCK_PROJECTS = [
             objetivos: "<ul class='list-disc'><li>Dar visibilidade do vencimento e alertas automáticos.</li><li>Reduzir o risco de multas e não conformidade, assegurando que todos os requisitos estejam sempre em dia.</li><li>Centralizar informações dispersas em um único painel acessível.</li></ul>",
             metricas: "<ul class='list-disc'><li><strong>Documentos Vencidos:</strong> Quantidade total de itens expirados.</li><li><strong>Próximos Vencimentos:</strong> Contagem de itens a vencer em 30/60 dias.</li><li><strong>Taxa de Conformidade:</strong> Percentual de colaboradores com todos os documentos válidos.</li></ul>",
             tecnologias: "<p>Microsoft Power BI, Power Query (M), DAX (Data Analysis Expressions).</p>",
-            detalhes: "<p>Medidas DAX avançadas para cálculo temporal e uso de Tabela Calendário. Implementação de segurança em nível de linha (RLS) para restrição de acesso por gerente.</p>",
-            fontes: "<p>Conexão a dados em nuvem (SharePoint Online). Dados fictícios usados para demonstração.</p>"
+            detalhes: "<p>Medidas DAX avançadas para cálculo temporal e uso de Tabela Calendário.</p>",
+            fontes: "<p>Dados fictícios usados para demonstração armazenados em arquivo Excel.</p>"
         }
     },
     {
@@ -79,9 +79,9 @@ const MOCK_PROJECTS = [
             descricao: `<p class="mb-4">O <strong>Test Hub</strong> é uma solução robusta desenvolvida na <strong>Microsoft Power Platform</strong> para modernizar e centralizar o processo de Garantia de Qualidade (QA).</p><p>Permite que desenvolvedores e analistas gerenciem planos de teste, executem casos e registrem bugs de forma eficiente, melhorando a rastreabilidade do processo.</p>`,
             objetivos: `<ul class="list-disc"><li><strong>Centralizar a Gestão:</strong> Consolidar planos de teste, execuções e bugs em uma única fonte.</li><li><strong>Padronizar Processos:</strong> Impor uma metodologia de testes consistente entre equipes.</li><li><strong>Agilizar a Comunicação:</strong> Notificações automáticas para bugs reportados e resoluções.</li></ul>`,
             metricas: `<ul class="list-disc"><li><strong>Cobertura de Testes:</strong> % de funcionalidades testadas por versão.</li><li><strong>Tempo de Resolução de Bugs (SLA).</strong></li><li><strong>Taxa de Sucesso dos Testes.</strong></li></ul>`,
-            tecnologias: "<p>Microsoft Power Apps (Canvas App), Dataverse (ou SharePoint), Power Automate para notificações e integrações.</p>",
-            detalhes: "<p>Usa coleções aninhadas e delegação de dados complexa no Power Apps para otimizar o desempenho. Integração com Azure DevOps para sincronização de itens de trabalho (work items).</p>",
-            fontes: "<p>Disponível sob consulta. Demonstração em vídeo. Fonte de dados principal é o Dataverse.</p>"
+            tecnologias: "<p>Microsoft Power Apps (Canvas App), Dataverse ou SharePoint, Power Automate para notificações e integrações.</p>",
+            detalhes: "<p>Usa coleções aninhadas e delegação de dados complexa no Power Apps para otimizar o desempenho.</p>",
+            fontes: "<p>Disponível sob consulta. Demonstração em vídeo. Fonte de dados SharePoint.</p>"
         }
     }
 ];

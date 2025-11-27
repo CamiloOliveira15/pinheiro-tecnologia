@@ -19,6 +19,10 @@
     --accent-color: #0078D4; /* Azul Microsoft original (mantido para evitar conflitos na navegação/foco global) */
     --accent-color-light: #e6f7ff; /* Fundo leve para destaque */
 
+    --color-success: #198754; /* NOVO: Verde para sucesso */
+    --color-error: #D93025; /* NOVO: Vermelho para erro */
+    --color-warning: #FFC107; /* NOVO: Amarelo para aviso */
+
     --background-color: #F8F9FA; /* Fundo levemente mais cinza */
     --surface-color: #ffffff;
     --text-color: #333333;
@@ -935,6 +939,26 @@ textarea:focus-visible,
     overflow: hidden;
 }
 
+/* NOVO ESTILO: Modal de Sucesso (Menor e centralizado) */
+.modal-content.success-content {
+    max-width: 500px; /* Reduz a largura para o pop-up */
+    max-height: 90vh;
+    min-height: auto;
+    /* Remove o overflow para evitar barras de rolagem desnecessárias */
+    overflow: hidden; 
+}
+
+/* NOVO ESTILO: Cor da borda do Header para o modal de sucesso */
+.success-content .modal-header {
+    border-bottom: 1px solid var(--color-success);
+}
+.success-content .modal-header h2 {
+    color: var(--color-success);
+}
+.success-body svg {
+    color: var(--color-success);
+}
+
 .modal-header {
     display: flex;
     justify-content: space-between;
@@ -1376,6 +1400,14 @@ textarea:focus-visible,
         max-height: 98vh; 
         overflow-y: auto;
     }
+    
+    /* NOVO ESTILO: Modal de Sucesso (Ajusta o modal menor em mobile) */
+    .modal-content.success-content {
+        max-width: 90vw;
+        min-height: auto;
+        max-height: 90vh;
+    }
+
 
     .modal-body {
         padding: 1rem; /* Reduz o padding do corpo do modal em mobile */

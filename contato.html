@@ -48,6 +48,7 @@
                 <h2 class="contact-subtitle">Envie sua mensagem</h2>
 
                 <form id="contact-form-main">
+                    <!-- A div form-message foi mantida mas será usada em caso de ERRO -->
                     <div id="form-message" class="form-message hidden" role="alert" aria-live="polite"></div>
 
                     <div class="form-group">
@@ -149,6 +150,89 @@
 
     <!-- 2. COMPONENTE FOOTER -->
     <div id="app-footer"></div>
+
+    <!-- NOVO: MODAL DE CONFIRMAÇÃO DE SUCESSO -->
+    <div id="success-modal" class="modal-overlay hidden" role="alertdialog" aria-modal="true"
+        aria-labelledby="success-title">
+        <div class="modal-content success-content">
+            <header class="modal-header">
+                <h2 id="success-title">Mensagem Enviada!</h2>
+                <button id="success-close-button" aria-label="Fechar confirmação"
+                    class="modal-close-button">&times;</button>
+            </header>
+            <div class="modal-body success-body" style="text-align: center;">
+                <!-- Ícone de Checkmark Grande -->
+                <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none"
+                    stroke="var(--color-success)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                    style="margin-bottom: 1.5rem;">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                    <path d="M22 4L12 14.01l-3-3"></path>
+                </svg>
+
+                <p style="font-size: 1.3rem; font-weight: 600; color: #1a202c; margin-bottom: 1rem;">
+                    Sua solicitação foi enviada com sucesso.
+                </p>
+                <p style="color: var(--text-color-light); margin-bottom: 2rem;">
+                    Agradecemos o seu contato! Em breve, um especialista entrará em contato
+                    pelo e-mail ou telefone fornecido.
+                </p>
+
+                <!-- Botão de Ação Imediata + Temporizador -->
+                <button id="success-ok-button" class="cta-button" style="padding: 0.75rem 2rem;">
+                    OK (Fechando em <span id="success-timer">5</span>s)
+                </button>
+            </div>
+        </div>
+    </div>
+    <!-- FIM DO NOVO MODAL -->
+
+    <!-- O modal de projetos existente (se estiver nesta página) deve ser mantido se necessário. -->
+    <div id="modal-overlay" class="modal-overlay hidden" role="dialog" aria-modal="true"
+        aria-labelledby="modal-title">
+        <!-- ... Conteúdo do modal de projetos ... -->
+        <div class="modal-content">
+            <header class="modal-header">
+                <h2 id="modal-title">Título do Projeto</h2>
+                <button id="modal-close-button" aria-label="Fechar modal" class="modal-close-button">&times;</button>
+            </header>
+            <div class="modal-body">
+                <div class="modal-dashboard-section">
+                    <h3 class="modal-section-title">Visualização do Projeto</h3>
+                    <div class="iframe-container">
+                        <iframe id="modal-iframe" title="Conteúdo do Projeto" allowfullscreen></iframe>
+                    </div>
+                </div>
+
+                <div class="modal-info-section">
+                    <div class="tab-navigation" role="tablist">
+                        <button class="modal-tab-button" data-target="tab-descricao" role="tab" aria-selected="true"
+                            tabindex="0">Descrição</button>
+                        <button class="modal-tab-button" data-target="tab-objetivos" role="tab" aria-selected="false"
+                            tabindex="-1">Objetivos</button>
+                        <button class="modal-tab-button" data-target="tab-metricas" role="tab" aria-selected="false"
+                            tabindex="-1">Métricas</button>
+                        <button class="modal-tab-button" data-target="tab-tecnologias" role="tab" aria-selected="false"
+                            tabindex="-1">Tecnologias</button>
+                        <button class="modal-tab-button" data-target="tab-detalhes" role="tab" aria-selected="false"
+                            tabindex="-1">Detalhes Técnicos</button>
+                        <button class="modal-tab-button" data-target="tab-fontes" role="tab" aria-selected="false"
+                            tabindex="-1">Fontes e Links</button>
+                    </div>
+
+                    <div class="tab-content">
+                        <div id="tab-descricao" class="tab-panel" role="tabpanel" aria-labelledby="Descrição"></div>
+                        <div id="tab-objetivos" class="tab-panel" role="tabpanel" aria-labelledby="Objetivos"></div>
+                        <div id="tab-metricas" class="tab-panel" role="tabpanel" aria-labelledby="Métricas"></div>
+                        <div id="tab-tecnologias" class="tab-panel" role="tabpanel" aria-labelledby="Tecnologias"></div>
+                        <div id="tab-detalhes" class="tab-panel" role="tabpanel" aria-labelledby="Detalhes Técnicos">
+                        </div>
+                        <div id="tab-fontes" class="tab-panel" role="tabpanel" aria-labelledby="Fontes e Links"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
 
     <script src="assets/js/script.js" defer></script>
 
