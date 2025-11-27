@@ -1,12 +1,8 @@
 /**
  * ARQUIVO: script.js
- * DESCRIÇÃO: Motor principal do site - VERSÃO FINAL ESTÁVEL.
- * CORREÇÕES CRÍTICAS NO MODAL:
- * 1. O modal de projeto e a lógica de abas permanecem inalterados e funcionais.
- * 2. Lógica do formulário de contato REESTRUTURADA para usar chamada API real.
- * 3. Incorporação do 'messageModal' (pop-up) APENAS para SUCESSO e ERRO CRÍTICO (conexão).
- * 4. Erros de validação/limite (429, 400, 500) retornam à DIV INTERNA, seguindo a lógica da sua Lambda.
- * 5. Refinamento visual do modal de erro.
+ * DESCRIÇÃO: Motor principal do site - VERSÃO FINAL REESCRITA E ESTÁVEL.
+ * OBJETIVO: Consolidar todas as correções (Cabeçalho/Rodapé, Habilitação de Botão, Modal de Feedback)
+ * e manter a funcionalidade original de projetos e animações.
  */
 
 // =================================================================
@@ -48,7 +44,7 @@ const COMPONENTS = {
 };
 
 // =================================================================
-// 2. DADOS FICTÍCIOS (MOCK_PROJECTS) - DETALHES COMPLETOS PARA TESTE DAS ABAS
+// 2. DADOS FICTÍCIOS E CONSTANTES DA API
 // =================================================================
 
 const MOCK_PROJECTS = [
@@ -88,9 +84,7 @@ const MOCK_PROJECTS = [
     }
 ];
 
-// O endpoint de projetos foi mantido para fins de mock/fallback (sem o /prod)
 const API_URL_GET_PROJECTS = "https://jwqiah2rvj.execute-api.us-west-2.amazonaws.com/projects";
-// URL REAL DO ENDPOINT DE CONTATO
 const API_URL_CONTACT = "https://jwqiah2rvj.execute-api.us-west-2.amazonaws.com/prod/contact";
 
 
@@ -101,284 +95,32 @@ const API_URL_CONTACT = "https://jwqiah2rvj.execute-api.us-west-2.amazonaws.com/
 let scrollObserver;
 
 document.addEventListener('DOMContentLoaded', () => {
-    // CORREÇÃO CRÍTICA: Reinstala o Header e Footer no DOM
+    // 1. GARANTE QUE OS COMPONENTES BÁSICOS (HEADER/FOOTER) CARREGUEM PRIMEIRO
     renderComponents(); 
     
-    // FUNÇÕES INICIAIS (Mantidas)
+    // 2. Lógica de Roteamento e Inicialização de Página
     setActiveMenuItem();
     initMobileMenu();
     injectStructuredData();
     initScrollAnimations();
-
+    
     const pathname = window.location.pathname;
     if (pathname === '/' || pathname.endsWith('/index.html')) {
         initIndexPage();
     } else if (pathname.endsWith('/projetos.html')) {
         initProjetosPage();
     } else if (pathname.endsWith('/contato.html')) {
-        // Inicializa a lógica principal do formulário de contato
         initContactPage(); 
     }
     
-    // Inicializa listeners do modal de projetos
+    // 3. Inicializa listeners do modal de projetos (deve ser chamada em todas as páginas)
     initModalListeners();
 });
 
 
 // =================================================================
-// 4. LÓGICA DE MODAL DE PROJETOS (Mantida)
+// FUNÇÕES DE INJEÇÃO E UTILIDADE GLOBAL
 // =================================================================
-
-const modal = { 
-    overlay: null,
-    iframe: null,
-    title: null,
-    tabs: [],
-    panels: [],
-
-    init() {
-        this.overlay = document.getElementById('modal-overlay');
-        if (!this.overlay) return;
-        this.iframe = document.getElementById('modal-iframe');
-        this.title = document.getElementById('modal-title');
-        
-        // Seletores unificados para compatibilidade com index.html e projetos.html
-        this.tabs = document.querySelectorAll('.modal-tab-button');
-        // Seleção robusta dos painéis de conteúdo
-        this.panels = document.querySelectorAll('.tab-content > .tab-panel'); // Apenas o seletor mais limpo
-        
-        // Desativa a classe 'active' de todos os painéis na inicialização
-        this.panels.forEach(p => p.classList.remove('active'));
-
-
-        const closeButton = document.getElementById('modal-close-button');
-        if (closeButton) {
-            closeButton.addEventListener('click', () => this.close());
-        }
-        
-        this.overlay.addEventListener('click', (e) => {
-            // Fecha se o clique foi no overlay
-            if (e.target === this.overlay) this.close();
-        });
-        document.addEventListener('keydown', (e) => {
-            // Fecha com a tecla Escape
-            if (e.key === 'Escape' && !this.overlay.classList.contains('hidden')) this.close();
-        });
-
-        // Configura o handler de clique para as abas
-        this.tabs.forEach(tab => {
-            tab.addEventListener('click', () => this.handleTabClick(tab));
-        });
-    },
-
-    /**
-     * @description Gerencia o clique da aba, ativando o conteúdo e atualizando ARIA/tabindex.
-     * @param {HTMLElement} clickedTab O botão da aba que foi clicado.
-     */
-    handleTabClick(clickedTab) {
-        // Encontra o container pai para garantir que só as abas deste modal sejam afetadas
-        const parentContainer = clickedTab.closest('.modal-info-section');
-        if (!parentContainer) return;
-
-        // Seleciona todas as abas e painéis dentro deste container
-        const allTabs = parentContainer.querySelectorAll('.modal-tab-button');
-        const allPanels = parentContainer.querySelectorAll('.tab-content > .tab-panel');
-
-        // 1. Desativa todos os botões e painéis
-        allTabs.forEach(t => {
-            t.classList.remove('active');
-            t.setAttribute('aria-selected', 'false');
-            t.setAttribute('tabindex', '-1'); 
-        });
-
-        allPanels.forEach(p => p.classList.remove('active'));
-
-        // 2. Ativa o botão clicado
-        clickedTab.classList.add('active');
-        clickedTab.setAttribute('aria-selected', 'true');
-        clickedTab.setAttribute('tabindex', '0'); // Torna o botão ativo navegável por teclado
-
-        // 3. Ativa o painel correspondente (USANDO data-target)
-        const targetId = clickedTab.getAttribute('data-target');
-        const targetPanel = parentContainer.querySelector(`#${targetId}`);
-
-        if (targetPanel) {
-            targetPanel.classList.add('active'); // O CSS usa esta classe para 'display: block'
-        }
-    },
-
-    open(project) {
-        if (!this.overlay) this.init();
-
-        // 1. Preenche Título e Embed
-        this.title.textContent = project.title || 'Detalhes do Projeto';
-        let src = project.iframeSrc || '';
-        
-        // CORREÇÃO DE BOAS PRÁTICAS: Helper para usar youtube-nocookie.com
-        if (src.includes('youtube.com') || src.includes('youtu.be')) {
-            const videoIdMatch = src.match(/(?:v=|youtu\.be\/|\/embed\/)([^&?\/]+)/);
-            if (videoIdMatch && videoIdMatch[1]) {
-                src = `https://www.youtube-nocookie.com/embed/${videoIdMatch[1]}?rel=0`; // rel=0 para evitar vídeos relacionados
-            }
-        }
-        
-        this.iframe.src = src;
-
-        // 2. Popula Abas com o Data do Projeto 
-        const setData = (id, content) => {
-            const el = document.getElementById(id);
-            // Verifica se o elemento existe antes de tentar atribuir
-            if (el) el.innerHTML = content || '<p style="color:#999; font-style:italic;">Conteúdo não disponível.</p>';
-        };
-
-        const d = project.data || {};
-        setData('tab-descricao', d.descricao);
-        setData('tab-objetivos', d.objetivos);
-        setData('tab-metricas', d.metricas);
-        setData('tab-tecnologias', d.tecnologias);
-        setData('tab-detalhes', d.detalhes);
-        setData('tab-fontes', d.fontes);
-
-        // 3. Ativa a primeira aba (Descrição)
-        const firstTab = this.tabs[0];
-        if (firstTab) {
-            // Usa handleTabClick para garantir que a primeira aba esteja visível e ARIA atualizado
-            this.handleTabClick(firstTab); 
-        }
-
-        // 4. Exibe
-        this.overlay.classList.remove('hidden');
-        // Boa prática: bloqueia o scroll do body principal para melhor foco no modal
-        document.body.style.overflow = 'hidden'; 
-    },
-
-    close() {
-        this.overlay.classList.add('hidden');
-        // BOA PRÁTICA: Limpa o src do iframe para parar a execução (vídeo, áudio, Power Apps em segundo plano)
-        if (this.iframe) {
-            this.iframe.src = '';
-        }
-        // Restaura o scroll do body
-        document.body.style.overflow = 'auto'; 
-    }
-};
-
-function initModalListeners() { modal.init(); }
-function openModal(p) { modal.open(p); }
-
-// =================================================================
-// 5. LÓGICA DE DADOS, UI E ANIMAÇÃO (Mantida, exceto nome das funções)
-// =================================================================
-// Revertendo nomes das funções auxiliares para a versão anterior:
-function fetchProjects(filterHidden = true) {
-    // Mantido o mock para os projetos, pois o endpoint real (API_URL_GET_GET_PROJECTS) não foi confirmado.
-    try {
-        const response = await fetch(API_URL_GET_PROJECTS);
-        if (!response.ok) throw new Error(`Erro ao buscar projetos: ${response.statusText}`);
-        let data = await response.json();
-        if (filterHidden) data = data.filter(p => !p.hidden);
-        return data;
-    } catch (e) {
-        console.warn("Falha ao buscar projetos da API. Usando dados locais (Fallback)", e);
-        // Garante que o fallback respeite o filtro 'hidden'
-        return filterHidden ? MOCK_PROJECTS.filter(p => !p.hidden) : MOCK_PROJECTS;
-    }
-}
-
-async function initIndexPage() {
-    const gridId = 'project-grid-dynamic';
-    const projects = await fetchProjects();
-    const grid = document.getElementById(gridId);
-
-    if (grid) {
-        grid.innerHTML = '';
-        // Exibe apenas os primeiros 4 projetos na página inicial
-        projects.slice(0, 4).forEach(p => createCard(p, grid));
-    }
-    const loader = document.getElementById('project-loader');
-    if (loader) loader.classList.add('hidden');
-}
-
-/**
- * Garante que blocos sem projetos sejam totalmente removidos na página projetos.html.
- */
-async function initProjetosPage() {
-    const projects = await fetchProjects();
-
-    const categories = {
-        'data-analysis': 'grid-data-analysis',
-        'apps': 'grid-apps',
-        'automation': 'grid-automation',
-        'other': 'grid-other'
-    };
-
-    const groupedProjects = { 'data-analysis': [], 'apps': [], 'automation': [], 'other': [] };
-
-    // 1. Agrupar projetos (aprimorado para evitar categorias undefined)
-    projects.forEach(p => {
-        const categoryKey = p.category && categories.hasOwnProperty(p.category) ? p.category : 'other';
-        groupedProjects[categoryKey].push(p);
-    });
-
-    // 2. Limpar, popular e verificar visibilidade
-    for (const key in categories) {
-        const gridId = categories[key];
-        const grid = document.getElementById(gridId);
-        const projectsInGroup = groupedProjects[key];
-        // Encontra a seção pai para ocultar o bloco inteiro 
-        const section = grid ? grid.closest('.project-category-page') : null;
-
-        if (grid) {
-            grid.innerHTML = ''; // Limpa o grid
-        }
-
-        if (projectsInGroup && projectsInGroup.length > 0 && grid) {
-            // Se houver projetos, popular e garantir que a seção esteja visível
-            projectsInGroup.forEach(p => createCard(p, grid));
-            if (section) section.style.display = 'block';
-        } else {
-            // Se não houver projetos, garantir que a seção esteja oculta 
-            if (section) section.style.display = 'none';
-        }
-    }
-
-    // Oculta todos os loaders de texto
-    document.querySelectorAll('.loader-text').forEach(l => l.classList.add('hidden'));
-}
-
-/**
- * Cria um card de projeto e anexa o listener para abrir o modal.
- */
-function createCard(project, container) {
-    const card = document.createElement('div');
-    card.className = 'project-card animate-on-scroll';
-    card.setAttribute('role', 'article');
-    card.setAttribute('aria-labelledby', `project-title-${project.id}`);
-
-    const placeholder = 'https://placehold.co/600x400/1A6A6C/ffffff?text=Pinheiro+Tecnologia';
-
-    card.innerHTML = `
-        <img src="${project.thumbnailSrc}" alt="Capa do projeto ${project.title}" class="project-thumbnail" 
-            loading="lazy" 
-            onerror="this.onerror=null;this.src='${placeholder}';" 
-            width="340" height="200">
-        <div class="project-card-content">
-            <h3 id="project-title-${project.id}">${project.title}</h3>
-            <button class="project-card-button" aria-label="Ver detalhes de ${project.title}">Ver Projeto</button>
-        </div>
-    `;
-    // Listener de clique no botão para abrir o modal
-    card.querySelector('button').addEventListener('click', (e) => {
-        e.stopPropagation(); // Evita o clique acidental no card se ele tiver outro listener
-        openModal(project);
-    });
-    
-    // Adiciona o card ao container
-    container.appendChild(card);
-
-    // Observa o card para animação
-    if (scrollObserver) scrollObserver.observe(card);
-}
 
 function renderComponents() {
     const appHeader = document.getElementById('app-header');
@@ -387,30 +129,21 @@ function renderComponents() {
     const appFooter = document.getElementById('app-footer');
     if (appFooter) {
         appFooter.innerHTML = COMPONENTS.footer;
-        // Chama a função auxiliar para setar o ano, garantindo que o span exista
         updateFooterYear(); 
     }
 }
 
-/**
- * Nova função auxiliar para setar o ano no footer
- */
 function updateFooterYear() {
     const yearSpan = document.getElementById('dynamic-year');
     if (yearSpan) yearSpan.textContent = new Date().getFullYear();
 }
 
-/**
- * Atualiza o item ativo na barra de navegação com base na URL.
- */
 function setActiveMenuItem() {
-    // Normaliza o caminho: remove trailing slash e '.html' (exceto na raiz)
+    // [Lógica completa de setActiveMenuItem - Mantida]
     let path = window.location.pathname.toLowerCase().replace(/\/$/, '');
     if (path.endsWith('.html')) {
         path = path.substring(0, path.lastIndexOf('/')) + path.substring(path.lastIndexOf('/'), path.length).replace('.html', '');
     }
-    
-    // Se o path for vazio ou apenas '/index', trata como a raiz '/'
     if (path === '' || path.endsWith('/index')) {
         path = '/';
     }
@@ -436,10 +169,8 @@ function setActiveMenuItem() {
     });
 }
 
-/**
- * Inicializa a funcionalidade do menu sanduíche para dispositivos móveis.
- */
 function initMobileMenu() {
+    // [Lógica completa de initMobileMenu - Mantida]
     const menuToggle = document.querySelector('.menu-toggle');
     const navWrapper = document.querySelector('.nav-menu-wrapper');
     if (!menuToggle || !navWrapper) return;
@@ -462,14 +193,12 @@ function initMobileMenu() {
         toggleMenu(!isExpanded);
     });
     
-    // Fecha o menu se clicar fora
     document.addEventListener('click', (e) => {
         if (navWrapper.classList.contains('open') && !navWrapper.contains(e.target) && !menuToggle.contains(e.target)) {
             toggleMenu(false);
         }
     });
 
-    // Fecha o menu se um link for clicado (apenas em mobile)
     document.querySelectorAll('.nav-links a').forEach(link => {
         link.addEventListener('click', () => {
             if (window.innerWidth < 768) {
@@ -479,10 +208,8 @@ function initMobileMenu() {
     });
 }
 
-/**
- * Injeta dados estruturados no cabeçalho para otimização SEO.
- */
 function injectStructuredData() {
+    // [Lógica completa de injectStructuredData - Mantida]
     if (document.querySelector('script[type="application/ld+json"]')) return;
     
     const script = document.createElement('script');
@@ -499,10 +226,8 @@ function injectStructuredData() {
     document.head.appendChild(script);
 }
 
-/**
- * Inicializa as animações de rolagem (Intersection Observer).
- */
 function initScrollAnimations() {
+    // [Lógica completa de initScrollAnimations - Mantida]
     const elementsToAnimate = document.querySelectorAll('.animate-on-scroll, .service-card, .project-card');
     elementsToAnimate.forEach(el => el.classList.add('animate-on-scroll'));
 
@@ -517,16 +242,232 @@ function initScrollAnimations() {
         }, { threshold: 0.1, rootMargin: "0px 0px -50px 0px" });
         elementsToAnimate.forEach(el => scrollObserver.observe(el));
     } else {
-        // Fallback: mostra todos se a API não estiver disponível
         elementsToAnimate.forEach(el => el.classList.add('is-visible'));
     }
 }
 
+
 // =================================================================
-// 6. LÓGICA DE MODAL DE MENSAGENS (Sucesso e Erro Crítico)
+// 4. LÓGICA DE MODAL DE PROJETOS (Mantida)
+// =================================================================
+
+const modal = { 
+    // [Lógica completa de Modal de Projetos - Mantida]
+    overlay: null,
+    iframe: null,
+    title: null,
+    tabs: [],
+    panels: [],
+
+    init() {
+        this.overlay = document.getElementById('modal-overlay');
+        if (!this.overlay) return;
+        this.iframe = document.getElementById('modal-iframe');
+        this.title = document.getElementById('modal-title');
+        
+        this.tabs = document.querySelectorAll('.modal-tab-button');
+        this.panels = document.querySelectorAll('.tab-content > .tab-panel'); 
+        
+        this.panels.forEach(p => p.classList.remove('active'));
+
+
+        const closeButton = document.getElementById('modal-close-button');
+        if (closeButton) {
+            closeButton.addEventListener('click', () => this.close());
+        }
+        
+        this.overlay.addEventListener('click', (e) => {
+            if (e.target === this.overlay) this.close();
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !this.overlay.classList.contains('hidden')) this.close();
+        });
+
+        this.tabs.forEach(tab => {
+            tab.addEventListener('click', () => this.handleTabClick(tab));
+        });
+    },
+
+    handleTabClick(clickedTab) {
+        const parentContainer = clickedTab.closest('.modal-info-section');
+        if (!parentContainer) return;
+
+        const allTabs = parentContainer.querySelectorAll('.modal-tab-button');
+        const allPanels = parentContainer.querySelectorAll('.tab-content > .tab-panel');
+
+        allTabs.forEach(t => {
+            t.classList.remove('active');
+            t.setAttribute('aria-selected', 'false');
+            t.setAttribute('tabindex', '-1'); 
+        });
+
+        allPanels.forEach(p => p.classList.remove('active'));
+
+        clickedTab.classList.add('active');
+        clickedTab.setAttribute('aria-selected', 'true');
+        clickedTab.setAttribute('tabindex', '0');
+
+        const targetId = clickedTab.getAttribute('data-target');
+        const targetPanel = parentContainer.querySelector(`#${targetId}`);
+
+        if (targetPanel) {
+            targetPanel.classList.add('active');
+        }
+    },
+
+    open(project) {
+        if (!this.overlay) this.init();
+
+        this.title.textContent = project.title || 'Detalhes do Projeto';
+        let src = project.iframeSrc || '';
+        
+        if (src.includes('youtube.com') || src.includes('youtu.be')) {
+            const videoIdMatch = src.match(/(?:v=|youtu\.be\/|\/embed\/)([^&?\/]+)/);
+            if (videoIdMatch && videoIdMatch[1]) {
+                src = `https://www.youtube-nocookie.com/embed/${videoIdMatch[1]}?rel=0`; 
+            }
+        }
+        
+        this.iframe.src = src;
+
+        const setData = (id, content) => {
+            const el = document.getElementById(id);
+            if (el) el.innerHTML = content || '<p style="color:#999; font-style:italic;">Conteúdo não disponível.</p>';
+        };
+
+        const d = project.data || {};
+        setData('tab-descricao', d.descricao);
+        setData('tab-objetivos', d.objetivos);
+        setData('tab-metricas', d.metricas);
+        setData('tab-tecnologias', d.tecnologias);
+        setData('tab-detalhes', d.detalhes);
+        setData('tab-fontes', d.fontes);
+
+        const firstTab = this.tabs[0];
+        if (firstTab) {
+            this.handleTabClick(firstTab); 
+        }
+
+        this.overlay.classList.remove('hidden');
+        document.body.style.overflow = 'hidden'; 
+    },
+
+    close() {
+        this.overlay.classList.add('hidden');
+        if (this.iframe) {
+            this.iframe.src = '';
+        }
+        document.body.style.overflow = 'auto'; 
+    }
+};
+
+function initModalListeners() { modal.init(); }
+function openModal(p) { modal.open(p); }
+
+
+// =================================================================
+// 6. LÓGICA DE PROJETOS (Index e Projetos)
+// =================================================================
+
+async function fetchProjects(filterHidden = true) {
+    try {
+        const response = await fetch(API_URL_GET_PROJECTS);
+        if (!response.ok) throw new Error(`Erro ao buscar projetos: ${response.statusText}`);
+        let data = await response.json();
+        if (filterHidden) data = data.filter(p => !p.hidden);
+        return data;
+    } catch (e) {
+        console.warn("Falha ao buscar projetos da API. Usando dados locais (Fallback)", e);
+        return filterHidden ? MOCK_PROJECTS.filter(p => !p.hidden) : MOCK_PROJECTS;
+    }
+}
+
+async function initIndexPage() {
+    const gridId = 'project-grid-dynamic';
+    const projects = await fetchProjects();
+    const grid = document.getElementById(gridId);
+
+    if (grid) {
+        grid.innerHTML = '';
+        projects.slice(0, 4).forEach(p => createCard(p, grid));
+    }
+    const loader = document.getElementById('project-loader');
+    if (loader) loader.classList.add('hidden');
+}
+
+async function initProjetosPage() {
+    const projects = await fetchProjects();
+
+    const categories = {
+        'data-analysis': 'grid-data-analysis',
+        'apps': 'grid-apps',
+        'automation': 'grid-automation',
+        'other': 'grid-other'
+    };
+
+    const groupedProjects = { 'data-analysis': [], 'apps': [], 'automation': [], 'other': [] };
+
+    projects.forEach(p => {
+        const categoryKey = p.category && categories.hasOwnProperty(p.category) ? p.category : 'other';
+        groupedProjects[categoryKey].push(p);
+    });
+
+    for (const key in categories) {
+        const gridId = categories[key];
+        const grid = document.getElementById(gridId);
+        const projectsInGroup = groupedProjects[key];
+        const section = grid ? grid.closest('.project-category-page') : null;
+
+        if (grid) {
+            grid.innerHTML = '';
+        }
+
+        if (projectsInGroup && projectsInGroup.length > 0 && grid) {
+            projectsInGroup.forEach(p => createCard(p, grid));
+            if (section) section.style.display = 'block';
+        } else {
+            if (section) section.style.display = 'none';
+        }
+    }
+
+    document.querySelectorAll('.loader-text').forEach(l => l.classList.add('hidden'));
+}
+
+function createCard(project, container) {
+    const card = document.createElement('div');
+    card.className = 'project-card animate-on-scroll';
+    card.setAttribute('role', 'article');
+    card.setAttribute('aria-labelledby', `project-title-${project.id}`);
+
+    const placeholder = 'https://placehold.co/600x400/1A6A6C/ffffff?text=Pinheiro+Tecnologia';
+
+    card.innerHTML = `
+        <img src="${project.thumbnailSrc}" alt="Capa do projeto ${project.title}" class="project-thumbnail" 
+            loading="lazy" 
+            onerror="this.onerror=null;this.src='${placeholder}';" 
+            width="340" height="200">
+        <div class="project-card-content">
+            <h3 id="project-title-${project.id}">${project.title}</h3>
+            <button class="project-card-button" aria-label="Ver detalhes de ${project.title}">Ver Projeto</button>
+        </div>
+    `;
+    card.querySelector('button').addEventListener('click', (e) => {
+        e.stopPropagation();
+        openModal(project);
+    });
+    
+    container.appendChild(card);
+
+    if (scrollObserver) scrollObserver.observe(card);
+}
+
+
+// =================================================================
+// 7. LÓGICA DE FEEDBACK (Modal de Mensagens)
 // =================================================================
 
 const messageModal = {
+    // [Lógica completa de MessageModal - Mantida]
     overlay: null,
     okButton: null,
     closeButton: null,
@@ -535,7 +476,6 @@ const messageModal = {
     TIMEOUT_SECONDS: 5,
 
     init() {
-        // O modal de sucesso do contato.html agora é usado para todas as mensagens.
         this.overlay = document.getElementById('success-modal');
         if (!this.overlay) return;
 
@@ -543,7 +483,6 @@ const messageModal = {
         this.closeButton = document.getElementById('success-close-button');
         this.timerDisplay = document.getElementById('success-timer');
         
-        // Elementos dinâmicos
         this.titleElement = this.overlay.querySelector('#success-title');
         this.messageElement = this.overlay.querySelector('.modal-body.success-body p:nth-child(2)');
         this.detailElement = this.overlay.querySelector('.modal-body.success-body p:nth-child(3)');
@@ -561,31 +500,20 @@ const messageModal = {
         });
     },
 
-    /**
-     * Abre o modal com conteúdo e estilo dinâmicos.
-     * @param {string} type 'success' | 'error'
-     * @param {string} title Título principal (e.g., "Mensagem Enviada!")
-     * @param {string} mainMessage Mensagem principal (e.g., "Sua solicitação foi enviada.")
-     * @param {string} detailMessage Mensagem de detalhe (e.g., "Aguarde nosso contato.")
-     */
     open(type, title, mainMessage, detailMessage) {
         if (!this.overlay) {
             console.error("Message modal not found in DOM.");
             return;
         }
 
-        // 1. Configura conteúdo dinâmico
         this.titleElement.textContent = title;
         this.messageElement.textContent = mainMessage;
         this.detailElement.textContent = detailMessage;
 
-        // 2. Configura estilo dinâmico
         const errorColor = 'var(--color-error)';
         const successColor = 'var(--color-success)';
         
-        // O botão de erro/crítico agora usa a cor primária (Ciano Pinheiro) para ser mais amigável
         const buttonColor = type === 'success' ? successColor : 'var(--primary-color-accessible)'; 
-        // A borda e o ícone usam a cor de alerta (vermelho suave ou verde)
         const visualColor = type === 'success' ? successColor : errorColor;
 
         this.headerElement.style.borderBottomColor = visualColor;
@@ -595,16 +523,14 @@ const messageModal = {
         
         this.okButton.classList.remove('hidden');
 
-        // 3. Define ícone SVG (Checkmark para sucesso, ! para erro)
         if (type === 'success') {
             this.svgElement.innerHTML = `<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><path d="M22 4L12 14.01l-3-3"></path>`;
             this.okButton.textContent = `OK (Fechando em ${this.TIMEOUT_SECONDS}s)`;
-        } else { // 'error' - ÍCONE DE ALERTA (Sinal de exclamação)
+        } else {
             this.svgElement.innerHTML = `<circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12" y2="16"></line>`;
             this.okButton.textContent = 'OK';
         }
         
-        // 4. Exibe e inicia temporizador (apenas se for sucesso ou para erros críticos)
         this.overlay.classList.remove('hidden');
         document.body.style.overflow = 'hidden'; 
 
@@ -623,7 +549,6 @@ const messageModal = {
                 }
             }, 1000);
         } else {
-            // Para erros, o botão "OK" é o único mecanismo de fechamento.
             this.okButton.textContent = 'OK';
             this.timerDisplay.textContent = '';
             clearInterval(this.timerInterval);
@@ -644,44 +569,25 @@ const messageModal = {
     }
 };
 
-function initMessageModal() { messageModal.init(); } // Novo inicializador
+function initMessageModal() { messageModal.init(); } 
+
 
 // =================================================================
-// 7. LÓGICA DO FORMULÁRIO DE CONTATO (CONSOLIDADA)
+// 8. LÓGICA DO FORMULÁRIO DE CONTATO
 // =================================================================
 
-function initContactPage() {
-    const contactForm = document.getElementById('contact-form-main'); // Renomeei o ID do form em contato.html
-    if (contactForm) {
-        contactForm.addEventListener('submit', handleContactSubmit);
-    }
-    
-    // Inicializa as funções de controle do formulário
-    initContactFormCounter();
-    initPhoneMask();
-    initMessageModal(); // Inicializa o modal de mensagens
-}
-
-/**
- * @description Exibe a mensagem de aviso/erro na div interna do formulário.
- * @param {string} message 
- * @param {string} type 'success' | 'warning' | 'error'
- */
+// Funções de Controle de Estado do Formulário
 function showFormMessage(message, type) {
     const msgElement = document.getElementById('form-message');
     if (msgElement) {
         msgElement.textContent = message;
-        // Limpeza de classes e aplicação do novo tipo
         msgElement.classList.remove('hidden', 'success', 'error', 'warning');
         msgElement.classList.add(type); 
         msgElement.classList.remove('hidden');
-        
-        // Mantido o scrollIntoView para erros que aparecem na div interna
         msgElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 }
 
-// MÁSCARA DE TELEFONE (Mantida)
 function initPhoneMask() {
     const phoneInput = document.getElementById('phone');
     if (!phoneInput) return;
@@ -696,76 +602,56 @@ function initPhoneMask() {
     });
 }
 
-// CONTADOR DE CARACTERES E VALIDAÇÃO DO BOTÃO
 function initContactFormCounter() {
-    const textArea = document.getElementById('message');
-    const counterDisplay = document.getElementById('char-count-text'); 
-    
     const form = document.getElementById('contact-form-main');
     const submitButton = document.getElementById('contact-submit-btn');
+    const textArea = document.getElementById('message');
+    const counterDisplay = document.getElementById('char-count-text'); 
     
     if (!form || !submitButton) return;
 
     const maxLength = parseInt(textArea?.getAttribute('maxlength'), 10) || 250;
 
-    // Funções internas para gerenciar o estado da contagem e do botão
     const checkFormValidity = () => {
         const requiredFields = form.querySelectorAll('[required]');
         let isFormValid = true;
 
         requiredFields.forEach(field => {
-            // A validação verifica se o campo é requerido e se está vazio
             if (field.hasAttribute('required') && !field.value.trim()) {
                 isFormValid = false;
             }
         });
-        // Habilita o botão se for válido
         submitButton.disabled = !isFormValid;
     };
     
-    const updateCharCount = () => {
-        if (!textArea || !counterDisplay) return;
-
-        const currentLength = textArea.value.length;
-        
-        counterDisplay.textContent = `${currentLength} / ${maxLength}`;
-        
-        if (currentLength >= maxLength) {
-            counterDisplay.style.color = 'var(--color-error)';
-        } else {
-            counterDisplay.style.color = '#666';
+    const updateCharCountAndValidate = () => {
+        if (textArea && counterDisplay) {
+            const currentLength = textArea.value.length;
+            counterDisplay.textContent = `${currentLength} / ${maxLength}`;
+            
+            if (currentLength >= maxLength) {
+                counterDisplay.style.color = 'var(--color-error)';
+            } else {
+                counterDisplay.style.color = '#666';
+            }
         }
         checkFormValidity();
     };
 
-
-    // Garante que os listeners sejam adicionados apenas se o formulário existir
-    // O evento 'input' no formulário pega mudanças em todos os campos
-    form.addEventListener('input', updateCharCount); 
-    if (textArea) {
-        // Se a textarea existir, o listener é adicionado
-        textArea.addEventListener('input', updateCharCount);
-    }
+    // Adiciona listeners para atualizar a contagem e a validação em qualquer campo
+    form.addEventListener('input', updateCharCountAndValidate); 
     
-    // CORREÇÃO CRÍTICA: Chama a validação no final para setar o estado inicial do botão.
-    checkFormValidity(); 
+    // CORREÇÃO CRÍTICA: Inicializa o estado do botão na carga da página
+    updateCharCountAndValidate(); 
 }
 
-
-/**
- * @description Lida com o envio real do formulário de contato.
- * MISTURA DA LÓGICA ANTIGA (Try/Catch/Finalmente) COM OS NOVOS MODAIS.
- */
 async function handleContactSubmit(event) {
     event.preventDefault();
     const btn = document.getElementById('contact-submit-btn');
     const msgElement = document.getElementById('form-message');
     
-    // Texto original do botão é 'Enviar Mensagem' (do HTML)
     const originalBtnText = 'Enviar Mensagem'; 
     
-    // O botão deve estar desabilitado se a validação inicial falhar,
-    // mas aqui desabilitamos visualmente para o estado de "Enviando..."
     btn.disabled = true;
     btn.innerText = 'Enviando...';
     
@@ -786,42 +672,31 @@ async function handleContactSubmit(event) {
 
         if (!response.ok) {
             const errorData = await response.json().catch(() => null);
-            const errorText = errorData ? JSON.stringify(errorData) : await response.text();
             
-            // TRATAMENTO DE ERROS DE LIMITE (429 - Limite Diário ou Mensagens Abertas)
-            if (response.status === 429) {
-                let message = "Você já enviou mensagens suficientes por hoje. Recebemos seu contato e retornaremos em breve!";
-                if (errorData && errorData.message) {
-                    message = errorData.message; 
-                }
-                // Exibe o aviso na div interna (showFormMessage)
-                showFormMessage(message, "warning"); 
-                // Não lança exceção para cair no catch, apenas retorna para o finally
+            // TRATAMENTO DE ERROS DE LIMITE E VALIDAÇÃO DA LAMBDA (DIV INTERNA)
+            if (response.status === 429 || response.status === 400 || response.status === 500) {
+                const message = errorData?.message || errorData?.error || "Ocorreu um erro. Tente novamente.";
+                const type = (response.status === 429) ? "warning" : "error";
+                showFormMessage(message, type);
             } 
-            // TRATAMENTO DE ERROS DE VALIDAÇÃO/SERVIDOR (400, 500)
+            // Outros erros HTTP (404, etc.)
             else {
-                const message = errorData?.error || "Não foi possível enviar sua mensagem. Tente novamente.";
-                showFormMessage(message, "error");
+                 showFormMessage("Erro HTTP inesperado. Tente novamente.", "error");
             }
-
-            // Ocorrendo erro, precisamos sair do bloco e garantir que o finally restaure o botão.
             return;
         }
         
-        // SUCESSO (200 OK)
-        // 1. Exibe o Modal de Sucesso (o novo pop-up)
+        // SUCESSO (200 OK) - MODAL POP-UP
         messageModal.open('success', 
             'Mensagem Enviada!', 
             'Sua solicitação foi enviada com sucesso.',
             'Agradecemos o seu contato! Em breve, um especialista entrará em contato pelo e-mail ou telefone fornecido.'
         ); 
         
-        // 2. Limpa o formulário e reseta o contador
         event.target.reset();
-        initContactFormCounter(); // Re-inicializa para resetar o contador e revalidar o botão (desabilitado)
 
     } catch (error) {
-        // ERRO CRÍTICO (Falha de Rede/CORS) - Usa o Modal de Erro Sutil
+        // ERRO CRÍTICO (Falha de Rede/Conexão) - MODAL POP-UP SUAVE
         console.error("Erro Crítico de Conexão:", error);
         
         messageModal.open('error',
@@ -831,27 +706,74 @@ async function handleContactSubmit(event) {
         );
         
     } finally {
-        // Restaura o botão após um pequeno delay para evitar cliques acidentais
+        // Restaura o botão (seja após sucesso, erro interno ou erro crítico)
         setTimeout(() => {
             btn.innerText = originalBtnText;
-            // GARANTIA: Chama a lógica de validação novamente. Se o formulário estiver preenchido/corrigido, ele será reabilitado.
-            initContactFormCounter(); 
+            initContactFormCounter(); // Garante o estado correto do botão (desabilitado se vazio)
         }, 500);
     }
 }
-// Código Modal de Projetos (Restante do script.js)...
+
+function initContactPage() {
+    const contactForm = document.getElementById('contact-form-main');
+    if (contactForm) {
+        contactForm.addEventListener('submit', handleContactSubmit);
+    }
+    
+    // Inicialização da lógica de validação e modais de mensagens
+    initContactFormCounter();
+    initPhoneMask();
+    initMessageModal(); 
+}
+
 
 // =================================================================
-// FUNÇÕES AUXILIARES PÁGINA PROJETOS (Copie as originais aqui)
-// =================================================================
-function initProjetosPage() { /* ... */ }
-// ... (outras funções do meio do arquivo) ...
-
-
-// =================================================================
-// PÁGINA DE LOGIN e ADMIN (Sem alterações significativas)
+// FUNÇÕES DE ADMIN (Mantidas - Sem necessidade de reescrita)
 // =================================================================
 
+async function fetchProjects(filterHidden = true) {
+    // [função fetchProjects - Mantida]
+    try {
+        const response = await fetch(API_URL_GET_PROJECTS);
+        if (!response.ok) throw new Error(`Erro ao buscar projetos: ${response.statusText}`);
+        let data = await response.json();
+        if (filterHidden) data = data.filter(p => !p.hidden);
+        return data;
+    } catch (e) {
+        console.warn("Falha ao buscar projetos da API. Usando dados locais (Fallback)", e);
+        return filterHidden ? MOCK_PROJECTS.filter(p => !p.hidden) : MOCK_PROJECTS;
+    }
+}
+async function initProjetosPage() {
+    // [função initProjetosPage - Mantida]
+    const projects = await fetchProjects();
+    const categories = {
+        'data-analysis': 'grid-data-analysis',
+        'apps': 'grid-apps',
+        'automation': 'grid-automation',
+        'other': 'grid-other'
+    };
+    const groupedProjects = { 'data-analysis': [], 'apps': [], 'automation': [], 'other': [] };
+    projects.forEach(p => {
+        const categoryKey = p.category && categories.hasOwnProperty(p.category) ? p.category : 'other';
+        groupedProjects[categoryKey].push(p);
+    });
+    for (const key in categories) {
+        const gridId = categories[key];
+        const grid = document.getElementById(gridId);
+        const projectsInGroup = groupedProjects[key];
+        const section = grid ? grid.closest('.project-category-page') : null;
+        if (grid) { grid.innerHTML = ''; }
+        if (projectsInGroup && projectsInGroup.length > 0 && grid) {
+            projectsInGroup.forEach(p => createCard(p, grid));
+            if (section) section.style.display = 'block';
+        } else {
+            if (section) section.style.display = 'none';
+        }
+    }
+    document.querySelectorAll('.loader-text').forEach(l => l.classList.add('hidden'));
+}
+// [Restante das funções de Admin/Login - Mantidas]
 function initLoginPage() {
     const loginForm = document.getElementById('login-form');
     if (loginForm) {
@@ -861,7 +783,6 @@ function initLoginPage() {
         window.location.href = 'admin.html';
     }
 }
-
 async function handleLoginSubmit(event) {
     event.preventDefault();
     const btn = document.getElementById('login-submit-btn');
@@ -883,7 +804,6 @@ async function handleLoginSubmit(event) {
         window.location.href = 'admin.html';
     }, 1000);
 }
-
 function showLoginMessage(message, type) {
     const msgElement = document.getElementById('login-message');
     if (msgElement) {
@@ -892,7 +812,6 @@ function showLoginMessage(message, type) {
         msgElement.classList.remove('hidden');
     }
 }
-
 function initAdminPage() {
     checkAdminAuth();
     const logoutBtn = document.getElementById('logout-button');
@@ -909,7 +828,6 @@ function initAdminPage() {
     }
     fetchProjectsForAdmin();
 }
-
 function checkAdminAuth() {
     const token = localStorage.getItem('authToken');
     if (!token) {
@@ -922,13 +840,11 @@ function checkAdminAuth() {
         emailSpan.textContent = userEmail;
     }
 }
-
 function handleLogout() {
     localStorage.removeItem('authToken');
     localStorage.removeItem('userEmail');
     window.location.href = 'login.html';
 }
-
 async function fetchProjectsForAdmin() {
     const listContainer = document.getElementById('project-list-container');
     const loader = document.getElementById('project-list-loader');
@@ -947,7 +863,6 @@ async function fetchProjectsForAdmin() {
         }, 500);
     }
 }
-
 function populateAdminList(projects) {
     const listContainer = document.getElementById('project-list-container');
     listContainer.innerHTML = '';
@@ -961,7 +876,6 @@ function populateAdminList(projects) {
         listItem.dataset.projectId = project.id;
         
         const hiddenBadge = project.hidden ? ' <span style="color:red; font-size:0.8em;">(Oculto)</span>' : '';
-
         listItem.innerHTML = `
             <span class="project-list-title">${project.title} <b>(${project.category || 'N/A'})</b>${hiddenBadge}</span>
             <div class="project-list-actions">
@@ -969,22 +883,17 @@ function populateAdminList(projects) {
                 <button class="project-list-button delete" data-id="${project.id}">Excluir</button>
             </div>
         `;
-        
         const editBtn = listItem.querySelector('.edit');
         editBtn.onclick = () => handleEditProject(project);
-
         const deleteBtn = listItem.querySelector('.delete');
         deleteBtn.onclick = () => handleDeleteProject(project.id, project.title);
-
         listContainer.appendChild(listItem);
     });
 }
-
 async function handleProjectSubmit(event) {
     event.preventDefault();
     const btn = document.getElementById('project-submit-btn');
     btn.disabled = true;
-
     const projectId = document.getElementById('project-id').value;
     const project = {
         title: document.getElementById('project-title').value,
@@ -1002,11 +911,9 @@ async function handleProjectSubmit(event) {
             fontes: document.getElementById('tab-fontes').value
         }
     };
-    
     const method = projectId ? 'PUT' : 'POST';
     const url = projectId ? `${API_URL_PUT_PROJECT}/${projectId}` : API_URL_POST_PROJECT;
     const token = localStorage.getItem('authToken');
-
     try {
         const response = await fetch(url, {
             method: method,
@@ -1017,11 +924,9 @@ async function handleProjectSubmit(event) {
         showAdminMessage('Projeto salvo com sucesso!', 'success');
         resetProjectForm();
         fetchProjectsForAdmin(); 
-
     } catch (error) {
         console.warn("MODO FICTÍCIO (Admin Submit):", error.message);
         showAdminMessage("MODO FICTÍCIO: Simulação de projeto salvo!", "success");
-        
         if (projectId) {
             const index = MOCK_PROJECTS.findIndex(p => p.id === projectId);
             if (index !== -1) {
@@ -1037,7 +942,6 @@ async function handleProjectSubmit(event) {
         btn.textContent = 'Salvar Projeto';
     }
 }
-
 function handleEditProject(project) {
     document.getElementById('project-id').value = project.id;
     document.getElementById('project-title').value = project.title;
@@ -1046,7 +950,6 @@ function handleEditProject(project) {
     document.getElementById('project-iframe-src').value = project.iframeSrc;
     document.getElementById('project-embed-title').value = project.embedTitle;
     document.getElementById('project-tabs-to-show').value = project.tabsToShow || '';
-
     const data = project.data || {};
     document.getElementById('tab-descricao').value = data.descricao || '';
     document.getElementById('tab-objetivos').value = data.objetivos || '';
@@ -1054,19 +957,16 @@ function handleEditProject(project) {
     document.getElementById('tab-tecnologias').value = data.tecnologias || '';
     document.getElementById('tab-detalhes').value = data.detalhes || '';
     document.getElementById('tab-fontes').value = data.fontes || '';
-
     document.getElementById('form-title').textContent = 'Editar Projeto';
     document.getElementById('project-cancel-btn').classList.remove('hidden');
     window.scrollTo(0, document.getElementById('project-form').offsetTop);
 }
-
 function resetProjectForm() {
     document.getElementById('project-form').reset();
     document.getElementById('project-id').value = '';
     document.getElementById('form-title').textContent = 'Adicionar Novo Projeto';
     document.getElementById('project-cancel-btn').classList.add('hidden');
 }
-
 async function handleDeleteProject(id, title) {
     if (!confirm(`Tem certeza que deseja excluir o projeto "${title}"?`)) {
         return;
@@ -1081,7 +981,6 @@ async function handleDeleteProject(id, title) {
     } catch (error) {
         console.warn("MODO FICTÍCIO (Admin Delete):", error.message);
         showAdminMessage("MODO FICTÍCIO: Simulação de projeto excluído!", 'error');
-        
         const index = MOCK_PROJECTS.findIndex(p => p.id === id);
         if (index !== -1) {
             MOCK_PROJECTS.splice(index, 1);
@@ -1089,7 +988,6 @@ async function handleDeleteProject(id, title) {
         populateAdminList(MOCK_PROJECTS); 
     }
 }
-
 function showAdminMessage(message, type) {
     const msgElement = document.getElementById('admin-message');
     if (msgElement) {
