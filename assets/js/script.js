@@ -1,8 +1,13 @@
 /**
  * ARQUIVO: script.js
- * DESCRIÇÃO: Motor principal do site - VERSÃO FINAL REESCRITA E ESTÁVEL.
- * OBJETIVO: Consolidar todas as correções (Cabeçalho/Rodapé, Habilitação de Botão, Modal de Feedback)
- * e manter a funcionalidade original de projetos e animações.
+ * DESCRIÇÃO: Motor principal do site - VERSÃO FINAL ESTÁVEL.
+ * OBJETIVO: Estabilidade total da inicialização (Cabeçalho/Rodapé/Menu) e correção da
+ * lógica de validação do botão e integração da API de Contato.
+ *
+ * CORREÇÃO CRÍTICA (V6):
+ * - Reforço na ordem de execução de renderComponents() e updateFooterYear().
+ * - Lógica de habilitação do botão centralizada e garantida no carregamento da página.
+ * - Confirmação da função handleContactSubmit para envio POST à AWS API.
  */
 
 // =================================================================
