@@ -85,8 +85,6 @@ body {
 a:focus-visible,
 button:focus-visible,
 [tabindex="0"]:focus-visible,
-input:focus-visible,
-textarea:focus-visible,
 select:focus-visible {
     /* MANTIDO no ACCENT COLOR (Azul) - para elementos de navegação/botões */
     outline: 3px solid var(--accent-color); 
@@ -96,8 +94,7 @@ select:focus-visible {
 }
 
 input:focus-visible,
-textarea:focus-visible,
-select:focus-visible {
+textarea:focus-visible {
     /* CORREÇÃO CRÍTICA 1: Sobrescreve a cor de foco global para usar o Ciano Pinheiro nos inputs */
     outline: none;
     border-color: var(--primary-color-accessible); 
@@ -173,7 +170,8 @@ select:focus-visible {
  */
 .main-nav {
     background: var(--primary-color-accessible);
-    padding: 0.75rem 0;
+    /* Aumenta o padding vertical para uma barra mais alta e elegante */
+    padding: 1rem 0; 
     position: relative;
     z-index: 100;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
@@ -188,57 +186,100 @@ select:focus-visible {
 .nav-logo-link {
     display: block;
     flex-shrink: 0;
+    /* CORREÇÃO DESKTOP: Adiciona margem à direita para separar do menu */
+    margin-right: 1.5rem; 
 }
 
 .nav-logo {
-    height: 30px;
+    /* CORREÇÃO CRÍTICA: Define altura máxima para a logo, tornando-a mais delicada */
+    height: 25px; 
     width: auto;
     object-fit: contain;
     display: block;
 }
 
 .nav-menu-wrapper {
+    /* Mobile-First: OCULTO POR PADRÃO (será exibido apenas quando a classe 'open' for adicionada via JS) */
+    display: none; 
+    position: absolute;
+    top: 50px; /* Ajuste para o novo padding da nav */
+    left: 0;
+    width: 100%;
+    /* CORREÇÃO: Usa a cor 'active' para dar o fundo sólido ao menu sanduíche */
+    background-color: var(--primary-color-active); 
+    box-shadow: 0 4px 5px rgba(0, 0, 0, 0.2);
+    flex-direction: column;
+    justify-content: flex-start;
+    padding-bottom: 0.5rem;
+    transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+    transform: translateY(-10px);
+    opacity: 0;
+    pointer-events: none;
+    z-index: 99; /* Abaixo do menu-toggle (101) */
+}
+
+/* Estilo quando o menu está aberto */
+.nav-menu-wrapper.open {
     display: flex;
-    align-items: center;
-    flex-grow: 1;
-    justify-content: flex-end;
+    transform: translateY(0);
+    opacity: 1;
+    pointer-events: auto;
 }
 
 .nav-links {
-    display: flex;
-    list-style: none;
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+    gap: 0;
+    padding: 0; /* Remove padding lateral do ul */
+    list-style: none; 
     margin: 0;
-    padding: 0;
-    gap: 0.5rem;
-    align-items: center;
+}
+
+.nav-links li {
+    /* CORREÇÃO CRÍTICA: Aplica a borda apenas no contexto mobile para separação */
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2); 
+}
+
+.nav-links li:last-child {
+    border-bottom: none;
 }
 
 .nav-links a {
-    color: white;
-    padding: 0.75rem 1.5rem;
-    text-decoration: none;
-    font-weight: 500;
-    display: block;
+    /* CORREÇÃO CRÍTICA MOBILE: Remove o underline e aumenta a área de toque/visualização */
+    text-decoration: none; 
+    
+    /* CORREÇÃO APLICADA: Ajuste fino do tamanho da fonte e padding para ser mais delicado */
+    padding: 0.75rem 2rem; /* Reduz padding vertical de 0.85rem para 0.75rem */
+    font-size: 1rem; /* Reduz o tamanho da fonte de 1.05rem para 1rem */
+    
+    text-align: left;
+    display: block; /* Garante que o link ocupe todo o LI */
+
     border-radius: var(--border-radius-sm);
-    transition: background-color 0.2s ease, color 0.2s ease;
-    cursor: pointer;
-    white-space: nowrap;
+    width: 100%;
+    border-bottom: none !important;
+    font-weight: 600; 
+    transition: background-color 0.2s ease;
+    color: var(--text-color-inverse); 
 }
 
 .nav-links a:hover {
+    /* CORREÇÃO MOBILE: Aplica o hover em todo o bloco do link */
     background-color: var(--primary-color-hover);
-    color: white;
 }
 
 .nav-links a.active,
 .nav-links a[aria-current="page"] {
-    background-color: var(--primary-color-active);
-    color: white;
-    font-weight: 600;
+    /* Mobile: Estilo ativo com fundo para ser mais agradável */
+    background-color: var(--primary-color-hover); /* Usa a cor de hover para indicar o item atual */
+    border-left: none; /* Remove a barra de 5px */
+    font-weight: 700;
 }
 
 .menu-toggle {
-    display: none;
+    /* Mobile-First: VISÍVEL POR PADRÃO */
+    display: flex;
     background: none;
     border: none;
     padding: 0.5rem;
@@ -253,6 +294,7 @@ select:focus-visible {
 .menu-toggle svg rect {
     transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
 }
+/* FIM CORREÇÃO NAV MOBILE-FIRST */
 
 
 /* * =========================================
@@ -262,14 +304,21 @@ select:focus-visible {
 .hero-section {
     background: linear-gradient(135deg, #ffffff 0%, #f0fafa 100%);
     /* Gradiente sutil */
-    padding: 5rem 0 3rem; /* Reduzido o padding vertical para centralizar melhor */
+    padding: 5rem 0 3rem; /* Mobile padding */
     border-bottom: 1px solid var(--border-color);
     position: relative;
     overflow: hidden;
-    /* Novo: Layout em duas colunas para desktop */
-    display: flex; 
+    /* Mobile: Display block (coluna única) */
+    display: block; 
     align-items: center;
     justify-content: center;
+}
+/* Revertendo container do Hero para bloco em mobile (garante coluna única) */
+.hero-section .container {
+    display: block;
+    text-align: center;
+    padding-top: 3rem;
+    padding-bottom: 3rem;
 }
 
 .hero-section::before {
@@ -286,16 +335,17 @@ select:focus-visible {
 }
 
 .hero-content {
-    /* Removido max-width e centralização para usar layout de 2 colunas */
-    text-align: left; /* Alinhamento à esquerda na coluna */
+    /* Mobile: Alinhamento central */
+    text-align: center; 
     max-width: 600px;
+    margin: 0 auto; /* Centraliza */
     position: relative;
     z-index: 1;
 }
 
 .hero-visual {
-    /* NOVO: Div para o Mockup/Imagem */
-    display: none; /* Oculto por padrão, visível em desktop */
+    /* Mobile: Oculto */
+    display: none; 
     align-items: center;
     justify-content: center;
     max-width: 450px;
@@ -304,6 +354,7 @@ select:focus-visible {
     position: relative;
     z-index: 1;
 }
+
 
 .hero-mockup {
     width: 100%;
@@ -315,7 +366,7 @@ select:focus-visible {
 
 
 .hero-content h1 {
-    font-size: 2.8rem; /* Ligeiramente maior */
+    font-size: 2.4rem; /* Ajustado para mobile */
     font-weight: 800; /* Mais ousado */
     color: #1a202c; 
     margin-bottom: 1rem;
@@ -328,7 +379,7 @@ select:focus-visible {
 }
 
 .hero-subheading {
-    font-size: 1.3rem;
+    font-size: 1.2rem; /* Ajustado para mobile */
     color: var(--text-color-light);
     margin-bottom: 2rem;
 }
@@ -350,7 +401,8 @@ select:focus-visible {
 
 .services-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    /* Mobile: Força 1 coluna */
+    grid-template-columns: 1fr;
     gap: 2rem;
 }
 
@@ -461,7 +513,8 @@ select:focus-visible {
     /* Transição para hover + glow */
     transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease; 
     width: 100%;
-    max-width: 340px;
+    /* Mobile-First: Ocupa a largura total (sobrepondo o max-width para telas menores que 767px) */
+    max-width: 340px; 
     cursor: pointer;
 }
 
@@ -709,11 +762,11 @@ select:focus-visible {
 }
 
 /* Sobrescreve a regra global de :focus-visible apenas para inputs/textareas */
-.form-input:focus-visible,
-.form-textarea:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
 .form-input:focus,
 .form-textarea:focus {
-    /* CORREÇÃO 1: Garante que a cor de foco do campo seja a PRIMARY (Ciano Pinheiro) */
+    /* CORREÇÃO CRÍTICA: Garante que a cor de foco do campo seja a PRIMARY (Ciano Pinheiro) */
     outline: none;
     border-color: var(--primary-color-accessible); 
     box-shadow: 0 0 0 3px rgba(26, 106, 108, 0.3);
@@ -731,8 +784,8 @@ select:focus-visible {
 
 .contact-card-grid {
     display: grid;
-    /* CORREÇÃO 3: Garante 3 colunas iguais em desktop */
-    grid-template-columns: repeat(3, 1fr);
+    /* Mobile-First: 1 coluna por padrão (será sobrescrito em desktop) */
+    grid-template-columns: 1fr; 
     gap: 1.5rem;
     max-width: 1000px;
     margin: 0 auto;
@@ -747,13 +800,15 @@ select:focus-visible {
     color: var(--text-color);
     box-shadow: var(--shadow-sm);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    /* CORREÇÃO 2: Layout semelhante ao card de serviço: Ícone em cima, Texto embaixo */
+    
+    /* Mobile-First: Layout de linha para melhor visualização em telas estreitas */
     display: flex;
-    flex-direction: column;
-    align-items: flex-start; /* Alinha o ícone e o texto à esquerda */
-    gap: 1rem; /* Reduzido o gap para 1rem */
-    /* CORREÇÃO 3: Define uma altura mínima para uniformidade */
-    min-height: 160px; 
+    flex-direction: row; 
+    align-items: center; 
+    gap: 1.5rem; /* Aumentado o gap para separar ícone e texto */
+
+    /* Garante a altura mínima para consistência em desktop */
+    min-height: auto; 
     position: relative;
     overflow: hidden;
 }
@@ -789,8 +844,8 @@ select:focus-visible {
     flex-shrink: 0;
     transition: color 0.3s ease;
     z-index: 1; /* Garante que o ícone fique acima do efeito ::before */
-    /* NOVO: Ajuste de margem para espaçar do texto (como nos cards de serviço) */
-    margin-bottom: 0.5rem; 
+    /* Mobile-First: Sem margem inferior quando em linha */
+    margin-bottom: 0; 
 }
 
 /* CORREÇÃO: Força a cor primária no hover do ícone */
@@ -800,11 +855,12 @@ select:focus-visible {
 
 .contact-card-info {
     z-index: 1; /* Garante que o texto fique acima do efeito ::before */
-    /* CORREÇÃO 2: Permite quebra de linha normal. Se o texto for grande, o min-height vai segurar o layout. */
+    /* Mobile-First: Layout de coluna dentro do card de linha */
     display: flex;
     flex-direction: column;
-    /* Removido white-space: nowrap */
-    word-break: break-word; /* Permite a quebra de palavras longas (e-mail) */
+    /* Permite quebra de linha normal */
+    word-break: normal; 
+    flex-grow: 1; /* Permite que o texto ocupe o espaço restante */
 }
 
 .contact-card-title {
@@ -824,9 +880,8 @@ select:focus-visible {
     color: var(--text-color-light);
     font-size: 1rem;
     line-height: 1.4;
-    /* CORREÇÃO CRÍTICA: Força a quebra de linha em qualquer lugar da palavra (e-mail) */
+    /* CORREÇÃO CRÍTICA 2: Força a quebra de linha em palavras longas (e-mail) */
     word-break: break-all; 
-    /* OU: overflow-wrap: break-word; (mais moderno, mas break-all é mais universal para URLs/E-mails) */
 }
 
 
@@ -1076,6 +1131,83 @@ select:focus-visible {
 /* Telas Grandes (Desktops) */
 @media (min-width: 1024px) {
     
+    /* CORREÇÃO CRÍTICA NAV DESKTOP: Exibe o menu principal e oculta o sanduíche */
+    .nav-menu-wrapper {
+        display: flex;
+        position: static; /* Volta a ser estático no fluxo */
+        background-color: transparent; /* Remove background */
+        box-shadow: none;
+        flex-direction: row; /* Volta para linha */
+        transform: translateY(0);
+        opacity: 1;
+        pointer-events: auto;
+        padding-bottom: 0;
+        /* GARANTE QUE O WRAPPER OCUPARÁ O ESPAÇO AO LADO DA LOGO */
+        flex-grow: 1; 
+        justify-content: flex-end; /* Alinha os links à direita */
+    }
+    
+    .nav-links {
+        flex-direction: row;
+        align-items: center;
+        width: auto;
+        /* Aumenta o espaçamento entre os links */
+        gap: 0.75rem; /* Aumenta um pouco mais o gap entre os links */
+        padding: 0;
+        /* GARANTE LAYOUT DE LINHA PERFEITO */
+        justify-content: flex-end;
+        display: flex;
+        flex-grow: 1;
+    }
+    
+    .nav-links li {
+        /* CORREÇÃO: Garante que os itens de lista não tenham borda em desktop */
+        border-bottom: none;
+    }
+
+    /* MELHORIA VISUAL DESKTOP */
+    .nav-links a {
+        /* Redução do font-size para ficar mais delicado e proporcional ao novo logo de 25px */
+        font-size: 0.95rem; 
+        /* Aumenta o padding para dar mais espaço e proporção ao bloco */
+        padding: 0.65rem 1.1rem; 
+        font-weight: 600; 
+        color: white; /* Cor padrão branca no desktop */
+        border-radius: var(--border-radius-sm);
+        border-left: none !important;
+        /* CORREÇÃO CRÍTICA 2: Garante a remoção do underline dos links em desktop */
+        text-decoration: none;
+        border-bottom: none; 
+        
+        /* Adiciona transição para o efeito de bloco */
+        transition: background-color 0.2s ease, border-radius 0.2s ease;
+    }
+    
+    .nav-links a:hover {
+        /* CORREÇÃO: Aplica a cor de hover do Ciano no fundo */
+        background-color: var(--primary-color-hover); 
+        color: white;
+        border-bottom-color: transparent; 
+        border-radius: var(--border-radius-sm);
+    }
+    
+    .nav-links a.active,
+    .nav-links a[aria-current="page"] {
+        /* CORREÇÃO CRÍTICA: Aplica o bloco de cor PRIMÁRIA no item selecionado */
+        background-color: var(--primary-color-active); 
+        color: white;
+        font-weight: 700;
+        border-bottom-color: transparent;
+        border-radius: var(--border-radius-sm);
+    }
+    
+    .menu-toggle {
+        display: none; /* Oculta o botão sanduíche no desktop */
+    }
+    /* FIM CORREÇÃO CRÍTICA NAV DESKTOP */
+
+
+    
     /* Layout Hero em Duas Colunas (Invertido na ordem do código) */
     .hero-section .container {
         display: flex;
@@ -1101,20 +1233,82 @@ select:focus-visible {
         max-width: 50%;
     }
 
+    .hero-content h1 {
+        font-size: 2.8rem; /* Volta para o tamanho desktop */
+    }
+
+    .hero-subheading {
+        font-size: 1.3rem; /* Volta para o tamanho desktop */
+    }
+
     .services-grid {
+        /* Revertendo para 2 colunas no desktop */
         grid-template-columns: repeat(2, 1fr);
         max-width: 900px;
         margin: 0 auto;
     }
     
-    /* CORREÇÃO 3: Garante 3 colunas iguais em desktop */
+    /* CORREÇÃO: Força 3 colunas iguais em desktop */
     .contact-card-grid {
         grid-template-columns: repeat(3, 1fr);
     }
+
+    /* CORREÇÃO: Layout de cards de contato no desktop (coluna, como serviço) */
+    .contact-card {
+        flex-direction: column; 
+        align-items: flex-start;
+        /* Garante altura uniforme no desktop */
+        min-height: 160px; 
+    }
+
+    .contact-card-icon {
+        /* Reintroduz a margem inferior para separar do texto em desktop (layout de coluna) */
+        margin-bottom: 0.5rem;
+    }
+    
+    .contact-card-info {
+        /* Garante que o texto comece à esquerda no layout de coluna */
+        text-align: left; 
+    }
+}
+
+/* Telas Médias (Tablets) */
+@media (min-width: 768px) and (max-width: 1023px) {
+    /* CORREÇÃO CRÍTICA NAV TABLET: Menu sanduíche deve permanecer visível */
+    .nav-menu-wrapper {
+        display: none;
+    }
+    .menu-toggle {
+        display: flex;
+    }
+    /* FIM CORREÇÃO NAV TABLET */
+
+    .container {
+        padding: 0 2rem;
+    }
+    
+    /* Serviços em 2 colunas em tablet */
+    .services-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    /* Cards de Contato em 2 colunas em tablet */
+    .contact-card-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    /* Mantém o layout de linha para cards de contato em tablet para economizar altura */
+    .contact-card {
+        flex-direction: row; 
+        align-items: center;
+        text-align: left;
+    }
+    .contact-card-icon { margin-bottom: 0; }
+
 }
 
 
-/* Telas Pequenas (Móveis) - Reverter Hero para coluna única */
+/* Telas Pequenas (Móveis) - Regras Mobile-First (Base) */
 @media (max-width: 767px) {
     
     .hero-section {
@@ -1163,24 +1357,13 @@ select:focus-visible {
     }
 
     .contact-card {
-        /* Reverte para layout de linha em mobile para melhor aproveitamento vertical */
-        flex-direction: row; 
-        align-items: center;
-        text-align: left;
+        /* Layout de linha em mobile (definido acima do media query) */
         min-height: auto; 
-        gap: 1.5rem;
+        padding: 1.5rem; /* Reduz padding em mobile */
     }
     
     .contact-card-info {
-        /* Alinhamento de volta para o padrão em mobile */
-        display: flex; 
-        flex-direction: column;
-        white-space: normal; /* Permite quebra de linha normal em mobile */
         text-align: left;
-    }
-    
-    .contact-card-icon {
-        margin-bottom: 0;
     }
     
     /* CORREÇÃO CRÍTICA PARA O TAMANHO DO MODAL EM MOBILE */
