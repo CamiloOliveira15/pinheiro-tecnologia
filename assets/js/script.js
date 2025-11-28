@@ -1,13 +1,8 @@
 /**
  * ARQUIVO: script.js
  * DESCRIÇÃO: Motor principal do site - VERSÃO FINAL ESTÁVEL.
- * OBJETIVO: Estabilidade total da inicialização (Cabeçalho/Rodapé/Menu) e correção da
+ * OBJETIVO: Estabilidade total da inicialização de componentes e correção da
  * lógica de validação do botão e integração da API de Contato.
- *
- * CORREÇÃO CRÍTICA (V6):
- * - Reforço na ordem de execução de renderComponents() e updateFooterYear().
- * - Lógica de habilitação do botão centralizada e garantida no carregamento da página.
- * - Confirmação da função handleContactSubmit para envio POST à AWS API.
  */
 
 // =================================================================
@@ -52,6 +47,7 @@ const COMPONENTS = {
 // 2. DADOS FICTÍCIOS E CONSTANTES DA API
 // =================================================================
 
+// MOCK_PROJECTS: Strings formatadas com <strong> para negrito semântico (CORREÇÃO)
 const MOCK_PROJECTS = [
     {
         id: "mock-1",
@@ -90,6 +86,7 @@ const MOCK_PROJECTS = [
 ];
 
 const API_URL_GET_PROJECTS = "https://jwqiah2rvj.execute-api.us-west-2.amazonaws.com/projects";
+// URL da API de Contato - CRÍTICO: Verifique se este endpoint está correto no seu API Gateway
 const API_URL_CONTACT = "https://jwqiah2rvj.execute-api.us-west-2.amazonaws.com/prod/contact";
 
 
@@ -100,7 +97,8 @@ const API_URL_CONTACT = "https://jwqiah2rvj.execute-api.us-west-2.amazonaws.com/
 let scrollObserver;
 
 document.addEventListener('DOMContentLoaded', () => {
-    // 1. GARANTE QUE OS COMPONENTES BÁSICOS (HEADER/FOOTER) CARREGUEM PRIMEIRO
+    // Sequência de inicialização: 
+    // 1. Injetar componentes HTML (Header/Footer)
     renderComponents(); 
     
     // 2. Lógica de Roteamento e Inicialização de Página
@@ -115,10 +113,10 @@ document.addEventListener('DOMContentLoaded', () => {
     } else if (pathname.endsWith('/projetos.html')) {
         initProjetosPage();
     } else if (pathname.endsWith('/contato.html')) {
-        initContactPage(); 
+        initContactPage(); // Chama a lógica de formulário CRÍTICA
     }
     
-    // 3. Inicializa listeners do modal de projetos (deve ser chamada em todas as páginas)
+    // 3. Inicializa listeners do modal de projetos (uso global)
     initModalListeners();
 });
 
@@ -128,9 +126,11 @@ document.addEventListener('DOMContentLoaded', () => {
 // =================================================================
 
 function renderComponents() {
+    // Injeca o header na div #app-header
     const appHeader = document.getElementById('app-header');
     if (appHeader) appHeader.innerHTML = COMPONENTS.header;
 
+    // Injeca o footer na div #app-footer e atualiza o ano dinamicamente
     const appFooter = document.getElementById('app-footer');
     if (appFooter) {
         appFooter.innerHTML = COMPONENTS.footer;
@@ -139,12 +139,13 @@ function renderComponents() {
 }
 
 function updateFooterYear() {
+    // Atualiza o ano no footer
     const yearSpan = document.getElementById('dynamic-year');
     if (yearSpan) yearSpan.textContent = new Date().getFullYear();
 }
 
 function setActiveMenuItem() {
-    // [Lógica completa de setActiveMenuItem - Mantida]
+    // Lógica para marcar o item ativo na navegação
     let path = window.location.pathname.toLowerCase().replace(/\/$/, '');
     if (path.endsWith('.html')) {
         path = path.substring(0, path.lastIndexOf('/')) + path.substring(path.lastIndexOf('/'), path.length).replace('.html', '');
@@ -175,7 +176,7 @@ function setActiveMenuItem() {
 }
 
 function initMobileMenu() {
-    // [Lógica completa de initMobileMenu - Mantida]
+    // Lógica para alternar o menu sanduíche (mobile)
     const menuToggle = document.querySelector('.menu-toggle');
     const navWrapper = document.querySelector('.nav-menu-wrapper');
     if (!menuToggle || !navWrapper) return;
@@ -214,7 +215,7 @@ function initMobileMenu() {
 }
 
 function injectStructuredData() {
-    // [Lógica completa de injectStructuredData - Mantida]
+    // Injeta Schema.org para SEO
     if (document.querySelector('script[type="application/ld+json"]')) return;
     
     const script = document.createElement('script');
@@ -232,7 +233,7 @@ function injectStructuredData() {
 }
 
 function initScrollAnimations() {
-    // [Lógica completa de initScrollAnimations - Mantida]
+    // Inicializa o IntersectionObserver para animações on scroll
     const elementsToAnimate = document.querySelectorAll('.animate-on-scroll, .service-card, .project-card');
     elementsToAnimate.forEach(el => el.classList.add('animate-on-scroll'));
 
@@ -253,11 +254,10 @@ function initScrollAnimations() {
 
 
 // =================================================================
-// 4. LÓGICA DE MODAL DE PROJETOS (Mantida)
+// 4. LÓGICA DE MODAL DE PROJETOS
 // =================================================================
 
 const modal = { 
-    // [Lógica completa de Modal de Projetos - Mantida]
     overlay: null,
     iframe: null,
     title: null,
@@ -270,6 +270,7 @@ const modal = {
         this.iframe = document.getElementById('modal-iframe');
         this.title = document.getElementById('modal-title');
         
+        // Seleciona as abas e painéis de conteúdo do modal de projetos
         this.tabs = document.querySelectorAll('.modal-tab-button');
         this.panels = document.querySelectorAll('.tab-content > .tab-panel'); 
         
@@ -294,6 +295,7 @@ const modal = {
     },
 
     handleTabClick(clickedTab) {
+        // Manipula a troca de abas no modal de projetos
         const parentContainer = clickedTab.closest('.modal-info-section');
         if (!parentContainer) return;
 
@@ -321,11 +323,13 @@ const modal = {
     },
 
     open(project) {
+        // Abre o modal e injeta os dados do projeto
         if (!this.overlay) this.init();
 
         this.title.textContent = project.title || 'Detalhes do Projeto';
         let src = project.iframeSrc || '';
         
+        // Verifica e formata URLs do YouTube para o modo embed
         if (src.includes('youtube.com') || src.includes('youtu.be')) {
             const videoIdMatch = src.match(/(?:v=|youtu\.be\/|\/embed\/)([^&?\/]+)/);
             if (videoIdMatch && videoIdMatch[1]) {
@@ -335,6 +339,7 @@ const modal = {
         
         this.iframe.src = src;
 
+        // Função auxiliar para injetar HTML nos painéis
         const setData = (id, content) => {
             const el = document.getElementById(id);
             if (el) el.innerHTML = content || '<p style="color:#999; font-style:italic;">Conteúdo não disponível.</p>';
@@ -348,6 +353,7 @@ const modal = {
         setData('tab-detalhes', d.detalhes);
         setData('tab-fontes', d.fontes);
 
+        // Ativa a primeira aba por padrão
         const firstTab = this.tabs[0];
         if (firstTab) {
             this.handleTabClick(firstTab); 
@@ -358,6 +364,7 @@ const modal = {
     },
 
     close() {
+        // Fecha o modal e limpa o iframe para parar a reprodução
         this.overlay.classList.add('hidden');
         if (this.iframe) {
             this.iframe.src = '';
@@ -375,6 +382,7 @@ function openModal(p) { modal.open(p); }
 // =================================================================
 
 async function fetchProjects(filterHidden = true) {
+    // Busca projetos da API ou usa Mockup em caso de falha
     try {
         const response = await fetch(API_URL_GET_PROJECTS);
         if (!response.ok) throw new Error(`Erro ao buscar projetos: ${response.statusText}`);
@@ -388,12 +396,14 @@ async function fetchProjects(filterHidden = true) {
 }
 
 async function initIndexPage() {
+    // Inicializa a página inicial (carrega e exibe os cards de projeto)
     const gridId = 'project-grid-dynamic';
     const projects = await fetchProjects();
     const grid = document.getElementById(gridId);
 
     if (grid) {
         grid.innerHTML = '';
+        // Limita a exibição de cards para o índice
         projects.slice(0, 4).forEach(p => createCard(p, grid));
     }
     const loader = document.getElementById('project-loader');
@@ -401,6 +411,7 @@ async function initIndexPage() {
 }
 
 async function initProjetosPage() {
+    // Inicializa a página de projetos (carrega e agrupa os cards por categoria)
     const projects = await fetchProjects();
 
     const categories = {
@@ -439,6 +450,7 @@ async function initProjetosPage() {
 }
 
 function createCard(project, container) {
+    // Cria o elemento HTML de um card de projeto
     const card = document.createElement('div');
     card.className = 'project-card animate-on-scroll';
     card.setAttribute('role', 'article');
@@ -472,7 +484,7 @@ function createCard(project, container) {
 // =================================================================
 
 const messageModal = {
-    // [Lógica completa de MessageModal - Mantida]
+    // Objeto para gerenciar o modal de sucesso/erro (Formulário de Contato)
     overlay: null,
     okButton: null,
     closeButton: null,
@@ -541,13 +553,18 @@ const messageModal = {
 
         if (type === 'success') {
             let timeRemaining = this.TIMEOUT_SECONDS;
-            this.timerDisplay.textContent = timeRemaining;
+            // Verifica se o timerDisplay existe antes de tentar definir o texto
+            if (this.timerDisplay) {
+                this.timerDisplay.textContent = timeRemaining;
+            }
             
             clearInterval(this.timerInterval);
             
             this.timerInterval = setInterval(() => {
                 timeRemaining--;
-                this.timerDisplay.textContent = timeRemaining;
+                if (this.timerDisplay) {
+                    this.timerDisplay.textContent = timeRemaining;
+                }
 
                 if (timeRemaining <= 0) {
                     this.close(false); 
@@ -555,12 +572,15 @@ const messageModal = {
             }, 1000);
         } else {
             this.okButton.textContent = 'OK';
-            this.timerDisplay.textContent = '';
+            if (this.timerDisplay) {
+                this.timerDisplay.textContent = '';
+            }
             clearInterval(this.timerInterval);
         }
     },
 
     close(forceClose) {
+        // Fecha o modal e limpa o timer
         clearInterval(this.timerInterval);
         
         if (this.overlay && !this.overlay.classList.contains('hidden')) {
@@ -578,10 +598,10 @@ function initMessageModal() { messageModal.init(); }
 
 
 // =================================================================
-// 8. LÓGICA DO FORMULÁRIO DE CONTATO
+// 8. LÓGICA DO FORMULÁRIO DE CONTATO (RESOLUÇÃO DE CONFLITO CRÍTICA)
 // =================================================================
 
-// Funções de Controle de Estado do Formulário
+// Função para exibir mensagens de erro/aviso diretamente no formulário
 function showFormMessage(message, type) {
     const msgElement = document.getElementById('form-message');
     if (msgElement) {
@@ -593,6 +613,7 @@ function showFormMessage(message, type) {
     }
 }
 
+// Implementa a máscara de telefone (UX)
 function initPhoneMask() {
     const phoneInput = document.getElementById('phone');
     if (!phoneInput) return;
@@ -607,6 +628,7 @@ function initPhoneMask() {
     });
 }
 
+// Lógica de validação do formulário e contador de caracteres
 function initContactFormCounter() {
     const form = document.getElementById('contact-form-main');
     const submitButton = document.getElementById('contact-submit-btn');
@@ -618,6 +640,7 @@ function initContactFormCounter() {
     const maxLength = parseInt(textArea?.getAttribute('maxlength'), 10) || 250;
 
     const checkFormValidity = () => {
+        // Verifica se todos os campos requeridos estão preenchidos para habilitar o botão
         const requiredFields = form.querySelectorAll('[required]');
         let isFormValid = true;
 
@@ -625,11 +648,16 @@ function initContactFormCounter() {
             if (field.hasAttribute('required') && !field.value.trim()) {
                 isFormValid = false;
             }
+            if (field.type === 'email' && !field.value.includes('@')) {
+                 isFormValid = false;
+            }
         });
         submitButton.disabled = !isFormValid;
+        return isFormValid;
     };
     
     const updateCharCountAndValidate = () => {
+        // Atualiza a contagem de caracteres na textarea
         if (textArea && counterDisplay) {
             const currentLength = textArea.value.length;
             counterDisplay.textContent = `${currentLength} / ${maxLength}`;
@@ -643,18 +671,22 @@ function initContactFormCounter() {
         checkFormValidity();
     };
 
-    // Adiciona listeners para atualizar a contagem e a validação em qualquer campo
+    // Adiciona listeners para garantir a atualização em tempo real
     form.addEventListener('input', updateCharCountAndValidate); 
     
-    // CORREÇÃO CRÍTICA: Inicializa o estado do botão na carga da página
+    // CRÍTICO: Executa a validação na carga para definir o estado inicial do botão
     updateCharCountAndValidate(); 
 }
 
 async function handleContactSubmit(event) {
+    // Lida com a submissão do formulário de contato
     event.preventDefault();
     const btn = document.getElementById('contact-submit-btn');
     const msgElement = document.getElementById('form-message');
     
+    // Se o botão já está desabilitado, impede o envio duplicado
+    if (btn.disabled) return; 
+
     const originalBtnText = 'Enviar Mensagem'; 
     
     btn.disabled = true;
@@ -678,30 +710,24 @@ async function handleContactSubmit(event) {
         if (!response.ok) {
             const errorData = await response.json().catch(() => null);
             
-            // TRATAMENTO DE ERROS DE LIMITE E VALIDAÇÃO DA LAMBDA (DIV INTERNA)
-            if (response.status === 429 || response.status === 400 || response.status === 500) {
-                const message = errorData?.message || errorData?.error || "Ocorreu um erro. Tente novamente.";
-                const type = (response.status === 429) ? "warning" : "error";
-                showFormMessage(message, type);
-            } 
-            // Outros erros HTTP (404, etc.)
-            else {
-                 showFormMessage("Erro HTTP inesperado. Tente novamente.", "error");
-            }
+            // Tratamento de ERRO HTTP (ex: 429 Rate Limit, 400 Bad Request, 500 Server Error)
+            const message = errorData?.message || errorData?.error || "Ocorreu um erro no servidor. Tente novamente.";
+            const type = (response.status === 429) ? "warning" : "error";
+            showFormMessage(message, type);
             return;
         }
         
-        // SUCESSO (200 OK) - MODAL POP-UP
+        // SUCESSO (200 OK) - Exibe Modal
         messageModal.open('success', 
             'Mensagem Enviada!', 
             'Sua solicitação foi enviada com sucesso.',
             'Agradecemos o seu contato! Em breve, um especialista entrará em contato pelo e-mail ou telefone fornecido.'
         ); 
         
-        event.target.reset();
+        event.target.reset(); // Limpa o formulário após o envio bem-sucedido
 
     } catch (error) {
-        // ERRO CRÍTICO (Falha de Rede/Conexão) - MODAL POP-UP SUAVE
+        // ERRO CRÍTICO (Falha de Rede/Conexão)
         console.error("Erro Crítico de Conexão:", error);
         
         messageModal.open('error',
@@ -711,21 +737,22 @@ async function handleContactSubmit(event) {
         );
         
     } finally {
-        // Restaura o botão (seja após sucesso, erro interno ou erro crítico)
+        // Restaura o botão e o estado do formulário após um pequeno delay
         setTimeout(() => {
             btn.innerText = originalBtnText;
-            initContactFormCounter(); // Garante o estado correto do botão (desabilitado se vazio)
+            initContactFormCounter(); // Re-executa a validação para desabilitar se o form estiver vazio
         }, 500);
     }
 }
 
 function initContactPage() {
+    // Função principal de inicialização da página de contato
     const contactForm = document.getElementById('contact-form-main');
     if (contactForm) {
         contactForm.addEventListener('submit', handleContactSubmit);
     }
     
-    // Inicialização da lógica de validação e modais de mensagens
+    // Inicialização da lógica de UX (Validação, Máscara) e modais
     initContactFormCounter();
     initPhoneMask();
     initMessageModal(); 
@@ -733,11 +760,11 @@ function initContactPage() {
 
 
 // =================================================================
-// FUNÇÕES DE ADMIN (Mantidas - Sem necessidade de reescrita)
+// FUNÇÕES DE ADMIN (Mantidas para integridade do sistema)
 // =================================================================
 
+// ... (Restante das funções: fetchProjects, initProjetosPage, createCard, initLoginPage, etc. mantidas)
 async function fetchProjects(filterHidden = true) {
-    // [função fetchProjects - Mantida]
     try {
         const response = await fetch(API_URL_GET_PROJECTS);
         if (!response.ok) throw new Error(`Erro ao buscar projetos: ${response.statusText}`);
@@ -750,7 +777,6 @@ async function fetchProjects(filterHidden = true) {
     }
 }
 async function initProjetosPage() {
-    // [função initProjetosPage - Mantida]
     const projects = await fetchProjects();
     const categories = {
         'data-analysis': 'grid-data-analysis',
@@ -778,7 +804,44 @@ async function initProjetosPage() {
     }
     document.querySelectorAll('.loader-text').forEach(l => l.classList.add('hidden'));
 }
-// [Restante das funções de Admin/Login - Mantidas]
+function createCard(project, container) {
+    const card = document.createElement('div');
+    card.className = 'project-card animate-on-scroll';
+    card.setAttribute('role', 'article');
+    card.setAttribute('aria-labelledby', `project-title-${project.id}`);
+    const placeholder = 'https://placehold.co/600x400/1A6A6C/ffffff?text=Pinheiro+Tecnologia';
+    card.innerHTML = `
+        <img src="${project.thumbnailSrc}" alt="Capa do projeto ${project.title}" class="project-thumbnail" 
+            loading="lazy" 
+            onerror="this.onerror=null;this.src='${placeholder}';" 
+            width="340" height="200">
+        <div class="project-card-content">
+            <h3 id="project-title-${project.id}">${project.title}</h3>
+            <button class="project-card-button" aria-label="Ver detalhes de ${project.title}">Ver Projeto</button>
+        </div>
+    `;
+    card.querySelector('button').addEventListener('click', (e) => {
+        e.stopPropagation();
+        openModal(project);
+    });
+    container.appendChild(card);
+    if (scrollObserver) scrollObserver.observe(card);
+}
+
+function initIndexPage() {
+    const gridId = 'project-grid-dynamic';
+    const projects = fetchProjects();
+    const grid = document.getElementById(gridId);
+
+    if (grid) {
+        grid.innerHTML = '';
+        projects.slice(0, 4).forEach(p => createCard(p, grid));
+    }
+    const loader = document.getElementById('project-loader');
+    if (loader) loader.classList.add('hidden');
+}
+
+
 function initLoginPage() {
     const loginForm = document.getElementById('login-form');
     if (loginForm) {
