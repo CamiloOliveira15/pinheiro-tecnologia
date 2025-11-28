@@ -1,175 +1,156 @@
-Pinheiro Tecnologia — Site Empresarial e Portfólio
+🌐 Pinheiro Tecnologia — Plataforma Web Serverless
 
-📑 Sumário
+Este repositório contém o código-fonte da plataforma web estática da Pinheiro Tecnologia, arquitetada para alta disponibilidade e baixa latência usando serviços serverless da AWS.
 
-📘 Pinheiro Tecnologia — Site Empresarial e Portfólio
+📑 1. Arquitetura da Solução e Tecnologias
 
-🌐 Visão Geral
+A aplicação é dividida em dois workloads principais: Frontend Estático (S3/CloudFront) e Backend Serverless (API Gateway/Lambda).
 
-🧰 Tecnologias Principais
+1.1. Pilha Tecnológica (Tech Stack)
 
-🏗️ Arquitetura da Solução
+Componente
 
-1. Frontend (Hospedagem e Entrega)
+Tecnologia Principal
 
-2. Backend (API e Lógica Serverless)
+Finalidade
 
-3. Dados e Comunicação
+Frontend
 
-✨ Padrões Web e Otimizações (Última Revisão)
+HTML5, CSS3, JavaScript (ES6+)
 
-🚀 Funcionalidades do Site
+Interface do usuário e lógica de apresentação (SPA-like).
 
-Públicas
+Backend
 
-Administrativas (Admin)
+AWS Lambda (Python 3.11)
 
-📄 Licença
+Lógica de contato e API de Portfólio.
 
-🌐 Visão Geral
+Hospedagem
 
-O site funciona como vitrine digital da empresa, destacando serviços especializados em Microsoft Power Platform e Análise de Dados.
+Amazon S3
 
-Também inclui uma área administrativa segura que possibilita gerenciar dinamicamente o portfólio de projetos.
+Armazenamento de arquivos estáticos.
 
-🧰 Tecnologias Principais
+CDN & Cache
 
-Frontend: HTML5, CSS3 (Mobile First, Variáveis), JavaScript (ES6+)
+Amazon CloudFront
 
-Backend: Python 3.12 com AWS Lambda
+Distribuição global, SSL/HTTPS e controle de cache.
 
-Banco de Dados: AWS DynamoDB (NoSQL)
+Banco de Dados
 
-Infraestrutura AWS: CloudFront, API Gateway, Lambda, DynamoDB, S3, Route 53, SES
+AWS DynamoDB
 
-Autenticação (Planejada): AWS Cognito
+Armazenamento de dados dinâmicos (Projetos, Contatos).
 
-🏗️ Arquitetura da Solução
+Comunicação
 
-Projetada para ser serverless, escalável, segura e de baixo custo.
+Amazon SES
 
-1. Frontend (Hospedagem e Entrega)
+Envio de e-mails transacionais (Formulário de Contato).
 
-Amazon S3: Armazena arquivos HTML, CSS, JS e imagens.
+1.2. Estrutura de Rotas (API Gateway)
 
-Amazon CloudFront: Distribuição global com cache, compressão e HTTPS. Invalidação seletiva de cache configurada para acionar apenas em arquivos alterados.
-
-2. Backend (API e Lógica Serverless)
-
-API Gateway (HTTP API): Roteamento e regras de CORS.
-
-AWS Lambda (PinheiroProjectsAPI): Serviço central da aplicação.
-
-Rotas disponibilizadas:
+O endpoint de contato está configurado no Estágio Raiz ($default) do API Gateway.
 
 Método
 
-Rota
+Recurso (Path)
 
 Descrição
+
+URL de Invocação
 
 GET
 
 /projects
 
-Lista projetos
+Retorna dados do Portfólio (Mock/DynamoDB).
 
-POST
-
-/projects
-
-Cria projeto (Admin)
-
-PUT
-
-/projects/{id}
-
-Atualiza projeto (Admin)
-
-DELETE
-
-/projects/{id}
-
-Remove projeto (Admin)
+https://jwqiah2rvj.execute-api.us-west-2.amazonaws.com/projects
 
 POST
 
 /contact
 
-Processa contato e envia e-mail
+Recebe dados do formulário de contato e aciona a Lambda.
 
-3. Dados e Comunicação
+https://jwqiah2rvj.execute-api.us-west-2.amazonaws.com/contact
 
-DynamoDB:
+⚙️ 2. Guia de Desenvolvimento e Manutenção
 
-PinheiroProjects
+2.1. Frontend (Código Estático)
 
-PinheiroContacts
+Localização: Arquivos .html, assets/css/style.css, assets/js/script.js.
 
-Amazon SES: Envio de e-mails transacionais.
+Inicialização: A lógica de carregamento dinâmico e validação está em assets/js/script.js.
 
-Route 53: DNS do domínio pinheirotecnologia.com.
+Função Principal: document.addEventListener('DOMContentLoaded', ...)
 
-✨ Padrões Web e Otimizações (Última Revisão)
+Inicialização de Páginas: initIndexPage(), initProjetosPage(), initContactPage().
 
-O Frontend segue as boas práticas mais rigorosas, focando em performance e inclusão:
+2.2. Backend (Lógica Serverless)
 
-Web Performance (Core Web Vitals):
+O arquivo lambda_function.py contém o código Python responsável por processar o formulário de contato e as requisições da API.
 
-JS Não Bloqueante: O JavaScript principal é carregado com o atributo defer.
+Arquivo: lambda_function.py
 
-Otimização de Imagens: Uso de loading="lazy" e definição explícita de width/height em todas as imagens para eliminar o CLS (Cumulative Layout Shift).
+Handler: lambda_function.lambda_handler
 
-Acessibilidade (WCAG):
+Dependências: Este arquivo requer acesso configurado ao Amazon SES (para envio de e-mails) e DynamoDB (para persistência de contatos, se implementado).
 
-Semântica: Uso correto de tags estruturais (<main>, <article>), e correta hierarquia de headings (<h1>, <h2>).
+⚠️ NOTA CRÍTICA DE MANUTENÇÃO:
+O deploy do código da lambda_function.py NÃO é automatizado pelo GitHub Actions. Qualquer alteração neste arquivo deve ser copiada e atualizada manualmente no console do AWS Lambda para entrar em produção.
 
-Foco e Navegação: Estilos :focus-visible globais implementados para navegação por teclado.
+🚀 3. Deploy Contínuo (CI/CD)
 
-ARIA: Uso de aria-labels e aria-current na navegação, atributos role="status" e aria-live no formulário de contato para leitores de tela e controle de abas no modal.
+O deploy do Frontend estático é gerenciado pelo GitHub Actions, garantindo que o conteúdo mais recente esteja sempre no CloudFront.
 
-SEO Técnico e Segurança:
+3.1. Fluxo do Pipeline
 
-Implementação de dados estruturados Schema.org (Organização) no index.html.
+O pipeline está configurado no arquivo .github/workflows/s3_deploy.yml.
 
-Adoção de Content-Security-Policy (CSP) para mitigar ataques XSS.
+Gatilho: push para o branch main.
 
-Estrutura organizada e acessível para rastreadores (URLs canônicas e Sitemap com fuso horário UTC-3).
+Exclusões (paths-ignore): Ignora alterações no README.md e arquivos de configuração para evitar builds desnecessários.
 
-🚀 Funcionalidades do Site
+Ação de Deploy: Utiliza aws s3 sync . s3://${{ secrets.AWS_S3_BUCKET }} para sincronizar o código. O parâmetro --delete garante a limpeza de arquivos antigos.
 
-Públicas
+Invalidação: Solicita a invalidação seletiva do CloudFront para apenas os arquivos modificados.
 
-Listagem dinâmica de projetos via API
+3.2. Credenciais (Secrets)
 
-Filtros automáticos por categoria
+As seguintes credenciais de acesso programático devem ser configuradas como Secrets no GitHub para permitir que o Actions se autentique e execute o deploy no AWS S3/CloudFront:
 
-Modal de detalhes com vídeos e embeds responsivos (ajuste de proporção CSS para visualização sem scroll)
+AWS_ACCESS_KEY_ID
 
-Formulário de contato com:
+AWS_SECRET_ACCESS_KEY
 
-Contador de caracteres em tempo real
+AWS_REGION
 
-Validação e controle do botão de envio
+AWS_S3_BUCKET
 
-Envio assíncrono (a ser implementado na API)
+AWS_CLOUDFRONT_DISTRIBUTION_ID (Para controle de cache)
 
-Feedback visual
+✨ 4. Padrões e Otimizações
 
-Administrativas (Admin)
+Área
 
-CMS interno (admin.html)
+Padrão Implementado
 
-Funções:
+Acessibilidade
 
-criar
+Conformidade WCAG: Uso de aria-labels, aria-current, role="img", e semântica forte (<strong> em vez de **).
 
-editar
+Performance
 
-excluir
+Carregamento assíncrono (defer) do JS, Lazy Loading (loading="lazy") para imagens e eliminação de CSS/JS que bloqueiam a renderização.
 
-visualizar projetos
+UX/UI
 
-📄 Licença
+Design Mobile-First, Menu Sanduíche com controle de estado, e modais de feedback de formulário centralizados.
 
-Todos os direitos reservados — Pinheiro Tecnologia.
+Segurança
+
+Implementação de Content-Security-Policy (CSP) no <head> para mitigação de XSS.
