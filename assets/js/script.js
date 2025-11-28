@@ -47,7 +47,7 @@ const COMPONENTS = {
 // 2. DADOS FICTÍCIOS E CONSTANTES DA API
 // =================================================================
 
-// MOCK_PROJECTS: Strings formatadas com <strong> para negrito semântico (CORREÇÃO)
+// MOCK_PROJECTS: Strings formatadas com <strong> para negrito semântico
 const MOCK_PROJECTS = [
     {
         id: "mock-1",
@@ -86,8 +86,9 @@ const MOCK_PROJECTS = [
 ];
 
 const API_URL_GET_PROJECTS = "https://jwqiah2rvj.execute-api.us-west-2.amazonaws.com/projects";
-// URL da API de Contato - CRÍTICO: Verifique se este endpoint está correto no seu API Gateway
-const API_URL_CONTACT = "https://jwqiah2rvj.execute-api.us-west-2.amazonaws.com/prod/contact";
+// CORREÇÃO CRÍTICA: O estágio '$default' (raiz) não precisa do prefixo '/prod/'.
+// URL corrigida para: https://jwqiah2rvj.execute-api.us-west-2.amazonaws.com/contact
+const API_URL_CONTACT = "https://jwqiah2rvj.execute-api.us-west-2.amazonaws.com/contact";
 
 
 // =================================================================
@@ -109,7 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     const pathname = window.location.pathname;
     if (pathname === '/' || pathname.endsWith('/index.html')) {
-        initIndexPage();
+        initIndexPage(); // Chamada da função de inicialização da página inicial
     } else if (pathname.endsWith('/projetos.html')) {
         initProjetosPage();
     } else if (pathname.endsWith('/contato.html')) {
@@ -398,7 +399,10 @@ async function fetchProjects(filterHidden = true) {
 async function initIndexPage() {
     // Inicializa a página inicial (carrega e exibe os cards de projeto)
     const gridId = 'project-grid-dynamic';
-    const projects = await fetchProjects();
+    
+    // CRÍTICO: Aguarda a Promise de fetchProjects para obter os dados.
+    const projects = await fetchProjects(); 
+    
     const grid = document.getElementById(gridId);
 
     if (grid) {
@@ -708,11 +712,18 @@ async function handleContactSubmit(event) {
         });
 
         if (!response.ok) {
-            const errorData = await response.json().catch(() => null);
+            // Tentativa de ler o JSON da resposta (se disponível)
+            let errorData = null;
+            try {
+                errorData = await response.json();
+            } catch (e) {
+                // Se a resposta não for JSON (ex: erro 403/404 HTML), apenas continua
+            }
             
             // Tratamento de ERRO HTTP (ex: 429 Rate Limit, 400 Bad Request, 500 Server Error)
-            const message = errorData?.message || errorData?.error || "Ocorreu um erro no servidor. Tente novamente.";
+            const message = errorData?.message || errorData?.error || `Falha HTTP ${response.status}. Verifique o CORS ou a rota no API Gateway.`;
             const type = (response.status === 429) ? "warning" : "error";
+            
             showFormMessage(message, type);
             return;
         }
@@ -727,13 +738,13 @@ async function handleContactSubmit(event) {
         event.target.reset(); // Limpa o formulário após o envio bem-sucedido
 
     } catch (error) {
-        // ERRO CRÍTICO (Falha de Rede/Conexão)
+        // ERRO CRÍTICO (Falha de Rede/Conexão - Ex: CORS ou Rota Errada)
         console.error("Erro Crítico de Conexão:", error);
         
         messageModal.open('error',
             'Algo Deu Errado!', 
             'Não foi possível finalizar o envio da mensagem.', 
-            'Pode ser uma instabilidade temporária na conexão ou no servidor. Por favor, tente novamente em alguns minutos ou use o WhatsApp para um contato imediato.'
+            `Erro de conexão (CORS/Rede). Verifique se a URL ${API_URL_CONTACT} está acessível e se o CORS está ativado no API Gateway.`
         );
         
     } finally {
@@ -828,9 +839,9 @@ function createCard(project, container) {
     if (scrollObserver) scrollObserver.observe(card);
 }
 
-function initIndexPage() {
+async function initIndexPage() {
     const gridId = 'project-grid-dynamic';
-    const projects = fetchProjects();
+    const projects = await fetchProjects(); // CORRIGIDO: Adicionado await
     const grid = document.getElementById(gridId);
 
     if (grid) {
