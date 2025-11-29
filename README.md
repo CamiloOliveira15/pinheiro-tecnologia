@@ -1,156 +1,203 @@
-🌐 Pinheiro Tecnologia — Plataforma Web Serverless
+# 🌐 Pinheiro Tecnologia — Plataforma Web Serverless
 
-Este repositório contém o código-fonte da plataforma web estática da Pinheiro Tecnologia, arquitetada para alta disponibilidade e baixa latência usando serviços serverless da AWS.
+![AWS](https://img.shields.io/badge/AWS-Serverless-orange?logo=amazonaws)
+![CloudFront](https://img.shields.io/badge/CloudFront-CDN-blueviolet?logo=amazonaws)
+![S3](https://img.shields.io/badge/S3-Static%20Hosting-red?logo=amazonaws)
+![Lambda](https://img.shields.io/badge/Lambda-Python%203.11-ff9900?logo=aws-lambda)
+![DynamoDB](https://img.shields.io/badge/DynamoDB-NoSQL-4053D6?logo=amazon-dynamodb)
+![GitHub Actions](https://img.shields.io/badge/CI%2FCD-GitHub%20Actions-black?logo=githubactions)
+![Status](https://img.shields.io/badge/Deploy-Automated-success)
 
-📑 1. Arquitetura da Solução e Tecnologias
+Este reposititorio contém o código-fonte da plataforma web estática da Pinheiro Tecnologia, arquitetada para alta disponibilidade e baixa latência usando serviços serverless da AWS.
 
-A aplicação é dividida em dois workloads principais: Frontend Estático (S3/CloudFront) e Backend Serverless (API Gateway/Lambda).
+---
 
-1.1. Pilha Tecnológica (Tech Stack)
+## 📑 1. Arquitetura da Solução e Tecnologias
 
-Componente
+A aplicação é dividida em dois workloads principais:
 
-Tecnologia Principal
+- **Frontend Estático** (Amazon S3 + CloudFront)
+- **Backend Serverless** (API Gateway + AWS Lambda)
 
-Finalidade
+Não existe backend para projetos; todos os **mocks de portfólio estão no `script.js` do frontend**.
 
-Frontend
+---
 
-HTML5, CSS3, JavaScript (ES6+)
+## 1.1. Pilha Tecnológica (Tech Stack)
 
-Interface do usuário e lógica de apresentação (SPA-like).
+| Componente     | Tecnologia Principal         | Finalidade                                                             |
+|----------------|------------------------------|-------------------------------------------------------------------------|
+| Frontend       | HTML5, CSS3, JavaScript ES6+ | Interface do usuário e lógica de apresentação.                         |
+| Backend        | AWS Lambda (Python 3.11)     | Processamento do formulário de contato e validação de limites.         |
+| Hospedagem     | Amazon S3                    | Armazenamento de arquivos estáticos.                                   |
+| CDN & Cache    | Amazon CloudFront            | Distribuição global e otimização de cache.                             |
+| Banco de Dados | AWS DynamoDB                 | Controle de contatos e rate limit.                                     |
 
-Backend
+---
 
-AWS Lambda (Python 3.11)
+## 1.2. Estrutura de Rotas (API Gateway)
 
-Lógica de contato e API de Portfólio.
+Atualmente existe **somente uma rota implementada**:
 
-Hospedagem
+| Método | Recurso (Path) | Descrição                                                                        | URL de Invocação                                                                 |
+|--------|------------------|----------------------------------------------------------------------------------|-----------------------------------------------------------------------------------|
+| POST   | /contact         | Processa formulário, valida limites, salva no DynamoDB e retorna status.        | https://jwqiah2rvj.execute-api.us-west-2.amazonaws.com/contact                    |
 
-Amazon S3
+### Observações
 
-Armazenamento de arquivos estáticos.
+- **Não há GET /projects** implementado.  
+- Dados de portfólio são fornecidos pelo frontend através de mocks no `script.js`.
 
-CDN & Cache
+---
 
-Amazon CloudFront
+# 🔒 2. Data Model e Lógica de Rate Limiting
 
-Distribuição global, SSL/HTTPS e controle de cache.
+A Lambda implementa **dois tipos de limitações**, ambos usando DynamoDB:
 
-Banco de Dados
+---
 
-AWS DynamoDB
+## 2.1. Tabela `PinheiroContacts`
 
-Armazenamento de dados dinâmicos (Projetos, Contatos).
+Armazena contatos enviados e controla quantas mensagens “abertas” um e-mail possui.
 
-Comunicação
+| Campo        | Tipo     | Descrição                                      |
+|--------------|----------|------------------------------------------------|
+| id           | String   | UUID do contato                                |
+| createdAt    | String   | Timestamp ISO                                  |
+| name         | String   | Nome do usuário                                |
+| email        | String   | E-mail do usuário                              |
+| subject      | String   | Assunto da mensagem                            |
+| message      | String   | Conteúdo da mensagem                           |
+| status       | String   | Sempre “NEW” ao criar                          |
+| ip           | String   | IP de origem                                    |
 
-Amazon SES
+Requer **GSI `EmailStatusIndex`** com chave (email, status).
 
-Envio de e-mails transacionais (Formulário de Contato).
+---
 
-1.2. Estrutura de Rotas (API Gateway)
+## 2.2. Tabela `PinheiroRateLimit`
 
-O endpoint de contato está configurado no Estágio Raiz ($default) do API Gateway.
+Controla quantos envios um IP pode fazer por dia.
 
-Método
+| Campo        | Tipo   | Descrição                               |
+|--------------|--------|-------------------------------------------|
+| ip_date      | String | Combinação `IP#YYYY-MM-DD`                |
+| submission_count | Number | Número de envios no dia              |
+| expire_at    | Number | TTL configurado para expirar em 24h       |
 
-Recurso (Path)
+---
 
-Descrição
+## 2.3. Lógica executada pela Lambda (`lambda_function.py`)
 
-URL de Invocação
+Fluxo real conforme o código:
 
-GET
+1. Trata requisições OPTIONS (CORS preflight)  
+2. Normaliza método, path e IP  
+3. Faz parsing e validação do JSON recebido  
+4. **Rate Limit Técnico (por IP)**
+   - Verifica quantos envios o IP fez no dia  
+   - Limite: **3 envios/dia**  
+5. **Rate Limit por E-mail**
+   - Conta mensagens em aberto (`status = NEW`) no DynamoDB  
+   - Limite: **5 mensagens pendentes**  
+6. Se aprovado:
+   - Salva o contato no DynamoDB  
+   - Incrementa contagem diária do IP  
+7. Retorna status de sucesso com o `contact_id`  
+8. Qualquer outra rota recebe 404  
 
-/projects
+### Importante
 
-Retorna dados do Portfólio (Mock/DynamoDB).
+- **Não há envio de e-mail implementado** no código atual.  
+- Funções SES foram removidas do projeto ou ainda não implementadas.  
 
-https://jwqiah2rvj.execute-api.us-west-2.amazonaws.com/projects
+---
 
-POST
+# 🛠️ 3. Guia de Desenvolvimento e Manutenção
 
-/contact
+---
 
-Recebe dados do formulário de contato e aciona a Lambda.
+## 3.1. Frontend (Código Estático)
 
-https://jwqiah2rvj.execute-api.us-west-2.amazonaws.com/contact
+Localização:
 
-⚙️ 2. Guia de Desenvolvimento e Manutenção
+- `index.html`
+- `assets/css/style.css`
+- `assets/js/script.js`
 
-2.1. Frontend (Código Estático)
+Funções principais:
 
-Localização: Arquivos .html, assets/css/style.css, assets/js/script.js.
+- `initIndexPage()`
+- `initContactPage()`
 
-Inicialização: A lógica de carregamento dinâmico e validação está em assets/js/script.js.
+Os **mocks de portfólio** estão no próprio `script.js` e são usados no carregamento da página.
 
-Função Principal: document.addEventListener('DOMContentLoaded', ...)
+---
 
-Inicialização de Páginas: initIndexPage(), initProjetosPage(), initContactPage().
+## 3.2. Backend (Lógica Serverless)
 
-2.2. Backend (Lógica Serverless)
+### Arquivo principal
 
-O arquivo lambda_function.py contém o código Python responsável por processar o formulário de contato e as requisições da API.
+- `lambda_function.py`  
+- Handler: `lambda_handler`
 
-Arquivo: lambda_function.py
+### Permissões necessárias
 
-Handler: lambda_function.lambda_handler
+- `dynamodb:GetItem`
+- `dynamodb:PutItem`
+- `dynamodb:UpdateItem`
+- `dynamodb:Query`
 
-Dependências: Este arquivo requer acesso configurado ao Amazon SES (para envio de e-mails) e DynamoDB (para persistência de contatos, se implementado).
+### Não implementado:
 
-⚠️ NOTA CRÍTICA DE MANUTENÇÃO:
-O deploy do código da lambda_function.py NÃO é automatizado pelo GitHub Actions. Qualquer alteração neste arquivo deve ser copiada e atualizada manualmente no console do AWS Lambda para entrar em produção.
+- **Envio de e-mail (SES)**
+- **GET /projects**
 
-🚀 3. Deploy Contínuo (CI/CD)
+---
 
-O deploy do Frontend estático é gerenciado pelo GitHub Actions, garantindo que o conteúdo mais recente esteja sempre no CloudFront.
+### ⚠️ Nota Crítica
 
-3.1. Fluxo do Pipeline
+O deploy do backend **não é automatizado** pelo GitHub Actions.  
+Alterações no `lambda_function.py` devem ser aplicadas **manualmente na AWS**.
 
-O pipeline está configurado no arquivo .github/workflows/s3_deploy.yml.
+---
 
-Gatilho: push para o branch main.
+# 🚀 4. Deploy Contínuo (CI/CD)
 
-Exclusões (paths-ignore): Ignora alterações no README.md e arquivos de configuração para evitar builds desnecessários.
+O frontend estático é publicado automaticamente via GitHub Actions.
 
-Ação de Deploy: Utiliza aws s3 sync . s3://${{ secrets.AWS_S3_BUCKET }} para sincronizar o código. O parâmetro --delete garante a limpeza de arquivos antigos.
+---
 
-Invalidação: Solicita a invalidação seletiva do CloudFront para apenas os arquivos modificados.
+## 4.1. Fluxo (`.github/workflows/s3_deploy.yml`)
 
-3.2. Credenciais (Secrets)
+- Gatilho: push no branch `main`
+- Ignora arquivos como `README.md`
+- Executa:
+  - `aws s3 sync`
+  - Invalidação seletiva no CloudFront
 
-As seguintes credenciais de acesso programático devem ser configuradas como Secrets no GitHub para permitir que o Actions se autentique e execute o deploy no AWS S3/CloudFront:
+---
 
-AWS_ACCESS_KEY_ID
+## 4.2. Secrets Necessários
 
-AWS_SECRET_ACCESS_KEY
+| Secret                          | Finalidade                                 |
+|---------------------------------|---------------------------------------------|
+| AWS_ACCESS_KEY_ID              | Chave programática                           |
+| AWS_SECRET_ACCESS_KEY          | Autenticação                                 |
+| AWS_REGION                     | Região AWS                                   |
+| AWS_S3_BUCKET                  | Bucket onde o site é publicado               |
+| AWS_CLOUDFRONT_DISTRIBUTION_ID | Distribuição para invalidação                |
 
-AWS_REGION
+---
 
-AWS_S3_BUCKET
+# 📄 Licença
 
-AWS_CLOUDFRONT_DISTRIBUTION_ID (Para controle de cache)
+Projeto proprietário da Pinheiro Tecnologia.  
+Uso restrito e não autorizado publicamente.
 
-✨ 4. Padrões e Otimizações
+---
 
-Área
+# 📬 Contato
 
-Padrão Implementado
-
-Acessibilidade
-
-Conformidade WCAG: Uso de aria-labels, aria-current, role="img", e semântica forte (<strong> em vez de **).
-
-Performance
-
-Carregamento assíncrono (defer) do JS, Lazy Loading (loading="lazy") para imagens e eliminação de CSS/JS que bloqueiam a renderização.
-
-UX/UI
-
-Design Mobile-First, Menu Sanduíche com controle de estado, e modais de feedback de formulário centralizados.
-
-Segurança
-
-Implementação de Content-Security-Policy (CSP) no <head> para mitigação de XSS.
+Website: https://pinheirotecnologia.com  
+E-mail: contato@pinheirotecnologia.com
